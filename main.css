@@ -1,0 +1,261 @@
+body {
+	position: relative;
+	margin: 0;
+	overflow-y: hidden;
+	overflow-x: hidden;
+}
+
+#foundation,
+#settingfoundation {
+	position: absolute;
+	width: 600px;
+	height: 800px;
+	background-color: #77f;
+	transform-origin: left top;
+}
+
+#foundation {
+	z-index: 1;
+}
+
+#foundation input[type="button"] {
+	position: absolute;
+	width: 150px;
+	height: 100px;
+	background-color: #aaa;
+	font-size: 40px;
+}
+
+#setting {
+	left: 0px;
+	top: 0px;
+}
+
+#random {
+	left: 150px;
+	top: 0px;
+}
+
+#reset {
+	left: 300px;
+	top: 0px;
+}
+
+#full {
+	left: 450px;
+	top: 0px;
+}
+
+#stopwatch,
+#complete {
+	position: absolute;
+	height: 100px;
+	line-height: 50px;
+	font-size: 50px;
+	user-select: none;
+}
+
+#stopwatch {
+	left: 80px;
+	top: 130px;
+	width: 200px;
+}
+
+#complete {
+	left: 400px;
+	top: 130px;
+	width: 180px;
+}
+
+#puzzlediv {
+	position: absolute;
+	left: 0px;
+	top: 200px;
+	width: 600px;
+	height: 600px;
+}
+
+#allpreview {
+	position: absolute;
+	width: 600px;
+	height: 600px;
+	opacity: 1;
+	z-index: 1;
+	background-color: #fff;
+	user-select: none;
+}
+
+#preview {
+	position: absolute;
+}
+
+#main {
+	position: absolute;
+	width: 600px;
+	height: 600px;
+	z-index: 2;
+	background-color: #aaa;
+	user-select: none;
+}
+
+#main div {
+	position: absolute;
+	background-color: #fff;
+	overflow: hidden;
+}
+
+#main div img {
+	position: absolute;
+	width: 600px;
+	height: 600px;
+}
+
+#main div span {
+	position: absolute;
+	left: -2px;
+	top: -2px;
+	border-width: 4px;
+	border-style: solid;
+}
+
+#settingfoundation {
+	z-index: 0;
+}
+
+#settingfoundation .addsub {
+	position: absolute;
+	width: 50px;
+	height: 100px;
+	background-color: #aaa;
+	font-size: 40px;
+}
+
+#settingfoundation .determinecancel {
+	position: absolute;
+	width: 200px;
+	height: 100px;
+	background-color: #aaa;
+	font-size: 40px;
+}
+
+#setsize,
+#setdelay,
+#settype,
+#spantype,
+#spannetfile {
+	position: absolute;
+	width: 200px;
+	height: 100px;
+	line-height: 100px;
+	font-size: 40px;
+	user-select: none;
+}
+
+#nowsize,
+#nowdelay {
+	position: absolute;
+	width: 300px;
+	height: 100px;
+	text-align: center;
+	line-height: 100px;
+	font-size: 40px;
+	user-select: none;
+}
+
+#setsize {
+	left: 0px;
+	top: 50px;
+}
+
+#subsize {
+	left: 200px;
+	top: 50px;
+}
+
+#nowsize {
+	left: 250px;
+	top: 50px;
+}
+
+#addsize {
+	left: 550px;
+	top: 50px;
+}
+
+#setdelay {
+	left: 0px;
+	top: 150px;
+}
+
+#subdelay {
+	left: 200px;
+	top: 150px;
+}
+
+#nowdelay {
+	left: 250px;
+	top: 150px;
+}
+
+#adddelay {
+	left: 550px;
+	top: 150px;
+}
+
+#settype {
+	left: 0px;
+	top: 250px;
+}
+
+#nowtype {
+	position: absolute;
+	left: 200px;
+	top: 250px;
+	width: 250px;
+	height: 100px;
+	font-size: 40px;
+}
+
+#spantype {
+	left: 0px;
+	top: 350px;
+	width: 600px;
+	z-index: 1;
+}
+#spannetfile{
+	left: 0px;
+	top: 350px;
+	opacity: 0;
+	z-index: 0;
+}
+#filein {
+	position: absolute;
+	left: 50px;
+	top: 350px;
+	width: 500px;
+	height: 100px;
+	font-size: 40px;
+	opacity: 0;
+	z-index: 0;
+}
+
+#netfile {
+	position: absolute;
+	left: 200px;
+	top: 350px;
+	width: 380px;
+	height: 100px;
+	font-size: 40px;
+	opacity: 0;
+	z-index: 0;
+}
+
+#setdetermine {
+	left: 200px;
+	top: 500px;
+}
+
+#setcancel {
+	left: 400px;
+	top: 500px;
+}
