@@ -12,6 +12,9 @@
 	<script>
 		var n = 0, m = 0;
 		coordinatexmlinitial(function () { });
+		window.onload = function () {
+			preview.src = coordinatestyle(String.fromCharCode(n + 65), String.fromCharCode(m + 65));
+		}
 	</script>
 </head>
 

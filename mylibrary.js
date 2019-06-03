@@ -54,6 +54,25 @@ function array2url(arr) {
 	window.history.pushState({}, 0, url + strUrl + location.hash);
 }
 
+function openfile(url, callback) {
+	if (typeof callback == "undefined") {
+		callback = function (str) {};
+	}
+	var oReq = new XMLHttpRequest();
+	oReq.addEventListener("load", function () {
+		if (oReq.status != 404) {
+			callback(this.responseText);
+		} else {
+			callback('{}');
+		}
+	});
+	oReq.addEventListener("error", function () {
+		callback('{}');
+	});
+	oReq.open("GET", url);
+	oReq.send();
+}
+
 function generator(genfunc) {
 	var g = genfunc();
 

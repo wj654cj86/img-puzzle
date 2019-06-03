@@ -1,3 +1,7 @@
+var geturl = url2array();
+var lang;
+var nowlang;
+var setlang;
 var mod;
 var nowstatus = 'complete';
 var len;
@@ -30,6 +34,98 @@ function setfoundation() {
 	fm = Math.max(fm, 0.25);
 	settingfoundation.style.transform = foundation.style.transform = 'scale(' + fm + ',' + fm + ')';
 }
+
+function languageset(lk, callback) {
+	generator(function* () {
+		if (lk in langlist) {
+			let langfilepath = 'language/' + lk + '.json';
+			yield {
+				nextfunc: openfile,
+				argsfront: [langfilepath],
+				cbfunc: function (str) {
+					Object.assign(lang, JSON.parse(str));
+					nowlanguage.value = lk;
+				}
+			};
+		}
+		document.title = lang.imgpuzzle;
+		setting.value = lang.setting;
+		random.value = lang.random;
+		reset.value = lang.reset;
+		full.value = lang.full;
+		setlanguage.innerHTML = lang.languagesetting;
+		setsize.innerHTML = lang.len;
+		setdelaytime.innerHTML = lang.delay;
+		settype.innerHTML = lang.mod;
+		spannetfile.innerHTML = lang.imgsrc;
+		setdetermine.value = lang.determine;
+		setcancel.value = lang.cancel;
+
+		let nowtypeoption = nowtype.getElementsByTagName("option");
+		nowtypeoption[0].innerHTML = lang.number;
+		nowtypeoption[1].innerHTML = lang.coordinate;
+		nowtypeoption[2].innerHTML = lang.hostimage;
+		nowtypeoption[3].innerHTML = lang.netimage;
+
+		setting.style.fontSize = lang.fontsize;
+		random.style.fontSize = lang.fontsize;
+		reset.style.fontSize = lang.fontsize;
+		full.style.fontSize = lang.fontsize;
+		stopwatch.style.fontSize = lang.fontsize;
+		complete.style.fontSize = lang.fontsize;
+		setlanguage.style.fontSize = lang.fontsize;
+		nowlanguage.style.fontSize = lang.fontsize;
+		setsize.style.fontSize = lang.fontsize;
+		nowsize.style.fontSize = lang.fontsize;
+		setdelaytime.style.fontSize = lang.fontsize;
+		nowdelay.style.fontSize = lang.fontsize;
+		settype.style.fontSize = lang.fontsize;
+		nowtype.style.fontSize = lang.fontsize;
+		spantype.style.fontSize = lang.fontsize;
+		filein.style.fontSize = lang.fontsize;
+		spannetfile.style.fontSize = lang.fontsize;
+		netfile.style.fontSize = lang.fontsize;
+		setdetermine.style.fontSize = lang.fontsize;
+		setcancel.style.fontSize = lang.fontsize;
+		callback();
+	});
+}
+function languagechange() {
+	setlang = nowlanguage.value;
+	if (setlang == 'zh-Hant') {
+		delete geturl.lang;
+	} else {
+		geturl.lang = setlang;
+	}
+	array2url(geturl);
+	languageset(nowlanguage.value, function () { });
+}
+function languageinitial() {
+	generator(function* () {
+		yield {
+			nextfunc: openfile,
+			argsfront: ['language/zh-Hant.json'],
+			cbfunc: function (str) {
+				lang = JSON.parse(str);
+				nowlanguage.value = 'zh-Hant';
+			}
+		};
+
+		for (let key in langlist) {
+			let lo = document.createElement("option");
+			lo.value = key;
+			lo.innerHTML = langlist[key];
+			nowlanguage.appendChild(lo);
+		}
+
+		languageset(geturl.lang, function () {
+			nowlang = nowlanguage.value;
+			nowlanguage.onchange = languagechange;
+		});
+	});
+}
+
+
 function setpuzzleimgwh(width, height) {
 	imgw = width;
 	imgh = height;
@@ -74,9 +170,10 @@ window.onload = function () {
 	};
 	setting.onclick = function () {
 		setlen = len;
-		nowsize.innerHTML = setlen * setlen - 1 + '個 (' + setlen + ' X ' + setlen + ')';
+		nowsize.innerHTML = setlen * setlen - 1 + lang.unit
+			+ lang.frontbracket + setlen + lang.time + setlen + lang.backbracket;
 		setdelay = delay;
-		nowdelay.innerHTML = setdelay + '毫秒';
+		nowdelay.innerHTML = setdelay + lang.ms;
 		nowtype.value = mod;
 		nowtypeonchange();
 		settingfoundation.style.zIndex = 10;
@@ -86,31 +183,34 @@ window.onload = function () {
 	subsize.onclick = function () {
 		if (setlen > 3) {
 			setlen--;
-			nowsize.innerHTML = setlen * setlen - 1 + '個 (' + setlen + ' X ' + setlen + ')';
+			nowsize.innerHTML = setlen * setlen - 1 + lang.unit
+				+ lang.frontbracket + setlen + lang.time + setlen + lang.backbracket;
 		}
 	};
 	addsize.onclick = function () {
 		if (setlen < 10) {
 			setlen++;
-			nowsize.innerHTML = setlen * setlen - 1 + '個 (' + setlen + ' X ' + setlen + ')';
+			nowsize.innerHTML = setlen * setlen - 1 + lang.unit
+				+ lang.frontbracket + setlen + lang.time + setlen + lang.backbracket;
 		}
 	};
 	subdelay.onclick = function () {
 		if (setdelay > 0) {
 			setdelay -= 100;
-			nowdelay.innerHTML = setdelay + '毫秒';
+			nowdelay.innerHTML = setdelay + lang.ms;
 		}
 	};
 	adddelay.onclick = function () {
 		if (setdelay < 1000) {
 			setdelay *= 1;
 			setdelay += 100;
-			nowdelay.innerHTML = setdelay + '毫秒';
+			nowdelay.innerHTML = setdelay + lang.ms;
 		}
 	};
 
 	nowtype.onchange = nowtypeonchange;
 	setdetermine.onclick = function () {
+		nowlang = setlang;
 		generator(function* () {
 			let data = {}, url;
 			switch (nowtype.value) {
@@ -200,6 +300,8 @@ window.onload = function () {
 		});
 	};
 	setcancel.onclick = function () {
+		nowlanguage.value = nowlang;
+		languagechange();
 		settingfoundation.style.zIndex = 0;
 	};
 
@@ -216,6 +318,8 @@ window.onload = function () {
 	};
 	sw = new Stopwatch(stopwatch);
 	setfoundation();
+	languageinitial();
+
 	let l = getCookie('len');
 	if (l != '' && !isNaN(l) && l >= 3 && l <= 10) {
 		len = l;
@@ -487,7 +591,7 @@ function puzzlemove(i) {
 		return true;
 	}
 	if (iscomplete()) {
-		complete.innerHTML = '完成！';
+		complete.innerHTML = lang.complete;
 		nowstatus = 'complete';
 		sw.stop;
 		if (mod == 'hostimage' || mod == 'netimage') {

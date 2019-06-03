@@ -5,8 +5,9 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-	<title>推盤遊戲</title>
+	<title></title>
 	<link href="icon.png" rel="icon">
+	<script type="text/javascript" src="language/list.js"></script>
 	<script type="text/javascript" src="coordinatepuzzle.js"></script>
 	<script type="text/javascript" src="numberpuzzle.js"></script>
 	<script type="text/javascript" src="mylibrary.js"></script>
@@ -17,10 +18,10 @@
 
 <body>
 	<div id="foundation">
-		<input type="button" id="setting" value="設定" />
-		<input type="button" id="random" value="打亂" />
-		<input type="button" id="reset" value="重置" />
-		<input type="button" id="full" value="全螢幕" />
+		<input type="button" id="setting" />
+		<input type="button" id="random" />
+		<input type="button" id="reset" />
+		<input type="button" id="full" />
 		<span id="stopwatch"></span><span id="complete"></span>
 		<div id="puzzlediv">
 			<div id="allpreview"><img id="preview" /></div>
@@ -28,28 +29,31 @@
 		</div>
 	</div>
 	<div id="settingfoundation">
-		<span id="setsize">推盤數量：</span>
+		<span id="setlanguage"></span>
+		<select id="nowlanguage">
+		</select>
+		<span id="setsize"></span>
 		<input type="button" class="addsub" id="subsize" value="-" />
 		<span id="nowsize"></span>
 		<input type="button" class="addsub" id="addsize" value="+" />
 
-		<span id="setdelay">推盤延遲：</span>
+		<span id="setdelaytime"></span>
 		<input type="button" class="addsub" id="subdelay" value="-" />
 		<span id="nowdelay"></span>
 		<input type="button" class="addsub" id="adddelay" value="+" />
-		<span id="settype">推盤版本：</span>
+		<span id="settype"></span>
 		<select id="nowtype">
-			<option value="number">數值版</option>
-			<option value="coordinate">座標版</option>
-			<option value="hostimage">上傳圖片版</option>
-			<option value="netimage">網路圖片版</option>
+			<option value="number"></option>
+			<option value="coordinate"></option>
+			<option value="hostimage"></option>
+			<option value="netimage"></option>
 		</select>
 		<span id="spantype"></span>
 		<input id="filein" type="file" accept="image/*" />
-		<span id="spannetfile">圖片網址：</span>
+		<span id="spannetfile"></span>
 		<input id="netfile" type="text"/>
-		<input type="button" class="determinecancel" id="setdetermine" value="確定更改" />
-		<input type="button" class="determinecancel" id="setcancel" value="取消更改" />
+		<input type="button" class="determinecancel" id="setdetermine" />
+		<input type="button" class="determinecancel" id="setcancel" />
 	</div>
 </body>
 

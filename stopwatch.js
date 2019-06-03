@@ -11,8 +11,6 @@ function Stopwatch(obj) {
 	}
 	if (this.obj == undefined)
 		throw 'Object is undefined.';
-	// this.obj.innerHTML = '時間計數：<span></span>';
-	// this.number = this.obj.getElementsByTagName('span')[0];
 	this.number = this.obj;
 	this.number.innerHTML = '00:00.00';
 	this.nowtime = 0;
