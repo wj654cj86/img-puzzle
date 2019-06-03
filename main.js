@@ -61,6 +61,10 @@ function languageset(lk, callback) {
 		setdetermine.value = lang.determine;
 		setcancel.value = lang.cancel;
 
+		nowsize.innerHTML = setlen * setlen - 1 + lang.unit
+			+ lang.frontbracket + setlen + lang.time + setlen + lang.backbracket;
+		nowdelay.innerHTML = setdelay + lang.ms;
+
 		let nowtypeoption = nowtype.getElementsByTagName("option");
 		nowtypeoption[0].innerHTML = lang.number;
 		nowtypeoption[1].innerHTML = lang.coordinate;
