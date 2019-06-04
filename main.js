@@ -19,20 +19,22 @@ var imgh;
 var imgm;
 var imgx;
 var imgy;
-var direction = [
-	[1, 0],
-	[0, 1],
-	[-1, 0],
-	[0, -1]
-];
-var keydirection = [
-	37, 38, 39, 40
-];
+var direction = {
+	37: { x: 1, y: 0 },
+	38: { x: 0, y: 1 },
+	39: { x: -1, y: 0 },
+	40: { x: 0, y: -1 }
+};
 
 function setfoundation() {
 	let fm = Math.min(window.innerWidth / 600, window.innerHeight / 800, 1.5);
 	fm = Math.max(fm, 0.25);
 	settingfoundation.style.transform = foundation.style.transform = 'scale(' + fm + ',' + fm + ')';
+}
+
+function setnowlenHTML(sl) {
+	nowlen.innerHTML = sl * sl - 1 + lang.unit
+		+ lang.frontbracket + sl + lang.time + sl + lang.backbracket;
 }
 
 function languageset(lk, callback) {
@@ -53,23 +55,22 @@ function languageset(lk, callback) {
 		random.value = lang.random;
 		reset.value = lang.reset;
 		full.value = lang.full;
-		setlanguage.innerHTML = lang.languagesetting;
-		setsize.innerHTML = lang.len;
-		setdelaytime.innerHTML = lang.delay;
-		settype.innerHTML = lang.mod;
-		spannetfile.innerHTML = lang.imgsrc;
-		setdetermine.value = lang.determine;
-		setcancel.value = lang.cancel;
+		spanlanguage.innerHTML = lang.languagesetting;
+		spanlen.innerHTML = lang.len;
+		spandelay.innerHTML = lang.delay;
+		spanmod.innerHTML = lang.mod;
+		spannetimage.innerHTML = lang.imgsrc;
+		determine.value = lang.determine;
+		cancel.value = lang.cancel;
 
-		nowsize.innerHTML = setlen * setlen - 1 + lang.unit
-			+ lang.frontbracket + setlen + lang.time + setlen + lang.backbracket;
+		setnowlenHTML(setlen);
 		nowdelay.innerHTML = setdelay + lang.ms;
 
-		let nowtypeoption = nowtype.getElementsByTagName("option");
-		nowtypeoption[0].innerHTML = lang.number;
-		nowtypeoption[1].innerHTML = lang.coordinate;
-		nowtypeoption[2].innerHTML = lang.hostimage;
-		nowtypeoption[3].innerHTML = lang.netimage;
+		let nowmodoption = nowmod.getElementsByTagName("option");
+		nowmodoption[0].innerHTML = lang.number;
+		nowmodoption[1].innerHTML = lang.coordinate;
+		nowmodoption[2].innerHTML = lang.hostimage;
+		nowmodoption[3].innerHTML = lang.netimage;
 
 		setting.style.fontSize = lang.fontsize;
 		random.style.fontSize = lang.fontsize;
@@ -77,20 +78,20 @@ function languageset(lk, callback) {
 		full.style.fontSize = lang.fontsize;
 		stopwatch.style.fontSize = lang.fontsize;
 		complete.style.fontSize = lang.fontsize;
-		setlanguage.style.fontSize = lang.fontsize;
+		spanlanguage.style.fontSize = lang.fontsize;
 		nowlanguage.style.fontSize = lang.fontsize;
-		setsize.style.fontSize = lang.fontsize;
-		nowsize.style.fontSize = lang.fontsize;
-		setdelaytime.style.fontSize = lang.fontsize;
+		spanlen.style.fontSize = lang.fontsize;
+		nowlen.style.fontSize = lang.fontsize;
+		spandelay.style.fontSize = lang.fontsize;
 		nowdelay.style.fontSize = lang.fontsize;
-		settype.style.fontSize = lang.fontsize;
-		nowtype.style.fontSize = lang.fontsize;
-		spantype.style.fontSize = lang.fontsize;
-		filein.style.fontSize = lang.fontsize;
-		spannetfile.style.fontSize = lang.fontsize;
+		spanmod.style.fontSize = lang.fontsize;
+		nowmod.style.fontSize = lang.fontsize;
+		spanhostimage.style.fontSize = lang.fontsize;
+		hostfile.style.fontSize = lang.fontsize;
+		spannetimage.style.fontSize = lang.fontsize;
 		netfile.style.fontSize = lang.fontsize;
-		setdetermine.style.fontSize = lang.fontsize;
-		setcancel.style.fontSize = lang.fontsize;
+		determine.style.fontSize = lang.fontsize;
+		cancel.style.fontSize = lang.fontsize;
 		callback();
 	});
 }
@@ -145,17 +146,17 @@ window.onload = function () {
 	preview.ondragstart = function () {
 		return false;
 	};
-	let nowtypeonchange = function () {
+	let nowmodonchange = function () {
 		let callback = function (a, b, c) {
-			spantype.style.zIndex = a;
-			filein.style.opacity = b;
-			filein.style.zIndex = b;
-			spannetfile.style.opacity = c;
-			spannetfile.style.zIndex = c;
+			spanhostimage.style.zIndex = a;
+			hostfile.style.opacity = b;
+			hostfile.style.zIndex = b;
+			spannetimage.style.opacity = c;
+			spannetimage.style.zIndex = c;
 			netfile.style.opacity = c;
 			netfile.style.zIndex = c;
 		};
-		switch (nowtype.value) {
+		switch (nowmod.value) {
 			case 'number':
 				callback(1, 0, 0);
 				break;
@@ -169,17 +170,17 @@ window.onload = function () {
 				callback(0, 0, 1);
 				break;
 			default:
+				callback(1, 0, 0);
 				break;
 		}
 	};
 	setting.onclick = function () {
 		setlen = len;
-		nowsize.innerHTML = setlen * setlen - 1 + lang.unit
-			+ lang.frontbracket + setlen + lang.time + setlen + lang.backbracket;
+		setnowlenHTML(setlen);
 		setdelay = delay;
 		nowdelay.innerHTML = setdelay + lang.ms;
-		nowtype.value = mod;
-		nowtypeonchange();
+		nowmod.value = mod;
+		nowmodonchange();
 		settingfoundation.style.zIndex = 10;
 	};
 	random.onclick = randompuzzle;
@@ -187,15 +188,13 @@ window.onload = function () {
 	subsize.onclick = function () {
 		if (setlen > 3) {
 			setlen--;
-			nowsize.innerHTML = setlen * setlen - 1 + lang.unit
-				+ lang.frontbracket + setlen + lang.time + setlen + lang.backbracket;
+			setnowlenHTML(setlen);
 		}
 	};
 	addsize.onclick = function () {
 		if (setlen < 10) {
 			setlen++;
-			nowsize.innerHTML = setlen * setlen - 1 + lang.unit
-				+ lang.frontbracket + setlen + lang.time + setlen + lang.backbracket;
+			setnowlenHTML(setlen);
 		}
 	};
 	subdelay.onclick = function () {
@@ -212,35 +211,33 @@ window.onload = function () {
 		}
 	};
 
-	nowtype.onchange = nowtypeonchange;
-	setdetermine.onclick = function () {
+	nowmod.onchange = nowmodonchange;
+	determine.onclick = function () {
 		nowlang = setlang;
 		generator(function* () {
 			let data = {}, url;
-			switch (nowtype.value) {
+			switch (nowmod.value) {
 				case 'number':
+					mod = nowmod.value;
 					len = setlen;
 					delay = setdelay;
-					mod = nowtype.value;
 					setCookie('mod', mod);
 					setCookie('len', len);
 					setCookie('delay', delay);
 					setpuzzle();
-					settingfoundation.style.zIndex = 0;
 					break;
 				case 'coordinate':
+					mod = nowmod.value;
 					len = setlen;
 					delay = setdelay;
-					mod = nowtype.value;
 					setCookie('mod', mod);
 					setCookie('len', len);
 					setCookie('delay', delay);
 					setpuzzle();
-					settingfoundation.style.zIndex = 0;
 					break;
 				case 'hostimage':
 					try {
-						url = URL.createObjectURL(filein.files[0]);
+						url = URL.createObjectURL(hostfile.files[0]);
 						yield {
 							nextfunc: getimgwh,
 							argsfront: [url],
@@ -249,26 +246,23 @@ window.onload = function () {
 								data.height = height;
 							}
 						};
-
-						if (data.width == -1 || data.height == -1) {
-							settingfoundation.style.zIndex = 0;
-							break;
-						}
-
-						len = setlen;
-						delay = setdelay;
-						imgsrc = url;
-						mod = nowtype.value;
-						setCookie('len', len);
-						setCookie('delay', delay);
-
-						setpuzzleimgwh(data.width, data.height);
-						setpuzzle();
-
-						settingfoundation.style.zIndex = 0;
 					} catch (err) {
-						settingfoundation.style.zIndex = 0;
+						break;
 					}
+
+					if (data.width == -1 || data.height == -1) {
+						break;
+					}
+
+					mod = nowmod.value;
+					len = setlen;
+					delay = setdelay;
+					imgsrc = url;
+					setCookie('len', len);
+					setCookie('delay', delay);
+
+					setpuzzleimgwh(data.width, data.height);
+					setpuzzle();
 					break;
 				case 'netimage':
 					yield {
@@ -279,31 +273,30 @@ window.onload = function () {
 							data.height = height;
 						}
 					};
+
 					if (data.width == -1 || data.height == -1) {
-						settingfoundation.style.zIndex = 0;
 						break;
 					}
 
+					mod = nowmod.value;
 					len = setlen;
 					delay = setdelay;
 					imgsrc = netfile.value;
-					mod = nowtype.value;
 					setCookie('mod', mod);
-					setCookie('imgsrc', imgsrc);
 					setCookie('len', len);
 					setCookie('delay', delay);
+					setCookie('imgsrc', imgsrc);
 
 					setpuzzleimgwh(data.width, data.height);
 					setpuzzle();
-
-					settingfoundation.style.zIndex = 0;
 					break;
 				default:
 					break;
 			}
+			settingfoundation.style.zIndex = 0;
 		});
 	};
-	setcancel.onclick = function () {
+	cancel.onclick = function () {
 		nowlanguage.value = nowlang;
 		languagechange();
 		settingfoundation.style.zIndex = 0;
@@ -400,13 +393,15 @@ window.onkeydown = function () {
 	key = event.keyCode;
 	if (key == 13)
 		randompuzzle();
-	if (keydirection.indexOf(key) != -1) {
-		let d = direction[keydirection.indexOf(key)];
+	if (key == 27)
+		resetpuzzle();
+	if (key in direction) {
+		let d = direction[key];
 		let x = nownull % len;
 		let y = Math.floor(nownull / len);
-		if (x + d[0] < 0 || y + d[1] < 0 || x + d[0] >= len || y + d[1] >= len)
+		if (x + d.x < 0 || y + d.y < 0 || x + d.x >= len || y + d.y >= len)
 			return;
-		puzzlemove(puzzle.indexOf(x + d[0] + (y + d[1]) * len));
+		puzzlemove(puzzle.indexOf(x + d.x + (y + d.y) * len));
 	}
 };
 

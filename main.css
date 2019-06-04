@@ -137,7 +137,7 @@ body {
 	font-size: 40px;
 }
 
-#setlanguage, #setsize, #setdelaytime, #settype, #spantype, #spannetfile {
+#spanlanguage, #spanlen, #spandelay, #spanmod, #spanhostimage, #spannetimage {
 	position: absolute;
 	text-align: right;
 	width: 250px;
@@ -147,7 +147,7 @@ body {
 	user-select: none;
 }
 
-#nowsize, #nowdelay {
+#nowlen, #nowdelay {
 	position: absolute;
 	width: 250px;
 	height: 100px;
@@ -157,7 +157,7 @@ body {
 	user-select: none;
 }
 
-#setlanguage {
+#spanlanguage {
 	left: 0px;
 	top: 50px;
 }
@@ -171,7 +171,7 @@ body {
 	font-size: 40px;
 }
 
-#setsize {
+#spanlen {
 	left: 0px;
 	top: 150px;
 }
@@ -181,7 +181,7 @@ body {
 	top: 150px;
 }
 
-#nowsize {
+#nowlen {
 	left: 300px;
 	top: 150px;
 }
@@ -191,7 +191,7 @@ body {
 	top: 150px;
 }
 
-#setdelaytime {
+#spandelay {
 	left: 0px;
 	top: 250px;
 }
@@ -211,12 +211,12 @@ body {
 	top: 250px;
 }
 
-#settype {
+#spanmod {
 	left: 0px;
 	top: 350px;
 }
 
-#nowtype {
+#nowmod {
 	position: absolute;
 	left: 250px;
 	top: 350px;
@@ -225,21 +225,21 @@ body {
 	font-size: 40px;
 }
 
-#spantype {
+#spanhostimage {
 	left: 0px;
 	top: 450px;
 	width: 600px;
 	z-index: 1;
 }
 
-#spannetfile {
+#spannetimage {
 	left: 0px;
 	top: 450px;
 	opacity: 0;
 	z-index: 0;
 }
 
-#filein {
+#hostfile {
 	position: absolute;
 	left: 50px;
 	top: 450px;
@@ -261,12 +261,12 @@ body {
 	z-index: 0;
 }
 
-#setdetermine {
+#determine {
 	left: 200px;
 	top: 600px;
 }
 
-#setcancel {
+#cancel {
 	left: 400px;
 	top: 600px;
 }
