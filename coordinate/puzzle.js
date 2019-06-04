@@ -43,7 +43,7 @@ function coordinatexmlinitial(callback) {
 			callback();
 		}
 	};
-	coordinatexml.open("GET", "coordinatestyle.svg", true);
+	coordinatexml.open("GET", "coordinate/style.svg", true);
 	coordinatexml.send();
 }
 function coordinatestyle(x, y) {

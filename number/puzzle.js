@@ -34,7 +34,7 @@ function numberxmlinitial(callback){
 			callback();
 		}
 	};
-	numberxml.open("GET", "numberstyle.svg", true);
+	numberxml.open("GET", "number/style.svg", true);
 	numberxml.send();
 }
 
