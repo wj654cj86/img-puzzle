@@ -5,7 +5,7 @@ body {
 	overflow-x: hidden;
 }
 
-#foundation, #settingfoundation {
+#foundation, #settingfoundation, #cannotuseie {
 	position: absolute;
 	width: 600px;
 	height: 800px;
@@ -289,4 +289,10 @@ body {
 #cancel {
 	left: 400px;
 	top: 700px;
+}
+
+#cannotuseie {
+	text-align: center;
+	font-size: 80px;
+	z-index: 2;
 }

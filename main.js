@@ -38,7 +38,7 @@ var direction = {
 function setfoundation() {
 	let fm = Math.min(window.innerWidth / 600, window.innerHeight / 800, 1.5);
 	fm = Math.max(fm, 0.25);
-	settingfoundation.style.transform = foundation.style.transform = 'scale(' + fm + ',' + fm + ')';
+	cannotuseie.style.transform = settingfoundation.style.transform = foundation.style.transform = 'scale(' + fm + ',' + fm + ')';
 }
 
 function setnowlenHTML(sl) {
@@ -156,6 +156,9 @@ function setpuzzleimgwh(width, height) {
 }
 window.onload = function () {
 	document.body.onresize = setfoundation;
+	if (navigator.userAgent.search("MSIE") == -1) {
+		cannotuseie.style.zIndex = 0;
+	}
 	preview.ondragstart = function () {
 		return false;
 	};
