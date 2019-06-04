@@ -1,5 +1,6 @@
 var geturl = url2array();
 var lang;
+
 var savedata = {
 	lang: 'zh-Hant',
 	mod: 'number',
@@ -11,13 +12,6 @@ var setdata = {
 	len: 4,
 	delay: 0
 };
-
-var nowstatus = 'complete';
-var sw;
-var puzzle;
-var nownull;
-var puzzletag;
-var puzzleseat;
 var imgdata = {
 	src: '',
 	width: 0,
@@ -26,6 +20,14 @@ var imgdata = {
 	x: 0,
 	y: 0
 };
+
+var nowstatus = 'complete';
+var sw;
+var puzzle;
+var nownull;
+var puzzletag;
+var puzzleseat;
+
 var direction = {
 	37: { x: 1, y: 0 },
 	38: { x: 0, y: 1 },
