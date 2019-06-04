@@ -90,7 +90,7 @@ function generator(genfunc) {
 	next();
 }
 
-function getimgwh(imgsrc, callback) {
+function getimgsize(imgsrc, callback) {
 	let a = new Image();
 	a.onload = function () {
 		callback(a.naturalWidth, a.naturalHeight);

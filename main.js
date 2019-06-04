@@ -1,24 +1,31 @@
 var geturl = url2array();
 var lang;
-var nowlang;
-var setlang;
-var mod;
+var savedata = {
+	lang: 'zh-Hant',
+	mod: 'number',
+	len: 4,
+	delay: 0
+};
+var setdata = {
+	lang: 'zh-Hant',
+	len: 4,
+	delay: 0
+};
+
 var nowstatus = 'complete';
-var len;
-var setlen;
-var delay;
-var setdelay;
 var sw;
 var puzzle;
 var nownull;
 var puzzletag;
 var puzzleseat;
-var imgsrc;
-var imgw;
-var imgh;
-var imgm;
-var imgx;
-var imgy;
+var imgdata = {
+	src: '',
+	width: 0,
+	height: 0,
+	maximum: 0,
+	x: 0,
+	y: 0
+};
 var direction = {
 	37: { x: 1, y: 0 },
 	38: { x: 0, y: 1 },
@@ -63,8 +70,8 @@ function languageset(lk, callback) {
 		determine.value = lang.determine;
 		cancel.value = lang.cancel;
 
-		setnowlenHTML(setlen);
-		nowdelay.innerHTML = setdelay + lang.ms;
+		setnowlenHTML(setdata.len);
+		nowdelay.innerHTML = setdata.delay + lang.ms;
 
 		let nowmodoption = nowmod.getElementsByTagName("option");
 		nowmodoption[0].innerHTML = lang.number;
@@ -96,11 +103,11 @@ function languageset(lk, callback) {
 	});
 }
 function languagechange() {
-	setlang = nowlanguage.value;
-	if (setlang == 'zh-Hant') {
+	setdata.lang = nowlanguage.value;
+	if (setdata.lang == 'zh-Hant') {
 		delete geturl.lang;
 	} else {
-		geturl.lang = setlang;
+		geturl.lang = setdata.lang;
 	}
 	array2url(geturl);
 	languageset(nowlanguage.value, function () { });
@@ -124,7 +131,7 @@ function languageinitial() {
 		}
 
 		languageset(geturl.lang, function () {
-			nowlang = nowlanguage.value;
+			savedata.lang = nowlanguage.value;
 			nowlanguage.onchange = languagechange;
 		});
 	});
@@ -132,14 +139,14 @@ function languageinitial() {
 
 
 function setpuzzleimgwh(width, height) {
-	imgw = width;
-	imgh = height;
-	imgm = Math.max(imgw, imgh);
-	imgw = Math.floor(imgw * 600 / imgm);
-	imgh = Math.floor(imgh * 600 / imgm);
-	imgm = 600;
-	imgx = Math.floor((imgm - imgw) / 2);
-	imgy = Math.floor((imgm - imgh) / 2);
+	imgdata.width = width;
+	imgdata.height = height;
+	imgdata.maximum = Math.max(imgdata.width, imgdata.height);
+	imgdata.width = Math.floor(imgdata.width * 600 / imgdata.maximum);
+	imgdata.height = Math.floor(imgdata.height * 600 / imgdata.maximum);
+	imgdata.maximum = 600;
+	imgdata.x = Math.floor((imgdata.maximum - imgdata.width) / 2);
+	imgdata.y = Math.floor((imgdata.maximum - imgdata.height) / 2);
 }
 window.onload = function () {
 	document.body.onresize = setfoundation;
@@ -175,71 +182,71 @@ window.onload = function () {
 		}
 	};
 	setting.onclick = function () {
-		setlen = len;
-		setnowlenHTML(setlen);
-		setdelay = delay;
-		nowdelay.innerHTML = setdelay + lang.ms;
-		nowmod.value = mod;
+		setdata.len = savedata.len;
+		setnowlenHTML(setdata.len);
+		setdata.delay = savedata.delay;
+		nowdelay.innerHTML = setdata.delay + lang.ms;
+		nowmod.value = savedata.mod;
 		nowmodonchange();
 		settingfoundation.style.zIndex = 10;
 	};
 	random.onclick = randompuzzle;
 	reset.onclick = resetpuzzle;
 	subsize.onclick = function () {
-		if (setlen > 3) {
-			setlen--;
-			setnowlenHTML(setlen);
+		if (setdata.len > 3) {
+			setdata.len--;
+			setnowlenHTML(setdata.len);
 		}
 	};
 	addsize.onclick = function () {
-		if (setlen < 10) {
-			setlen++;
-			setnowlenHTML(setlen);
+		if (setdata.len < 10) {
+			setdata.len++;
+			setnowlenHTML(setdata.len);
 		}
 	};
 	subdelay.onclick = function () {
-		if (setdelay > 0) {
-			setdelay -= 100;
-			nowdelay.innerHTML = setdelay + lang.ms;
+		if (setdata.delay > 0) {
+			setdata.delay -= 100;
+			nowdelay.innerHTML = setdata.delay + lang.ms;
 		}
 	};
 	adddelay.onclick = function () {
-		if (setdelay < 1000) {
-			setdelay *= 1;
-			setdelay += 100;
-			nowdelay.innerHTML = setdelay + lang.ms;
+		if (setdata.delay < 1000) {
+			setdata.delay *= 1;
+			setdata.delay += 100;
+			nowdelay.innerHTML = setdata.delay + lang.ms;
 		}
 	};
 
 	nowmod.onchange = nowmodonchange;
 	determine.onclick = function () {
-		nowlang = setlang;
+		savedata.lang = setdata.lang;
 		generator(function* () {
 			let data = {}, url;
 			switch (nowmod.value) {
 				case 'number':
-					mod = nowmod.value;
-					len = setlen;
-					delay = setdelay;
-					setCookie('mod', mod);
-					setCookie('len', len);
-					setCookie('delay', delay);
+					savedata.mod = nowmod.value;
+					savedata.len = setdata.len;
+					savedata.delay = setdata.delay;
+					setCookie('mod', savedata.mod);
+					setCookie('len', savedata.len);
+					setCookie('delay', savedata.delay);
 					setpuzzle();
 					break;
 				case 'coordinate':
-					mod = nowmod.value;
-					len = setlen;
-					delay = setdelay;
-					setCookie('mod', mod);
-					setCookie('len', len);
-					setCookie('delay', delay);
+					savedata.mod = nowmod.value;
+					savedata.len = setdata.len;
+					savedata.delay = setdata.delay;
+					setCookie('mod', savedata.mod);
+					setCookie('len', savedata.len);
+					setCookie('delay', savedata.delay);
 					setpuzzle();
 					break;
 				case 'hostimage':
 					try {
 						url = URL.createObjectURL(hostfile.files[0]);
 						yield {
-							nextfunc: getimgwh,
+							nextfunc: getimgsize,
 							argsfront: [url],
 							cbfunc: function (width, height) {
 								data.width = width;
@@ -254,19 +261,19 @@ window.onload = function () {
 						break;
 					}
 
-					mod = nowmod.value;
-					len = setlen;
-					delay = setdelay;
-					imgsrc = url;
-					setCookie('len', len);
-					setCookie('delay', delay);
+					savedata.mod = nowmod.value;
+					savedata.len = setdata.len;
+					savedata.delay = setdata.delay;
+					imgdata.src = url;
+					setCookie('len', savedata.len);
+					setCookie('delay', savedata.delay);
 
 					setpuzzleimgwh(data.width, data.height);
 					setpuzzle();
 					break;
 				case 'netimage':
 					yield {
-						nextfunc: getimgwh,
+						nextfunc: getimgsize,
 						argsfront: [netfile.value],
 						cbfunc: function (width, height) {
 							data.width = width;
@@ -278,14 +285,14 @@ window.onload = function () {
 						break;
 					}
 
-					mod = nowmod.value;
-					len = setlen;
-					delay = setdelay;
-					imgsrc = netfile.value;
-					setCookie('mod', mod);
-					setCookie('len', len);
-					setCookie('delay', delay);
-					setCookie('imgsrc', imgsrc);
+					savedata.mod = nowmod.value;
+					savedata.len = setdata.len;
+					savedata.delay = setdata.delay;
+					imgdata.src = netfile.value;
+					setCookie('mod', savedata.mod);
+					setCookie('len', savedata.len);
+					setCookie('delay', savedata.delay);
+					setCookie('imgsrc', imgdata.src);
 
 					setpuzzleimgwh(data.width, data.height);
 					setpuzzle();
@@ -297,7 +304,7 @@ window.onload = function () {
 		});
 	};
 	cancel.onclick = function () {
-		nowlanguage.value = nowlang;
+		nowlanguage.value = savedata.lang;
 		languagechange();
 		settingfoundation.style.zIndex = 0;
 	};
@@ -319,23 +326,23 @@ window.onload = function () {
 
 	let l = getCookie('len');
 	if (l != '' && !isNaN(l) && l >= 3 && l <= 10) {
-		len = l;
+		savedata.len = l;
 	} else {
-		len = 4;
-		setCookie('len', len);
+		savedata.len = 4;
+		setCookie('len', savedata.len);
 	}
 	let d = getCookie('delay');
 	if (d != '' && !isNaN(d) && d >= 0 && d <= 1000) {
-		delay = d;
+		savedata.delay = d;
 	} else {
-		delay = 0;
-		setCookie('delay', delay);
+		savedata.delay = 0;
+		setCookie('delay', savedata.delay);
 	}
 	let m = getCookie('mod');
 	let is = getCookie('imgsrc');
 	let numberload = function () {
-		mod = 'number';
-		setCookie('mod', mod);
+		savedata.mod = 'number';
+		setCookie('mod', savedata.mod);
 		setpuzzle();
 	};
 	generator(function* () {
@@ -353,7 +360,7 @@ window.onload = function () {
 				numberload();
 				break;
 			case 'coordinate':
-				mod = m;
+				savedata.mod = m;
 				setpuzzle();
 				break;
 			case 'hostimage':
@@ -362,7 +369,7 @@ window.onload = function () {
 			case 'netimage':
 				if (is != '') {
 					yield {
-						nextfunc: getimgwh,
+						nextfunc: getimgsize,
 						argsfront: [is],
 						cbfunc: function (width, height) {
 							data.width = width;
@@ -376,8 +383,8 @@ window.onload = function () {
 
 					setpuzzleimgwh(data.width, data.height);
 
-					mod = m;
-					netfile.value = imgsrc = is;
+					savedata.mod = m;
+					netfile.value = imgdata.src = is;
 					setpuzzle();
 				} else {
 					numberload();
@@ -397,41 +404,41 @@ window.onkeydown = function () {
 		resetpuzzle();
 	if (key in direction) {
 		let d = direction[key];
-		let x = nownull % len;
-		let y = Math.floor(nownull / len);
-		if (x + d.x < 0 || y + d.y < 0 || x + d.x >= len || y + d.y >= len)
+		let x = nownull % savedata.len;
+		let y = Math.floor(nownull / savedata.len);
+		if (x + d.x < 0 || y + d.y < 0 || x + d.x >= savedata.len || y + d.y >= savedata.len)
 			return;
-		puzzlemove(puzzle.indexOf(x + d.x + (y + d.y) * len));
+		puzzlemove(puzzle.indexOf(x + d.x + (y + d.y) * savedata.len));
 	}
 };
 
 function setpuzzle() {
-	if (mod == 'number' || mod == 'coordinate') {
+	if (savedata.mod == 'number' || savedata.mod == 'coordinate') {
 		allpreview.style.opacity = 0;
 		allpreview.style.zIndex = 1;
-	} else if (mod == 'hostimage' || mod == 'netimage') {
-		preview.style.left = imgx + 'px';
-		preview.style.top = imgy + 'px';
-		preview.style.width = imgw + 'px';
-		preview.style.height = imgh + 'px';
-		preview.src = imgsrc;
+	} else if (savedata.mod == 'hostimage' || savedata.mod == 'netimage') {
+		preview.style.left = imgdata.x + 'px';
+		preview.style.top = imgdata.y + 'px';
+		preview.style.width = imgdata.width + 'px';
+		preview.style.height = imgdata.height + 'px';
+		preview.src = imgdata.src;
 		allpreview.style.opacity = 1;
 		allpreview.style.zIndex = 3;
-		allpreview.style.transition = 'all ' + delay + 'ms';
+		allpreview.style.transition = 'all ' + savedata.delay + 'ms';
 	}
 	main.innerHTML = '';
 	complete.innerHTML = '';
 	nowstatus = 'complete';
 	sw.reset;
 	let ss = '';
-	puzzlelen = len * len - 1;
+	puzzlelen = savedata.len * savedata.len - 1;
 	let count;
-	let puzzlesize = 600 / len;
+	let puzzlesize = 600 / savedata.len;
 	puzzle = [];
 	for (let i = 0; i < puzzlelen; i++) {
-		if (mod == 'number' || mod == 'coordinate') {
+		if (savedata.mod == 'number' || savedata.mod == 'coordinate') {
 			ss += '<div><img /></div>';
-		} else if (mod == 'hostimage' || mod == 'netimage') {
+		} else if (savedata.mod == 'hostimage' || savedata.mod == 'netimage') {
 			ss += '<div><img /><span></span></div>';
 		}
 		puzzle[i] = i;
@@ -440,8 +447,8 @@ function setpuzzle() {
 	nownull = puzzlelen;
 	puzzleseat = [];
 	count = 0;
-	for (let i = 0; i < len; i++) {
-		for (let j = 0; j < len; j++) {
+	for (let i = 0; i < savedata.len; i++) {
+		for (let j = 0; j < savedata.len; j++) {
 			puzzleseat[count] = {
 				left: puzzlesize * j + 'px',
 				top: puzzlesize * i + 'px'
@@ -457,24 +464,24 @@ function setpuzzle() {
 		puzzletag[i].style.top = puzzleseat[i].top;
 		puzzletag[i].style.width = puzzlesize + 'px';
 		puzzletag[i].style.height = puzzlesize + 'px';
-		puzzletag[i].style.transition = 'all ' + delay + 'ms';
-		if (mod == 'number') {
+		puzzletag[i].style.transition = 'all ' + savedata.delay + 'ms';
+		if (savedata.mod == 'number') {
 			let ref = puzzletag[i].getElementsByTagName('img')[0];
 			ref.style.width = puzzlesize + 'px';
 			ref.style.height = puzzlesize + 'px';
 			ref.src = numberstyle(i + 1);
-		} else if (mod == 'coordinate') {
+		} else if (savedata.mod == 'coordinate') {
 			let ref = puzzletag[i].getElementsByTagName('img')[0];
 			ref.style.width = puzzlesize + 'px';
 			ref.style.height = puzzlesize + 'px';
-			ref.src = coordinatestyle(String.fromCharCode(Math.floor(i / len + 65)), String.fromCharCode(i % len + 65));
-		} else if (mod == 'hostimage' || mod == 'netimage') {
+			ref.src = coordinatestyle(String.fromCharCode(Math.floor(i / savedata.len + 65)), String.fromCharCode(i % savedata.len + 65));
+		} else if (savedata.mod == 'hostimage' || savedata.mod == 'netimage') {
 			let ref = puzzletag[i].getElementsByTagName('img')[0];
-			ref.style.left = imgx - puzzleseat[i].left.replace('px', '') + 'px';
-			ref.style.top = imgy - puzzleseat[i].top.replace('px', '') + 'px';
-			ref.style.width = imgw + 'px';
-			ref.style.height = imgh + 'px';
-			ref.src = imgsrc;
+			ref.style.left = imgdata.x - puzzleseat[i].left.replace('px', '') + 'px';
+			ref.style.top = imgdata.y - puzzleseat[i].top.replace('px', '') + 'px';
+			ref.style.width = imgdata.width + 'px';
+			ref.style.height = imgdata.height + 'px';
+			ref.src = imgdata.src;
 			ref = puzzletag[i].getElementsByTagName('span')[0];
 			ref.style.width = puzzlesize - 4 + 'px';
 			ref.style.height = puzzlesize - 4 + 'px';
@@ -494,10 +501,10 @@ function setpuzzle() {
 
 function _puzzlemove(i) {
 	let destination = puzzle[i];
-	let ix = destination % len;
-	let iy = Math.floor(destination / len);
-	let x = nownull % len;
-	let y = Math.floor(nownull / len);
+	let ix = destination % savedata.len;
+	let iy = Math.floor(destination / savedata.len);
+	let x = nownull % savedata.len;
+	let y = Math.floor(nownull / savedata.len);
 	let move = function (m) {
 		while (destination != nownull) {
 			let nnull = nownull + m;
@@ -509,7 +516,7 @@ function _puzzlemove(i) {
 		}
 	}
 	if (ix == x) {
-		move(Math.sign(iy - y) * len);
+		move(Math.sign(iy - y) * savedata.len);
 	} else if (iy == y) {
 		move(Math.sign(ix - x) * 1);
 	}
@@ -540,7 +547,7 @@ function randompuzzle() {
 		puzzle[0] = puzzle[1];
 		puzzle[1] = t;
 	}
-	if (mod == 'hostimage' || mod == 'netimage') {
+	if (savedata.mod == 'hostimage' || savedata.mod == 'netimage') {
 		allpreview.style.opacity = 0;
 		allpreview.style.zIndex = 1;
 	}
@@ -549,18 +556,18 @@ function randompuzzle() {
 		puzzletag[i].style.left = puzzleseat[puzzle[i]].left;
 	}
 	let r;
-	r = Math.floor(Math.random() * len);
+	r = Math.floor(Math.random() * savedata.len);
 	if (r) {
 		_puzzlemove(puzzle.indexOf(nownull - r));
 	}
-	r = Math.floor(Math.random() * len);
+	r = Math.floor(Math.random() * savedata.len);
 	if (r) {
-		_puzzlemove(puzzle.indexOf(nownull - r * len));
+		_puzzlemove(puzzle.indexOf(nownull - r * savedata.len));
 	}
 }
 
 function resetpuzzle() {
-	if (mod == 'hostimage' || mod == 'netimage') {
+	if (savedata.mod == 'hostimage' || savedata.mod == 'netimage') {
 		allpreview.style.opacity = 1;
 		allpreview.style.zIndex = 3;
 	}
@@ -593,7 +600,7 @@ function puzzlemove(i) {
 		complete.innerHTML = lang.complete;
 		nowstatus = 'complete';
 		sw.stop;
-		if (mod == 'hostimage' || mod == 'netimage') {
+		if (savedata.mod == 'hostimage' || savedata.mod == 'netimage') {
 			allpreview.style.opacity = 1;
 			allpreview.style.zIndex = 3;
 		}
