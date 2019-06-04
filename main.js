@@ -101,6 +101,8 @@ function languageset(lk, callback) {
 		hostfile.style.fontSize = lang.fontsize;
 		spannetimage.style.fontSize = lang.fontsize;
 		netfile.style.fontSize = lang.fontsize;
+		author.style.fontSize = lang.fontsize;
+		provider.style.fontSize = lang.fontsize;
 		determine.style.fontSize = lang.fontsize;
 		cancel.style.fontSize = lang.fontsize;
 		callback();
