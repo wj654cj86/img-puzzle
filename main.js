@@ -69,6 +69,8 @@ function languageset(lk, callback) {
 		spandelay.innerHTML = lang.delay;
 		spanmod.innerHTML = lang.mod;
 		spannetimage.innerHTML = lang.imgsrc;
+		author.innerHTML = lang.spanauthor + lang.author;
+		provider.innerHTML = lang.spanprovider + lang.provider;
 		determine.value = lang.determine;
 		cancel.value = lang.cancel;
 

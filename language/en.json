@@ -1,6 +1,10 @@
 {
 	"language": "English",
 	"imgpuzzle": "Image-Puzzle",
+	"spanauthor": "Author:",
+	"author": "Tu-Tu",
+	"spanprovider": "Language Provider:",
+	"provider": "Tu-Tu",
 	"fontsize": "30px",
 	"setting": "Setting",
 	"random": "Random",

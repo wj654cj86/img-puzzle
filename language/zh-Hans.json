@@ -1,6 +1,10 @@
 {
 	"language": "简体中文",
 	"imgpuzzle": "推盘游戏",
+	"spanauthor": "程式作者：",
+	"author": "屠屠",
+	"spanprovider": "翻译提供：",
+	"provider": "屠屠",
 	"fontsize": "40px",
 	"setting": "设置",
 	"random": "打乱",
