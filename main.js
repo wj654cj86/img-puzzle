@@ -159,6 +159,10 @@ window.onload = function () {
 	if (navigator.userAgent.search("MSIE") == -1) {
 		cannotuseie.style.zIndex = 0;
 	}
+	if (typeof geturl['fbclid'] != 'undefined') {
+		delete geturl['fbclid'];
+		array2url(geturl);
+	}
 	preview.ondragstart = function () {
 		return false;
 	};
