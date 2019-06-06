@@ -74,18 +74,13 @@ body {
 	height: 600px;
 }
 
-#allpreview {
+#preview {
 	position: absolute;
 	width: 600px;
 	height: 600px;
 	opacity: 1;
 	z-index: 1;
-	background-color: #fff;
 	user-select: none;
-}
-
-#preview {
-	position: absolute;
 }
 
 #main {
@@ -97,24 +92,14 @@ body {
 	user-select: none;
 }
 
-#main div {
+#main img, #main svg {
 	position: absolute;
-	background-color: #fff;
-	overflow: hidden;
 }
 
-#main div img {
-	position: absolute;
-	width: 600px;
-	height: 600px;
-}
-
-#main div span {
-	position: absolute;
-	left: -2px;
-	top: -2px;
-	border-width: 4px;
-	border-style: solid;
+#main svg rect {
+	stroke: #000;
+	stroke-width: 4;
+	fill-opacity: 0;
 }
 
 #settingfoundation {

@@ -148,11 +148,6 @@ function setpuzzleimgwh(width, height) {
 	imgdata.width = width;
 	imgdata.height = height;
 	imgdata.maximum = Math.max(imgdata.width, imgdata.height);
-	imgdata.width = Math.floor(imgdata.width * 600 / imgdata.maximum);
-	imgdata.height = Math.floor(imgdata.height * 600 / imgdata.maximum);
-	imgdata.maximum = 600;
-	imgdata.x = Math.floor((imgdata.maximum - imgdata.width) / 2);
-	imgdata.y = Math.floor((imgdata.maximum - imgdata.height) / 2);
 }
 window.onload = function () {
 	document.body.onresize = setfoundation;
@@ -163,9 +158,10 @@ window.onload = function () {
 		delete geturl['fbclid'];
 		array2url(geturl);
 	}
-	preview.ondragstart = function () {
-		return false;
-	};
+
+	preview.setAttribute('xmlns', "http://www.w3.org/2000/svg");
+	preview.setAttribute('xmlns:xlink', "http://www.w3.org/1999/xlink");
+
 	let nowmodonchange = function () {
 		let callback = function (a, b, c) {
 			spanhostimage.style.zIndex = a;
@@ -427,17 +423,25 @@ window.onkeydown = function () {
 
 function setpuzzle() {
 	if (savedata.mod == 'number' || savedata.mod == 'coordinate') {
-		allpreview.style.opacity = 0;
-		allpreview.style.zIndex = 1;
+		preview.style.opacity = 0;
+		preview.style.zIndex = 1;
 	} else if (savedata.mod == 'hostimage' || savedata.mod == 'netimage') {
-		preview.style.left = imgdata.x + 'px';
-		preview.style.top = imgdata.y + 'px';
-		preview.style.width = imgdata.width + 'px';
-		preview.style.height = imgdata.height + 'px';
-		preview.src = imgdata.src;
-		allpreview.style.opacity = 1;
-		allpreview.style.zIndex = 3;
-		allpreview.style.transition = 'all ' + savedata.delay + 'ms';
+		preview.setAttribute('viewBox', [-imgdata.maximum / 2, -imgdata.maximum / 2, imgdata.maximum, imgdata.maximum].join(' '));
+		preview.style.opacity = 1;
+		preview.style.zIndex = 3;
+		preview.style.transition = 'all ' + savedata.delay + 'ms';
+
+		let ref = preview.getElementsByTagName('image')[0];
+		ref.setAttribute('x', -imgdata.width / 2);
+		ref.setAttribute('y', -imgdata.height / 2);
+		ref.setAttribute('width', imgdata.width);
+		ref.setAttribute('height', imgdata.height);
+		ref.setAttribute('xlink:href', imgdata.src);
+		ref = preview.getElementsByTagName('rect')[0];
+		ref.setAttribute('x', -imgdata.maximum / 2);
+		ref.setAttribute('y', -imgdata.maximum / 2);
+		ref.setAttribute('width', imgdata.maximum);
+		ref.setAttribute('height', imgdata.maximum);
 	}
 	main.innerHTML = '';
 	complete.innerHTML = '';
@@ -450,9 +454,9 @@ function setpuzzle() {
 	puzzle = [];
 	for (let i = 0; i < puzzlelen; i++) {
 		if (savedata.mod == 'number' || savedata.mod == 'coordinate') {
-			ss += '<div><img /></div>';
+			ss += '<img />';
 		} else if (savedata.mod == 'hostimage' || savedata.mod == 'netimage') {
-			ss += '<div><img /><span></span></div>';
+			ss += '<svg><use xlink:href="#preview" /><rect /></svg>';
 		}
 		puzzle[i] = i;
 	}
@@ -469,7 +473,12 @@ function setpuzzle() {
 			count++;
 		}
 	}
-	let puzzletagarr = main.getElementsByTagName('div');
+	let puzzletagarr;
+	if (savedata.mod == 'number' || savedata.mod == 'coordinate') {
+		puzzletagarr = main.getElementsByTagName('img');
+	} else if (savedata.mod == 'hostimage' || savedata.mod == 'netimage') {
+		puzzletagarr = main.getElementsByTagName('svg');
+	}
 	puzzletag = [];
 	for (let i = 0; i < puzzlelen; i++) {
 		puzzletag[i] = puzzletagarr[i];
@@ -478,37 +487,32 @@ function setpuzzle() {
 		puzzletag[i].style.width = puzzlesize + 'px';
 		puzzletag[i].style.height = puzzlesize + 'px';
 		puzzletag[i].style.transition = 'all ' + savedata.delay + 'ms';
-		if (savedata.mod == 'number') {
-			let ref = puzzletag[i].getElementsByTagName('img')[0];
-			ref.style.width = puzzlesize + 'px';
-			ref.style.height = puzzlesize + 'px';
-			ref.src = numberstyle(i + 1);
-		} else if (savedata.mod == 'coordinate') {
-			let ref = puzzletag[i].getElementsByTagName('img')[0];
-			ref.style.width = puzzlesize + 'px';
-			ref.style.height = puzzlesize + 'px';
-			ref.src = coordinatestyle(String.fromCharCode(Math.floor(i / savedata.len + 65)), String.fromCharCode(i % savedata.len + 65));
-		} else if (savedata.mod == 'hostimage' || savedata.mod == 'netimage') {
-			let ref = puzzletag[i].getElementsByTagName('img')[0];
-			ref.style.left = imgdata.x - puzzleseat[i].left.replace('px', '') + 'px';
-			ref.style.top = imgdata.y - puzzleseat[i].top.replace('px', '') + 'px';
-			ref.style.width = imgdata.width + 'px';
-			ref.style.height = imgdata.height + 'px';
-			ref.src = imgdata.src;
-			ref = puzzletag[i].getElementsByTagName('span')[0];
-			ref.style.width = puzzlesize - 4 + 'px';
-			ref.style.height = puzzlesize - 4 + 'px';
-		}
 		puzzletag[i].onmousedown = function () {
 			puzzlemove(i);
 		};
 		puzzletag[i].ontouchstart = function () {
 			puzzlemove(i);
 		};
-		let ref = puzzletag[i].getElementsByTagName('img')[0];
-		ref.ondragstart = function () {
+		puzzletag[i].ondragstart = function () {
 			return false;
 		};
+		if (savedata.mod == 'number') {
+			puzzletag[i].src = numberstyle(i + 1);
+		} else if (savedata.mod == 'coordinate') {
+			puzzletag[i].src = coordinatestyle(String.fromCharCode(Math.floor(i / savedata.len + 65)), String.fromCharCode(i % savedata.len + 65));
+		} else if (savedata.mod == 'hostimage' || savedata.mod == 'netimage') {
+			puzzletag[i].setAttribute('xmlns', "http://www.w3.org/2000/svg");
+			puzzletag[i].setAttribute('xmlns:xlink', "http://www.w3.org/1999/xlink");
+			puzzletag[i].setAttribute('viewBox', [0, 0, puzzlesize, puzzlesize].join(' '));
+			let ref = puzzletag[i].getElementsByTagName('use')[0];
+			ref.setAttribute('x', - puzzleseat[i].left.replace('px', ''));
+			ref.setAttribute('y', - puzzleseat[i].top.replace('px', ''));
+			ref.setAttribute('width', 600);
+			ref.setAttribute('height', 600);
+			ref = puzzletag[i].getElementsByTagName('rect')[0];
+			ref.setAttribute('width', puzzlesize);
+			ref.setAttribute('height', puzzlesize);
+		}
 	}
 }
 
@@ -561,8 +565,7 @@ function randompuzzle() {
 		puzzle[1] = t;
 	}
 	if (savedata.mod == 'hostimage' || savedata.mod == 'netimage') {
-		allpreview.style.opacity = 0;
-		allpreview.style.zIndex = 1;
+		preview.style.zIndex = 1;
 	}
 	for (let i = 0; i < puzzlelen; i++) {
 		puzzletag[i].style.top = puzzleseat[puzzle[i]].top;
@@ -581,8 +584,8 @@ function randompuzzle() {
 
 function resetpuzzle() {
 	if (savedata.mod == 'hostimage' || savedata.mod == 'netimage') {
-		allpreview.style.opacity = 1;
-		allpreview.style.zIndex = 3;
+		preview.style.opacity = 1;
+		preview.style.zIndex = 3;
 	}
 	complete.innerHTML = '';
 	nowstatus = 'complete';
@@ -614,8 +617,8 @@ function puzzlemove(i) {
 		nowstatus = 'complete';
 		sw.stop;
 		if (savedata.mod == 'hostimage' || savedata.mod == 'netimage') {
-			allpreview.style.opacity = 1;
-			allpreview.style.zIndex = 3;
+			preview.style.opacity = 1;
+			preview.style.zIndex = 3;
 		}
 	}
 }
