@@ -25,9 +25,12 @@
 		<input type="button" id="full" />
 		<span id="stopwatch"></span><span id="complete"></span>
 		<div id="puzzlediv">
-			<svg id="preview">
+			<svg id="refpreview">
 				<rect fill="#fff" />
-				<image xlink:href="icon.png"/>
+				<image xlink:href="icon.png" />
+			</svg>
+			<svg id="preview">
+				<use xlink:href="#refpreview" />
 			</svg>
 			<div id="main"></div>
 		</div>
