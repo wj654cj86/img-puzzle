@@ -1,8 +1,6 @@
 body {
 	position: relative;
 	margin: 0;
-	overflow-y: hidden;
-	overflow-x: hidden;
 }
 
 #foundation, #settingfoundation, #cannotuseie {
@@ -11,6 +9,10 @@ body {
 	height: 800px;
 	background-color: #77f;
 	transform-origin: left top;
+	user-select: none;
+	-moz-user-select: none;
+	-webkit-user-select: none;
+	-ms-user-select: none;
 }
 
 #foundation {
@@ -51,7 +53,6 @@ body {
 	height: 100px;
 	line-height: 50px;
 	font-size: 40px;
-	user-select: none;
 }
 
 #stopwatch {
@@ -80,7 +81,6 @@ body {
 	height: 600px;
 	opacity: 1;
 	z-index: 1;
-	user-select: none;
 }
 
 #main {
@@ -89,7 +89,6 @@ body {
 	height: 600px;
 	z-index: 2;
 	background-color: #aaa;
-	user-select: none;
 }
 
 #main img, #main svg {
@@ -129,7 +128,6 @@ body {
 	height: 100px;
 	line-height: 100px;
 	font-size: 40px;
-	user-select: none;
 }
 
 #nowlen, #nowdelay {
@@ -139,7 +137,6 @@ body {
 	text-align: center;
 	line-height: 100px;
 	font-size: 40px;
-	user-select: none;
 }
 
 #spanlanguage {
@@ -253,7 +250,6 @@ body {
 	height: 100px;
 	line-height: 100px;
 	font-size: 40px;
-	user-select: none;
 }
 
 #author {

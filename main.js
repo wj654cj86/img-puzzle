@@ -167,6 +167,9 @@ window.onload = function () {
 	let ref = preview.getElementsByTagName('use')[0];
 	ref.setAttribute('width', 600);
 	ref.setAttribute('height', 600);
+	main.ondragstart = function () {
+		return false;
+	};
 
 	let nowmodonchange = function () {
 		let callback = function (a, b, c) {
@@ -499,9 +502,6 @@ function setpuzzle() {
 		puzzletag[i].ontouchstart = function () {
 			puzzlemove(i);
 		};
-		puzzletag[i].ondragstart = function () {
-			return false;
-		};
 		if (savedata.mod == 'number') {
 			puzzletag[i].src = numberstyle(i + 1);
 		} else if (savedata.mod == 'coordinate') {
@@ -553,6 +553,10 @@ function randompuzzle() {
 		preview.style.opacity = 0;
 		preview.style.zIndex = 1;
 	}
+	for (let i = 0; i < puzzlelen; i++) {
+		puzzle[i] = i;
+	}
+	nownull = puzzlelen;
 	Math.floor(Math.random() * 4);
 	for (let i = 0; i < puzzlelen; i++) {
 		let j = Math.floor(Math.random() * puzzlelen);
