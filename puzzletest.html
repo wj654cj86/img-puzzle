@@ -8,15 +8,18 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 	<title>推盤遊戲</title>
 	<link href="icon.png" rel="icon">
+	<script type="text/javascript" src="mylibrary.js"></script>
 	<script type="text/javascript" src="number/puzzle.js"></script>
 	<script type="text/javascript" src="coordinate/puzzle.js"></script>
 	<script>
 		var n = 0, x = 0, y = 0;
 		function numbershow() {
-			number.src = numberstyle(n);
+			number.innerHTML = '';
+			number.appendChild(numberstyle(n));
 		}
 		function coordinateshow() {
-			coordinateimg.src = coordinatestyle(String.fromCharCode(x + 65), String.fromCharCode(y + 65));
+			coordinateimg.innerHTML = '';
+			coordinateimg.appendChild(coordinatestyle(String.fromCharCode(x + 65), String.fromCharCode(y + 65)));
 		}
 		window.onload = function () {
 			numberxmlinitial(numbershow);
@@ -26,12 +29,12 @@
 </head>
 
 <body>
-	<img id="number" />
+	<div id="number"></div>
 	<br>
 	<input type="button" value="-" onclick="if(n>0){n--;numbershow();}" />
 	<input type="button" value="+" onclick="if(n<199){n++;numbershow();}" />
 	<br>
-	<img id="coordinateimg" />
+	<div id="coordinateimg"></div>
 	<br>
 	<input type="button" value="-" onclick="if(x>0){x--;coordinateshow();}" />
 	<input type="button" value="+" onclick="if(x<25){x++;coordinateshow();}" />
