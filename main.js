@@ -372,6 +372,10 @@ window.onload = function () {
 			nextfunc: coordinatexmlinitial,
 			cbfunc: function () { }
 		};
+		yield {
+			nextfunc: imagexmlinitial,
+			cbfunc: function () { }
+		};
 		let data = {};
 		switch (m) {
 			case 'number':
@@ -456,20 +460,13 @@ function setpuzzle() {
 	complete.innerHTML = '';
 	nowstatus = 'complete';
 	sw.reset;
-	let ss = '';
 	puzzlelen = savedata.len * savedata.len - 1;
 	let count;
 	let puzzlesize = 600 / savedata.len;
 	puzzle = [];
 	for (let i = 0; i < puzzlelen; i++) {
-		if (savedata.mod == 'number' || savedata.mod == 'coordinate') {
-			ss += '<img />';
-		} else if (savedata.mod == 'hostimage' || savedata.mod == 'netimage') {
-			ss += '<svg><use xlink:href="#refpreview" /><rect /></svg>';
-		}
 		puzzle[i] = i;
 	}
-	main.innerHTML += ss;
 	nownull = puzzlelen;
 	puzzleseat = [];
 	count = 0;
@@ -482,12 +479,18 @@ function setpuzzle() {
 			count++;
 		}
 	}
-	let puzzletagarr;
-	if (savedata.mod == 'number' || savedata.mod == 'coordinate') {
-		puzzletagarr = main.getElementsByTagName('img');
-	} else if (savedata.mod == 'hostimage' || savedata.mod == 'netimage') {
-		puzzletagarr = main.getElementsByTagName('svg');
+
+	for (let i = 0; i < puzzlelen; i++) {
+		if (savedata.mod == 'number') {
+			main.appendChild(numberstyle(i + 1));
+		} else if (savedata.mod == 'coordinate') {
+			main.appendChild(coordinatestyle(String.fromCharCode(Math.floor(i / savedata.len + 65)), String.fromCharCode(i % savedata.len + 65)));
+		} else if (savedata.mod == 'hostimage' || savedata.mod == 'netimage') {
+			main.appendChild(imagestyle(savedata.len, puzzlesize, i % savedata.len, Math.floor(i / savedata.len)));
+		}
 	}
+
+	let puzzletagarr = main.getElementsByTagName('svg');
 	puzzletag = [];
 	for (let i = 0; i < puzzlelen; i++) {
 		puzzletag[i] = puzzletagarr[i];
@@ -502,23 +505,6 @@ function setpuzzle() {
 		puzzletag[i].ontouchstart = function () {
 			puzzlemove(i);
 		};
-		if (savedata.mod == 'number') {
-			puzzletag[i].src = numberstyle(i + 1);
-		} else if (savedata.mod == 'coordinate') {
-			puzzletag[i].src = coordinatestyle(String.fromCharCode(Math.floor(i / savedata.len + 65)), String.fromCharCode(i % savedata.len + 65));
-		} else if (savedata.mod == 'hostimage' || savedata.mod == 'netimage') {
-			puzzletag[i].setAttribute('xmlns', "http://www.w3.org/2000/svg");
-			puzzletag[i].setAttribute('xmlns:xlink', "http://www.w3.org/1999/xlink");
-			puzzletag[i].setAttribute('viewBox', [0, 0, puzzlesize, puzzlesize].join(' '));
-			let ref = puzzletag[i].getElementsByTagName('use')[0];
-			ref.setAttribute('x', - puzzleseat[i].left.replace('px', ''));
-			ref.setAttribute('y', - puzzleseat[i].top.replace('px', ''));
-			ref.setAttribute('width', 600);
-			ref.setAttribute('height', 600);
-			ref = puzzletag[i].getElementsByTagName('rect')[0];
-			ref.setAttribute('width', puzzlesize);
-			ref.setAttribute('height', puzzlesize);
-		}
 	}
 }
 

@@ -27,15 +27,11 @@ var coordinate = [
 var numberxml;
 var numberreg = [];
 
-function numberxmlinitial(callback){
-	numberxml = new XMLHttpRequest();
-	numberxml.onreadystatechange = function () {
-		if (this.readyState == 4 && this.status == 200) {
-			callback();
-		}
-	};
-	numberxml.open("GET", "number/style.svg", true);
-	numberxml.send();
+function numberxmlinitial(callback) {
+	openfileforxml("number/style.svg", function (oReq) {
+		numberxml = oReq;
+		callback();
+	});
 }
 
 function numberstyle(n) {
@@ -47,24 +43,21 @@ function numberstyle(n) {
 	}
 	let s = n + '';
 	let len = s.length;
-	let parser = new DOMParser();
-	let svg = parser.parseFromString(numberxml.responseText, "text/xml");
+	let svg = xhr2xml(numberxml);
 	for (let i = len - 1; i >= 0; i--) {
-		let sb = svg.createElement('g');
+		let sb = svg.createElementNS('http://www.w3.org/2000/svg', 'g');
 		sb.setAttribute('transform', coordinate[len - 1][3 - len + i]);
 		for (let j = 0; j < 7; j++) {
 			if (sevenSegment[s[i]][j] == 0)
 				continue;
-			let ss = svg.createElement('use');
-			ss.setAttribute('xlink:href', '#s');
+			let ss = svg.createElementNS('http://www.w3.org/2000/svg', 'path');
+			ss.setAttribute('d', 'M10,0L7,3L-7,3L-10,0L-7-3L7-3z');
+			ss.setAttribute('fill', '#a00');
 			ss.setAttribute('transform', segment[j]);
 			sb.appendChild(ss);
 		}
 		svg.getElementsByTagName('svg')[0].appendChild(sb);
 	}
-	let blob = new Blob([(new XMLSerializer()).serializeToString(svg).replace(/xmlns\=\"\"/g, '')], {
-		type: 'image/svg+xml'
-	});
-	numberreg[n] = URL.createObjectURL(blob);
+	numberreg[n] = svg.getElementsByTagName('svg')[0];
 	return numberreg[n];
 }

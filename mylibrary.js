@@ -56,9 +56,9 @@ function array2url(arr) {
 
 function openfile(url, callback) {
 	if (typeof callback == "undefined") {
-		callback = function (str) {};
+		callback = function (str) { };
 	}
-	var oReq = new XMLHttpRequest();
+	let oReq = new XMLHttpRequest();
 	oReq.addEventListener("load", function () {
 		if (oReq.status != 404) {
 			callback(this.responseText);
@@ -71,6 +71,20 @@ function openfile(url, callback) {
 	});
 	oReq.open("GET", url);
 	oReq.send();
+}
+function openfileforxml(url, callback) {
+	let oReq = new XMLHttpRequest();
+	oReq.onreadystatechange = function () {
+		if (this.readyState == 4 && this.status == 200) {
+			callback(oReq);
+		}
+	};
+	oReq.open("GET", url, true);
+	oReq.send();
+}
+function xhr2xml(oReq) {
+	let parser = new DOMParser();
+	return parser.parseFromString(oReq.responseText, "text/xml");
 }
 
 function generator(genfunc) {

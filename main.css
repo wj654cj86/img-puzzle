@@ -91,14 +91,8 @@ body {
 	background-color: #aaa;
 }
 
-#main img, #main svg {
+#main svg {
 	position: absolute;
-}
-
-#main svg rect {
-	stroke: #000;
-	stroke-width: 4;
-	fill-opacity: 0;
 }
 
 #settingfoundation {

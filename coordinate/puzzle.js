@@ -37,14 +37,10 @@ var coordinatexml;
 var coordinatereg = {};
 
 function coordinatexmlinitial(callback) {
-	coordinatexml = new XMLHttpRequest();
-	coordinatexml.onreadystatechange = function () {
-		if (this.readyState == 4 && this.status == 200) {
-			callback();
-		}
-	};
-	coordinatexml.open("GET", "coordinate/style.svg", true);
-	coordinatexml.send();
+	openfileforxml("coordinate/style.svg", function (oReq) {
+		coordinatexml = oReq;
+		callback();
+	});
 }
 function coordinatestyle(x, y) {
 	if (x in coordinatereg) {
@@ -54,8 +50,8 @@ function coordinatestyle(x, y) {
 	} else {
 		coordinatereg[x] = {};
 	}
-	let parser = new DOMParser();
-	let svg = parser.parseFromString(coordinatexml.responseText, "text/xml");
+
+	let svg = xhr2xml(coordinatexml);
 
 	if (x in latinExceptionScript) {
 		svg.getElementsByTagName('path')[0].setAttribute('d', 'M-4050 1500' + latinExceptionScript[x]);;
@@ -67,9 +63,7 @@ function coordinatestyle(x, y) {
 	} else {
 		svg.getElementsByTagName('path')[3].setAttribute('d', 'M-40,-40' + latinScript[y]);;
 	}
-	let blob = new Blob([(new XMLSerializer()).serializeToString(svg).replace(/xmlns\=\"\"/g, '')], {
-		type: 'image/svg+xml'
-	});
-	coordinatereg[x][y] = URL.createObjectURL(blob);
+
+	coordinatereg[x][y] = svg.getElementsByTagName('svg')[0];
 	return coordinatereg[x][y];
 }
