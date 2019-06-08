@@ -102,7 +102,7 @@ body {
 #settingfoundation .addsub {
 	position: absolute;
 	width: 50px;
-	height: 100px;
+	height: 80px;
 	background-color: #aaa;
 	font-size: 40px;
 }
@@ -110,16 +110,16 @@ body {
 #settingfoundation .determinecancel {
 	position: absolute;
 	width: 200px;
-	height: 100px;
+	height: 80px;
 	background-color: #aaa;
 	font-size: 40px;
 }
 
-#spanlanguage, #spanlen, #spandelay, #spanmod, #spanhostimage, #spannetimage {
+#spanlanguage, #spanlen, #spandelay, #spansoundeffect, #spanmod, #spanhostimage, #spannetimage {
 	position: absolute;
 	text-align: right;
 	width: 250px;
-	height: 100px;
+	height: 80px;
 	line-height: 100px;
 	font-size: 40px;
 }
@@ -127,7 +127,7 @@ body {
 #nowlen, #nowdelay {
 	position: absolute;
 	width: 250px;
-	height: 100px;
+	height: 80px;
 	text-align: center;
 	line-height: 100px;
 	font-size: 40px;
@@ -135,56 +135,68 @@ body {
 
 #spanlanguage {
 	left: 0px;
-	top: 20px;
+	top: 0px;
 }
 
 #nowlanguage {
 	position: absolute;
 	left: 250px;
-	top: 20px;
+	top: 0px;
 	width: 350px;
-	height: 100px;
+	height: 80px;
 	font-size: 40px;
 }
 
 #spanlen {
 	left: 0px;
-	top: 120px;
+	top: 80px;
 }
 
 #subsize {
 	left: 250px;
-	top: 120px;
+	top: 80px;
 }
 
 #nowlen {
 	left: 300px;
-	top: 120px;
+	top: 80px;
 }
 
 #addsize {
 	left: 550px;
-	top: 120px;
+	top: 80px;
 }
 
 #spandelay {
 	left: 0px;
-	top: 220px;
+	top: 160px;
 }
 
 #subdelay {
 	left: 250px;
-	top: 220px;
+	top: 160px;
 }
 
 #nowdelay {
 	left: 300px;
-	top: 220px;
+	top: 160px;
 }
 
 #adddelay {
 	left: 550px;
-	top: 220px;
+	top: 160px;
+}
+
+#spansoundeffect {
+	left: 0px;
+	top: 240px;
+}
+
+#nowsoundeffect {
+	position: absolute;
+	left: 280px;
+	top: 270px;
+	transform: scale(6, 6);
 }
 
 #spanmod {
@@ -197,20 +209,20 @@ body {
 	left: 250px;
 	top: 320px;
 	width: 350px;
-	height: 100px;
+	height: 80px;
 	font-size: 40px;
 }
 
 #spanhostimage {
 	left: 0px;
-	top: 420px;
+	top: 400px;
 	width: 600px;
 	z-index: 1;
 }
 
 #spannetimage {
 	left: 0px;
-	top: 420px;
+	top: 400px;
 	opacity: 0;
 	z-index: 0;
 }
@@ -218,9 +230,9 @@ body {
 #hostfile {
 	position: absolute;
 	left: 50px;
-	top: 420px;
+	top: 400px;
 	width: 500px;
-	height: 100px;
+	height: 80px;
 	font-size: 40px;
 	opacity: 0;
 	z-index: 0;
@@ -229,9 +241,9 @@ body {
 #netfile {
 	position: absolute;
 	left: 250px;
-	top: 420px;
+	top: 400px;
 	width: 340px;
-	height: 100px;
+	height: 80px;
 	font-size: 40px;
 	opacity: 0;
 	z-index: 0;
@@ -241,29 +253,29 @@ body {
 	position: absolute;
 	text-align: right;
 	width: 550px;
-	height: 100px;
+	height: 80px;
 	line-height: 100px;
 	font-size: 40px;
 }
 
 #author {
 	left: 0px;
-	top: 520px;
+	top: 580px;
 }
 
 #provider {
 	left: 0px;
-	top: 580px;
+	top: 640px;
 }
 
 #determine {
 	left: 200px;
-	top: 700px;
+	top: 720px;
 }
 
 #cancel {
 	left: 400px;
-	top: 700px;
+	top: 720px;
 }
 
 #cannotuseie {

@@ -9,12 +9,13 @@ var savedata = {
 	language: 'zh-Hant',
 	mod: 'number',
 	len: 4,
-	delay: 0
+	delay: 0,
+	soundeffect: false
 };
 var setdata = {
 	language: 'zh-Hant',
 	len: 4,
-	delay: 0
+	delay: 0,
 };
 var imgdata = {
 	src: '',
@@ -42,6 +43,8 @@ var direction = {
 };
 
 function playsoundeffect(ismove) {
+	if (savedata.soundeffect == false)
+		return;
 	try {
 		let se;
 		if (ismove) {
@@ -93,6 +96,7 @@ language.setting = function (lk, callback) {
 		spanlanguage.innerHTML = language.reg.languagesetting;
 		spanlen.innerHTML = language.reg.len;
 		spandelay.innerHTML = language.reg.delay;
+		spansoundeffect.innerHTML = language.reg.soundeffect;
 		spanmod.innerHTML = language.reg.mod;
 		spannetimage.innerHTML = language.reg.imgsrc;
 		author.innerHTML = language.reg.spanauthor + language.reg.author;
@@ -121,6 +125,7 @@ language.setting = function (lk, callback) {
 		nowlen.style.fontSize = language.reg.fontsize;
 		spandelay.style.fontSize = language.reg.fontsize;
 		nowdelay.style.fontSize = language.reg.fontsize;
+		spansoundeffect.style.fontSize = language.reg.fontsize;
 		spanmod.style.fontSize = language.reg.fontsize;
 		nowmod.style.fontSize = language.reg.fontsize;
 		spanhostimage.style.fontSize = language.reg.fontsize;
@@ -449,18 +454,22 @@ window.onload = function () {
 					savedata.mod = nowmod.value;
 					savedata.len = setdata.len;
 					savedata.delay = setdata.delay;
+					savedata.soundeffect = nowsoundeffect.checked;
 					setCookie('mod', savedata.mod);
 					setCookie('len', savedata.len);
 					setCookie('delay', savedata.delay);
+					setCookie('soundeffect', savedata.soundeffect);
 					puzzle.setting();
 					break;
 				case 'coordinate':
 					savedata.mod = nowmod.value;
 					savedata.len = setdata.len;
 					savedata.delay = setdata.delay;
+					savedata.soundeffect = nowsoundeffect.checked;
 					setCookie('mod', savedata.mod);
 					setCookie('len', savedata.len);
 					setCookie('delay', savedata.delay);
+					setCookie('soundeffect', savedata.soundeffect);
 					puzzle.setting();
 					break;
 				case 'hostimage':
@@ -485,9 +494,11 @@ window.onload = function () {
 					savedata.mod = nowmod.value;
 					savedata.len = setdata.len;
 					savedata.delay = setdata.delay;
+					savedata.soundeffect = nowsoundeffect.checked;
 					imgdata.src = url;
 					setCookie('len', savedata.len);
 					setCookie('delay', savedata.delay);
+					setCookie('soundeffect', savedata.soundeffect);
 
 					setimagesize(data.width, data.height);
 					puzzle.setting();
@@ -509,10 +520,12 @@ window.onload = function () {
 					savedata.mod = nowmod.value;
 					savedata.len = setdata.len;
 					savedata.delay = setdata.delay;
+					savedata.soundeffect = nowsoundeffect.checked;
 					imgdata.src = netfile.value;
 					setCookie('mod', savedata.mod);
 					setCookie('len', savedata.len);
 					setCookie('delay', savedata.delay);
+					setCookie('soundeffect', savedata.soundeffect);
 					setCookie('imgsrc', imgdata.src);
 
 					setimagesize(data.width, data.height);
@@ -557,6 +570,14 @@ window.onload = function () {
 	} else {
 		savedata.delay = 0;
 		setCookie('delay', savedata.delay);
+	}
+	let se = getCookie('soundeffect');
+	if (se == 'true') {
+		savedata.soundeffect = true;
+		nowsoundeffect.checked = true;
+	} else {
+		savedata.soundeffect = false;
+		nowsoundeffect.checked = false;
 	}
 	let m = getCookie('mod');
 	let is = getCookie('imgsrc');
