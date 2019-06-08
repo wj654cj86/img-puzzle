@@ -1,6 +1,8 @@
 var geturl = url2array();
 var lang;
 
+var sw;
+
 var savedata = {
 	lang: 'zh-Hant',
 	mod: 'number',
@@ -21,12 +23,14 @@ var imgdata = {
 	y: 0
 };
 
-var nowstatus = 'complete';
-var sw;
-var puzzle;
-var nownull;
-var puzzletag;
-var puzzleseat;
+var puzzle = {
+	seat: [],
+	none: 0,
+	len: 0,
+	status: 'complete',
+	ref: [],
+	addr: []
+};
 
 var direction = {
 	37: { x: 1, y: 0 },
@@ -44,6 +48,12 @@ function setfoundation() {
 function setnowlenHTML(sl) {
 	nowlen.innerHTML = sl * sl - 1 + lang.unit
 		+ lang.frontbracket + sl + lang.time + sl + lang.backbracket;
+}
+
+function setimagesize(width, height) {
+	imgdata.width = width;
+	imgdata.height = height;
+	imgdata.maximum = Math.max(imgdata.width, imgdata.height);
 }
 
 function languageset(lk, callback) {
@@ -143,14 +153,7 @@ function languageinitial() {
 	});
 }
 
-
-function setpuzzleimgwh(width, height) {
-	imgdata.width = width;
-	imgdata.height = height;
-	imgdata.maximum = Math.max(imgdata.width, imgdata.height);
-}
 window.onload = function () {
-	document.body.onresize = setfoundation;
 	if (navigator.userAgent.search("MSIE") == -1) {
 		cannotuseie.style.zIndex = 0;
 	}
@@ -158,6 +161,9 @@ window.onload = function () {
 		delete geturl['fbclid'];
 		array2url(geturl);
 	}
+
+	document.body.onresize = setfoundation;
+	setfoundation();
 
 	refpreview.setAttribute('xmlns', "http://www.w3.org/2000/svg");
 	refpreview.setAttribute('xmlns:xlink', "http://www.w3.org/1999/xlink");
@@ -286,7 +292,7 @@ window.onload = function () {
 					setCookie('len', savedata.len);
 					setCookie('delay', savedata.delay);
 
-					setpuzzleimgwh(data.width, data.height);
+					setimagesize(data.width, data.height);
 					setpuzzle();
 					break;
 				case 'netimage':
@@ -312,7 +318,7 @@ window.onload = function () {
 					setCookie('delay', savedata.delay);
 					setCookie('imgsrc', imgdata.src);
 
-					setpuzzleimgwh(data.width, data.height);
+					setimagesize(data.width, data.height);
 					setpuzzle();
 					break;
 				default:
@@ -339,7 +345,6 @@ window.onload = function () {
 		}
 	};
 	sw = new Stopwatch(stopwatch);
-	setfoundation();
 	languageinitial();
 
 	let l = getCookie('len');
@@ -403,7 +408,7 @@ window.onload = function () {
 						break;
 					}
 
-					setpuzzleimgwh(data.width, data.height);
+					setimagesize(data.width, data.height);
 
 					savedata.mod = m;
 					netfile.value = imgdata.src = is;
@@ -426,8 +431,8 @@ window.onkeydown = function () {
 		resetpuzzle();
 	if (key in direction) {
 		let d = direction[key];
-		let x = nownull % savedata.len;
-		let y = Math.floor(nownull / savedata.len);
+		let x = puzzle.none % savedata.len;
+		let y = Math.floor(puzzle.none / savedata.len);
 		if (x + d.x < 0 || y + d.y < 0 || x + d.x >= savedata.len || y + d.y >= savedata.len)
 			return;
 		puzzlemove(puzzle.indexOf(x + d.x + (y + d.y) * savedata.len));
@@ -458,21 +463,21 @@ function setpuzzle() {
 	}
 	main.innerHTML = '';
 	complete.innerHTML = '';
-	nowstatus = 'complete';
+	puzzle.status = 'complete';
 	sw.reset;
-	puzzlelen = savedata.len * savedata.len - 1;
+	puzzle.len = savedata.len * savedata.len - 1;
 	let count;
 	let puzzlesize = 600 / savedata.len;
-	puzzle = [];
-	for (let i = 0; i < puzzlelen; i++) {
-		puzzle[i] = i;
+	puzzle.seat = [];
+	for (let i = 0; i < puzzle.len; i++) {
+		puzzle.seat[i] = i;
 	}
-	nownull = puzzlelen;
-	puzzleseat = [];
+	puzzle.none = puzzle.len;
+	puzzle.addr = [];
 	count = 0;
 	for (let i = 0; i < savedata.len; i++) {
 		for (let j = 0; j < savedata.len; j++) {
-			puzzleseat[count] = {
+			puzzle.addr[count] = {
 				left: puzzlesize * j + 'px',
 				top: puzzlesize * i + 'px'
 			};
@@ -480,7 +485,7 @@ function setpuzzle() {
 		}
 	}
 
-	for (let i = 0; i < puzzlelen; i++) {
+	for (let i = 0; i < puzzle.len; i++) {
 		if (savedata.mod == 'number') {
 			main.appendChild(numberstyle(i + 1));
 		} else if (savedata.mod == 'coordinate') {
@@ -491,37 +496,37 @@ function setpuzzle() {
 	}
 
 	let puzzletagarr = main.getElementsByTagName('svg');
-	puzzletag = [];
-	for (let i = 0; i < puzzlelen; i++) {
-		puzzletag[i] = puzzletagarr[i];
-		puzzletag[i].style.left = puzzleseat[i].left;
-		puzzletag[i].style.top = puzzleseat[i].top;
-		puzzletag[i].style.width = puzzlesize + 'px';
-		puzzletag[i].style.height = puzzlesize + 'px';
-		puzzletag[i].style.transition = 'all ' + savedata.delay + 'ms';
-		puzzletag[i].onmousedown = function () {
+	puzzle.ref = [];
+	for (let i = 0; i < puzzle.len; i++) {
+		puzzle.ref[i] = puzzletagarr[i];
+		puzzle.ref[i].style.left = puzzle.addr[i].left;
+		puzzle.ref[i].style.top = puzzle.addr[i].top;
+		puzzle.ref[i].style.width = puzzlesize + 'px';
+		puzzle.ref[i].style.height = puzzlesize + 'px';
+		puzzle.ref[i].style.transition = 'all ' + savedata.delay + 'ms';
+		puzzle.ref[i].onmousedown = function () {
 			puzzlemove(i);
 		};
-		puzzletag[i].ontouchstart = function () {
+		puzzle.ref[i].ontouchstart = function () {
 			puzzlemove(i);
 		};
 	}
 }
 
 function _puzzlemove(i) {
-	let destination = puzzle[i];
+	let destination = puzzle.seat[i];
 	let ix = destination % savedata.len;
 	let iy = Math.floor(destination / savedata.len);
-	let x = nownull % savedata.len;
-	let y = Math.floor(nownull / savedata.len);
+	let x = puzzle.none % savedata.len;
+	let y = Math.floor(puzzle.none / savedata.len);
 	let move = function (m) {
-		while (destination != nownull) {
-			let nnull = nownull + m;
-			let ref = puzzle.indexOf(nnull);
-			puzzle[ref] = nownull;
-			nownull = nnull;
-			puzzletag[ref].style.top = puzzleseat[puzzle[ref]].top;
-			puzzletag[ref].style.left = puzzleseat[puzzle[ref]].left;
+		while (destination != puzzle.none) {
+			let nnull = puzzle.none + m;
+			let ref = puzzle.seat.indexOf(nnull);
+			puzzle.seat[ref] = puzzle.none;
+			puzzle.none = nnull;
+			puzzle.ref[ref].style.top = puzzle.addr[puzzle.seat[ref]].top;
+			puzzle.ref[ref].style.left = puzzle.addr[puzzle.seat[ref]].left;
 		}
 	}
 	if (ix == x) {
@@ -533,48 +538,48 @@ function _puzzlemove(i) {
 
 function randompuzzle() {
 	complete.innerHTML = '';
-	nowstatus = 'random';
+	puzzle.status = 'random';
 	sw.reset;
 	if (savedata.mod == 'hostimage' || savedata.mod == 'netimage') {
 		preview.style.opacity = 0;
 		preview.style.zIndex = 1;
 	}
-	for (let i = 0; i < puzzlelen; i++) {
-		puzzle[i] = i;
+	for (let i = 0; i < puzzle.len; i++) {
+		puzzle.seat[i] = i;
 	}
-	nownull = puzzlelen;
+	puzzle.none = puzzle.len;
 	Math.floor(Math.random() * 4);
-	for (let i = 0; i < puzzlelen; i++) {
-		let j = Math.floor(Math.random() * puzzlelen);
-		let t = puzzle[i];
-		puzzle[i] = puzzle[j];
-		puzzle[j] = t;
+	for (let i = 0; i < puzzle.len; i++) {
+		let j = Math.floor(Math.random() * puzzle.len);
+		let t = puzzle.seat[i];
+		puzzle.seat[i] = puzzle.seat[j];
+		puzzle.seat[j] = t;
 	}
 	let count = 0;
-	for (let i = 0; i < puzzlelen; i++) {
-		for (let j = i + 1; j < puzzlelen; j++) {
-			if (puzzle[i] > puzzle[j]) {
+	for (let i = 0; i < puzzle.len; i++) {
+		for (let j = i + 1; j < puzzle.len; j++) {
+			if (puzzle.seat[i] > puzzle.seat[j]) {
 				count++;
 			}
 		}
 	}
 	if (count % 2) {
-		let t = puzzle[0];
-		puzzle[0] = puzzle[1];
-		puzzle[1] = t;
+		let t = puzzle.seat[0];
+		puzzle.seat[0] = puzzle.seat[1];
+		puzzle.seat[1] = t;
 	}
-	for (let i = 0; i < puzzlelen; i++) {
-		puzzletag[i].style.top = puzzleseat[puzzle[i]].top;
-		puzzletag[i].style.left = puzzleseat[puzzle[i]].left;
+	for (let i = 0; i < puzzle.len; i++) {
+		puzzle.ref[i].style.top = puzzle.addr[puzzle.seat[i]].top;
+		puzzle.ref[i].style.left = puzzle.addr[puzzle.seat[i]].left;
 	}
 	let r;
 	r = Math.floor(Math.random() * savedata.len);
 	if (r) {
-		_puzzlemove(puzzle.indexOf(nownull - r));
+		_puzzlemove(puzzle.seat.indexOf(puzzle.none - r));
 	}
 	r = Math.floor(Math.random() * savedata.len);
 	if (r) {
-		_puzzlemove(puzzle.indexOf(nownull - r * savedata.len));
+		_puzzlemove(puzzle.seat.indexOf(puzzle.none - r * savedata.len));
 	}
 }
 
@@ -584,33 +589,33 @@ function resetpuzzle() {
 		preview.style.zIndex = 3;
 	}
 	complete.innerHTML = '';
-	nowstatus = 'complete';
+	puzzle.status = 'complete';
 	sw.reset;
-	for (let i = 0; i < puzzlelen; i++) {
-		puzzle[i] = i;
+	for (let i = 0; i < puzzle.len; i++) {
+		puzzle.seat[i] = i;
 	}
-	nownull = puzzlelen;
-	for (let i = 0; i < puzzlelen; i++) {
-		puzzletag[i].style.top = puzzleseat[puzzle[i]].top;
-		puzzletag[i].style.left = puzzleseat[puzzle[i]].left;
+	puzzle.none = puzzle.len;
+	for (let i = 0; i < puzzle.len; i++) {
+		puzzle.ref[i].style.top = puzzle.addr[puzzle.seat[i]].top;
+		puzzle.ref[i].style.left = puzzle.addr[puzzle.seat[i]].left;
 	}
 }
 
 function puzzlemove(i) {
-	if (nowstatus == 'complete')
+	if (puzzle.status == 'complete')
 		return;
 	sw.start;
 	_puzzlemove(i);
 	let iscomplete = function () {
-		for (let i = 0; i < puzzlelen; i++) {
-			if (puzzle[i] != i)
+		for (let i = 0; i < puzzle.len; i++) {
+			if (puzzle.seat[i] != i)
 				return false;
 		}
 		return true;
 	}
 	if (iscomplete()) {
 		complete.innerHTML = lang.complete;
-		nowstatus = 'complete';
+		puzzle.status = 'complete';
 		sw.stop;
 		if (savedata.mod == 'hostimage' || savedata.mod == 'netimage') {
 			preview.style.opacity = 1;
