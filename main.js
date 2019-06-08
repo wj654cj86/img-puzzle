@@ -15,7 +15,7 @@ var savedata = {
 var setdata = {
 	language: 'zh-Hant',
 	len: 4,
-	delay: 0,
+	delay: 0
 };
 var imgdata = {
 	src: '',
