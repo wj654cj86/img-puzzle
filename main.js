@@ -41,6 +41,20 @@ var direction = {
 	40: { x: 0, y: -1 }
 };
 
+function playsoundeffect(ismove) {
+	try {
+		let se;
+		if (ismove) {
+			se = new Audio('soundeffect/move.wav');
+		} else {
+			se = new Audio('soundeffect/warning.wav');
+		}
+		se.play();
+	} catch (err) {
+		console.log(err.message);
+	}
+}
+
 function setfoundation() {
 	let fm = Math.min(window.innerWidth / 600, window.innerHeight / 800, 1.5);
 	fm = Math.max(fm, 0.25);
@@ -241,6 +255,7 @@ puzzle._move = function (i) {
 	let iy = Math.floor(destination / savedata.len);
 	let x = puzzle.none % savedata.len;
 	let y = Math.floor(puzzle.none / savedata.len);
+	let ismove = false;
 	let move = function (m) {
 		while (destination != puzzle.none) {
 			let nnull = puzzle.none + m;
@@ -249,6 +264,7 @@ puzzle._move = function (i) {
 			puzzle.none = nnull;
 			puzzle.ref[ref].style.top = puzzle.addr[puzzle.seat[ref]].top;
 			puzzle.ref[ref].style.left = puzzle.addr[puzzle.seat[ref]].left;
+			ismove = true;
 		}
 	}
 	if (ix == x) {
@@ -256,6 +272,7 @@ puzzle._move = function (i) {
 	} else if (iy == y) {
 		move(Math.sign(ix - x) * 1);
 	}
+	return ismove;
 };
 puzzle.random = function () {
 	complete.innerHTML = '';
@@ -312,7 +329,7 @@ puzzle.move = function (i) {
 	if (puzzle.status == 'complete')
 		return;
 	sw.start;
-	puzzle._move(i);
+	playsoundeffect(puzzle._move(i));
 	let iscomplete = function () {
 		for (let i = 0; i < puzzle.len; i++) {
 			if (puzzle.seat[i] != i)
