@@ -1,9 +1,9 @@
 var geturl = url2array();
+var sw;
+
 var language = {
 	reg: {}
 };
-
-var sw;
 
 var savedata = {
 	language: 'zh-Hant',
@@ -129,7 +129,7 @@ language.change = function () {
 	}
 	array2url(geturl);
 	language.setting(nowlanguage.value, function () { });
-}
+};
 language.initial = function () {
 	generator(function* () {
 		yield {
@@ -153,295 +153,9 @@ language.initial = function () {
 			nowlanguage.onchange = language.change;
 		});
 	});
-}
-
-window.onload = function () {
-	if (navigator.userAgent.search("MSIE") == -1) {
-		cannotuseie.style.zIndex = 0;
-	}
-	if (typeof geturl['fbclid'] != 'undefined') {
-		delete geturl['fbclid'];
-		array2url(geturl);
-	}
-
-	document.body.onresize = setfoundation;
-	setfoundation();
-
-	refpreview.setAttribute('xmlns', "http://www.w3.org/2000/svg");
-	refpreview.setAttribute('xmlns:xlink', "http://www.w3.org/1999/xlink");
-	preview.setAttribute('xmlns', "http://www.w3.org/2000/svg");
-	preview.setAttribute('xmlns:xlink', "http://www.w3.org/1999/xlink");
-	preview.setAttribute('viewBox', '0 0 600 600');
-	let ref = preview.getElementsByTagName('use')[0];
-	ref.setAttribute('width', 600);
-	ref.setAttribute('height', 600);
-	main.ondragstart = function () {
-		return false;
-	};
-
-	let nowmodonchange = function () {
-		let callback = function (a, b, c) {
-			spanhostimage.style.zIndex = a;
-			hostfile.style.opacity = b;
-			hostfile.style.zIndex = b;
-			spannetimage.style.opacity = c;
-			spannetimage.style.zIndex = c;
-			netfile.style.opacity = c;
-			netfile.style.zIndex = c;
-		};
-		switch (nowmod.value) {
-			case 'number':
-				callback(1, 0, 0);
-				break;
-			case 'coordinate':
-				callback(1, 0, 0);
-				break;
-			case 'hostimage':
-				callback(0, 1, 0);
-				break;
-			case 'netimage':
-				callback(0, 0, 1);
-				break;
-			default:
-				callback(1, 0, 0);
-				break;
-		}
-	};
-	setting.onclick = function () {
-		setdata.len = savedata.len;
-		setnowlenHTML(setdata.len);
-		setdata.delay = savedata.delay;
-		nowdelay.innerHTML = setdata.delay + language.reg.ms;
-		nowmod.value = savedata.mod;
-		nowmodonchange();
-		settingfoundation.style.zIndex = 10;
-	};
-	random.onclick = randompuzzle;
-	reset.onclick = resetpuzzle;
-	subsize.onclick = function () {
-		if (setdata.len > 3) {
-			setdata.len--;
-			setnowlenHTML(setdata.len);
-		}
-	};
-	addsize.onclick = function () {
-		if (setdata.len < 10) {
-			setdata.len++;
-			setnowlenHTML(setdata.len);
-		}
-	};
-	subdelay.onclick = function () {
-		if (setdata.delay > 0) {
-			setdata.delay -= 100;
-			nowdelay.innerHTML = setdata.delay + language.reg.ms;
-		}
-	};
-	adddelay.onclick = function () {
-		if (setdata.delay < 1000) {
-			setdata.delay *= 1;
-			setdata.delay += 100;
-			nowdelay.innerHTML = setdata.delay + language.reg.ms;
-		}
-	};
-
-	nowmod.onchange = nowmodonchange;
-	determine.onclick = function () {
-		savedata.language = setdata.language;
-		generator(function* () {
-			let data = {}, url;
-			switch (nowmod.value) {
-				case 'number':
-					savedata.mod = nowmod.value;
-					savedata.len = setdata.len;
-					savedata.delay = setdata.delay;
-					setCookie('mod', savedata.mod);
-					setCookie('len', savedata.len);
-					setCookie('delay', savedata.delay);
-					setpuzzle();
-					break;
-				case 'coordinate':
-					savedata.mod = nowmod.value;
-					savedata.len = setdata.len;
-					savedata.delay = setdata.delay;
-					setCookie('mod', savedata.mod);
-					setCookie('len', savedata.len);
-					setCookie('delay', savedata.delay);
-					setpuzzle();
-					break;
-				case 'hostimage':
-					try {
-						url = URL.createObjectURL(hostfile.files[0]);
-						yield {
-							nextfunc: getimgsize,
-							argsfront: [url],
-							cbfunc: function (width, height) {
-								data.width = width;
-								data.height = height;
-							}
-						};
-					} catch (err) {
-						break;
-					}
-
-					if (data.width == -1 || data.height == -1) {
-						break;
-					}
-
-					savedata.mod = nowmod.value;
-					savedata.len = setdata.len;
-					savedata.delay = setdata.delay;
-					imgdata.src = url;
-					setCookie('len', savedata.len);
-					setCookie('delay', savedata.delay);
-
-					setimagesize(data.width, data.height);
-					setpuzzle();
-					break;
-				case 'netimage':
-					yield {
-						nextfunc: getimgsize,
-						argsfront: [netfile.value],
-						cbfunc: function (width, height) {
-							data.width = width;
-							data.height = height;
-						}
-					};
-
-					if (data.width == -1 || data.height == -1) {
-						break;
-					}
-
-					savedata.mod = nowmod.value;
-					savedata.len = setdata.len;
-					savedata.delay = setdata.delay;
-					imgdata.src = netfile.value;
-					setCookie('mod', savedata.mod);
-					setCookie('len', savedata.len);
-					setCookie('delay', savedata.delay);
-					setCookie('imgsrc', imgdata.src);
-
-					setimagesize(data.width, data.height);
-					setpuzzle();
-					break;
-				default:
-					break;
-			}
-			settingfoundation.style.zIndex = 0;
-		});
-	};
-	cancel.onclick = function () {
-		nowlanguage.value = savedata.language;
-		language.change();
-		settingfoundation.style.zIndex = 0;
-	};
-
-	full.onclick = function () {
-		if (document.documentElement.requestFullscreen) {
-			document.documentElement.requestFullscreen();
-		} else if (document.documentElement.mozRequestFullScreen) { /* Firefox */
-			document.documentElement.mozRequestFullScreen();
-		} else if (document.documentElement.webkitRequestFullscreen) { /* Chrome, Safari & Opera */
-			document.documentElement.webkitRequestFullscreen();
-		} else if (document.documentElement.msRequestFullscreen) { /* IE/Edge */
-			document.documentElement.msRequestFullscreen();
-		}
-	};
-	sw = new Stopwatch(stopwatch);
-	language.initial();
-
-	let l = getCookie('len');
-	if (l != '' && !isNaN(l) && l >= 3 && l <= 10) {
-		savedata.len = l;
-	} else {
-		savedata.len = 4;
-		setCookie('len', savedata.len);
-	}
-	let d = getCookie('delay');
-	if (d != '' && !isNaN(d) && d >= 0 && d <= 1000) {
-		savedata.delay = d;
-	} else {
-		savedata.delay = 0;
-		setCookie('delay', savedata.delay);
-	}
-	let m = getCookie('mod');
-	let is = getCookie('imgsrc');
-	let numberload = function () {
-		savedata.mod = 'number';
-		setCookie('mod', savedata.mod);
-		setpuzzle();
-	};
-	generator(function* () {
-		yield {
-			nextfunc: numberxmlinitial,
-			cbfunc: function () { }
-		};
-		yield {
-			nextfunc: coordinatexmlinitial,
-			cbfunc: function () { }
-		};
-		yield {
-			nextfunc: imagexmlinitial,
-			cbfunc: function () { }
-		};
-		let data = {};
-		switch (m) {
-			case 'number':
-				numberload();
-				break;
-			case 'coordinate':
-				savedata.mod = m;
-				setpuzzle();
-				break;
-			case 'hostimage':
-				numberload();
-				break;
-			case 'netimage':
-				if (is != '') {
-					yield {
-						nextfunc: getimgsize,
-						argsfront: [is],
-						cbfunc: function (width, height) {
-							data.width = width;
-							data.height = height;
-						}
-					};
-					if (data.width == -1 || data.height == -1) {
-						numberload();
-						break;
-					}
-
-					setimagesize(data.width, data.height);
-
-					savedata.mod = m;
-					netfile.value = imgdata.src = is;
-					setpuzzle();
-				} else {
-					numberload();
-				}
-				break;
-			default:
-				numberload();
-				break;
-		}
-	});
-};
-window.onkeydown = function () {
-	key = event.keyCode;
-	if (key == 13)
-		randompuzzle();
-	if (key == 27)
-		resetpuzzle();
-	if (key in direction) {
-		let d = direction[key];
-		let x = puzzle.none % savedata.len;
-		let y = Math.floor(puzzle.none / savedata.len);
-		if (x + d.x < 0 || y + d.y < 0 || x + d.x >= savedata.len || y + d.y >= savedata.len)
-			return;
-		puzzlemove(puzzle.indexOf(x + d.x + (y + d.y) * savedata.len));
-	}
 };
 
-function setpuzzle() {
+puzzle.setting = function () {
 	if (savedata.mod == 'number' || savedata.mod == 'coordinate') {
 		preview.style.opacity = 0;
 		preview.style.zIndex = 1;
@@ -507,15 +221,14 @@ function setpuzzle() {
 		puzzle.ref[i].style.height = puzzlesize + 'px';
 		puzzle.ref[i].style.transition = 'all ' + savedata.delay + 'ms';
 		puzzle.ref[i].onmousedown = function () {
-			puzzlemove(i);
+			puzzle.move(i);
 		};
 		puzzle.ref[i].ontouchstart = function () {
-			puzzlemove(i);
+			puzzle.move(i);
 		};
 	}
-}
-
-function _puzzlemove(i) {
+};
+puzzle._move = function (i) {
 	let destination = puzzle.seat[i];
 	let ix = destination % savedata.len;
 	let iy = Math.floor(destination / savedata.len);
@@ -536,9 +249,8 @@ function _puzzlemove(i) {
 	} else if (iy == y) {
 		move(Math.sign(ix - x) * 1);
 	}
-}
-
-function randompuzzle() {
+};
+puzzle.random = function () {
 	complete.innerHTML = '';
 	puzzle.status = 'random';
 	sw.reset;
@@ -577,15 +289,14 @@ function randompuzzle() {
 	let r;
 	r = Math.floor(Math.random() * savedata.len);
 	if (r) {
-		_puzzlemove(puzzle.seat.indexOf(puzzle.none - r));
+		puzzle._move(puzzle.seat.indexOf(puzzle.none - r));
 	}
 	r = Math.floor(Math.random() * savedata.len);
 	if (r) {
-		_puzzlemove(puzzle.seat.indexOf(puzzle.none - r * savedata.len));
+		puzzle._move(puzzle.seat.indexOf(puzzle.none - r * savedata.len));
 	}
-}
-
-function resetpuzzle() {
+};
+puzzle.reset = function () {
 	if (savedata.mod == 'hostimage' || savedata.mod == 'netimage') {
 		preview.style.opacity = 1;
 		preview.style.zIndex = 3;
@@ -601,13 +312,12 @@ function resetpuzzle() {
 		puzzle.ref[i].style.top = puzzle.addr[puzzle.seat[i]].top;
 		puzzle.ref[i].style.left = puzzle.addr[puzzle.seat[i]].left;
 	}
-}
-
-function puzzlemove(i) {
+};
+puzzle.move = function (i) {
 	if (puzzle.status == 'complete')
 		return;
 	sw.start;
-	_puzzlemove(i);
+	puzzle._move(i);
 	let iscomplete = function () {
 		for (let i = 0; i < puzzle.len; i++) {
 			if (puzzle.seat[i] != i)
@@ -624,4 +334,290 @@ function puzzlemove(i) {
 			preview.style.zIndex = 3;
 		}
 	}
-}
+};
+
+window.onload = function () {
+	if (navigator.userAgent.search("MSIE") == -1) {
+		cannotuseie.style.zIndex = 0;
+	}
+	if (typeof geturl['fbclid'] != 'undefined') {
+		delete geturl['fbclid'];
+		array2url(geturl);
+	}
+
+	document.body.onresize = setfoundation;
+	setfoundation();
+
+	refpreview.setAttribute('xmlns', "http://www.w3.org/2000/svg");
+	refpreview.setAttribute('xmlns:xlink', "http://www.w3.org/1999/xlink");
+	preview.setAttribute('xmlns', "http://www.w3.org/2000/svg");
+	preview.setAttribute('xmlns:xlink', "http://www.w3.org/1999/xlink");
+	preview.setAttribute('viewBox', '0 0 600 600');
+	let ref = preview.getElementsByTagName('use')[0];
+	ref.setAttribute('width', 600);
+	ref.setAttribute('height', 600);
+	main.ondragstart = function () {
+		return false;
+	};
+
+	let nowmodonchange = function () {
+		let callback = function (a, b, c) {
+			spanhostimage.style.zIndex = a;
+			hostfile.style.opacity = b;
+			hostfile.style.zIndex = b;
+			spannetimage.style.opacity = c;
+			spannetimage.style.zIndex = c;
+			netfile.style.opacity = c;
+			netfile.style.zIndex = c;
+		};
+		switch (nowmod.value) {
+			case 'number':
+				callback(1, 0, 0);
+				break;
+			case 'coordinate':
+				callback(1, 0, 0);
+				break;
+			case 'hostimage':
+				callback(0, 1, 0);
+				break;
+			case 'netimage':
+				callback(0, 0, 1);
+				break;
+			default:
+				callback(1, 0, 0);
+				break;
+		}
+	};
+	setting.onclick = function () {
+		setdata.len = savedata.len;
+		setnowlenHTML(setdata.len);
+		setdata.delay = savedata.delay;
+		nowdelay.innerHTML = setdata.delay + language.reg.ms;
+		nowmod.value = savedata.mod;
+		nowmodonchange();
+		settingfoundation.style.zIndex = 10;
+	};
+	random.onclick = puzzle.random;
+	reset.onclick = puzzle.reset;
+	subsize.onclick = function () {
+		if (setdata.len > 3) {
+			setdata.len--;
+			setnowlenHTML(setdata.len);
+		}
+	};
+	addsize.onclick = function () {
+		if (setdata.len < 10) {
+			setdata.len++;
+			setnowlenHTML(setdata.len);
+		}
+	};
+	subdelay.onclick = function () {
+		if (setdata.delay > 0) {
+			setdata.delay -= 100;
+			nowdelay.innerHTML = setdata.delay + language.reg.ms;
+		}
+	};
+	adddelay.onclick = function () {
+		if (setdata.delay < 1000) {
+			setdata.delay *= 1;
+			setdata.delay += 100;
+			nowdelay.innerHTML = setdata.delay + language.reg.ms;
+		}
+	};
+
+	nowmod.onchange = nowmodonchange;
+	determine.onclick = function () {
+		savedata.language = setdata.language;
+		generator(function* () {
+			let data = {}, url;
+			switch (nowmod.value) {
+				case 'number':
+					savedata.mod = nowmod.value;
+					savedata.len = setdata.len;
+					savedata.delay = setdata.delay;
+					setCookie('mod', savedata.mod);
+					setCookie('len', savedata.len);
+					setCookie('delay', savedata.delay);
+					puzzle.setting();
+					break;
+				case 'coordinate':
+					savedata.mod = nowmod.value;
+					savedata.len = setdata.len;
+					savedata.delay = setdata.delay;
+					setCookie('mod', savedata.mod);
+					setCookie('len', savedata.len);
+					setCookie('delay', savedata.delay);
+					puzzle.setting();
+					break;
+				case 'hostimage':
+					try {
+						url = URL.createObjectURL(hostfile.files[0]);
+						yield {
+							nextfunc: getimgsize,
+							argsfront: [url],
+							cbfunc: function (width, height) {
+								data.width = width;
+								data.height = height;
+							}
+						};
+					} catch (err) {
+						break;
+					}
+
+					if (data.width == -1 || data.height == -1) {
+						break;
+					}
+
+					savedata.mod = nowmod.value;
+					savedata.len = setdata.len;
+					savedata.delay = setdata.delay;
+					imgdata.src = url;
+					setCookie('len', savedata.len);
+					setCookie('delay', savedata.delay);
+
+					setimagesize(data.width, data.height);
+					puzzle.setting();
+					break;
+				case 'netimage':
+					yield {
+						nextfunc: getimgsize,
+						argsfront: [netfile.value],
+						cbfunc: function (width, height) {
+							data.width = width;
+							data.height = height;
+						}
+					};
+
+					if (data.width == -1 || data.height == -1) {
+						break;
+					}
+
+					savedata.mod = nowmod.value;
+					savedata.len = setdata.len;
+					savedata.delay = setdata.delay;
+					imgdata.src = netfile.value;
+					setCookie('mod', savedata.mod);
+					setCookie('len', savedata.len);
+					setCookie('delay', savedata.delay);
+					setCookie('imgsrc', imgdata.src);
+
+					setimagesize(data.width, data.height);
+					puzzle.setting();
+					break;
+				default:
+					break;
+			}
+			settingfoundation.style.zIndex = 0;
+		});
+	};
+	cancel.onclick = function () {
+		nowlanguage.value = savedata.language;
+		language.change();
+		settingfoundation.style.zIndex = 0;
+	};
+
+	full.onclick = function () {
+		if (document.documentElement.requestFullscreen) {
+			document.documentElement.requestFullscreen();
+		} else if (document.documentElement.mozRequestFullScreen) { /* Firefox */
+			document.documentElement.mozRequestFullScreen();
+		} else if (document.documentElement.webkitRequestFullscreen) { /* Chrome, Safari & Opera */
+			document.documentElement.webkitRequestFullscreen();
+		} else if (document.documentElement.msRequestFullscreen) { /* IE/Edge */
+			document.documentElement.msRequestFullscreen();
+		}
+	};
+	sw = new Stopwatch(stopwatch);
+	language.initial();
+
+	let l = getCookie('len');
+	if (l != '' && !isNaN(l) && l >= 3 && l <= 10) {
+		savedata.len = l;
+	} else {
+		savedata.len = 4;
+		setCookie('len', savedata.len);
+	}
+	let d = getCookie('delay');
+	if (d != '' && !isNaN(d) && d >= 0 && d <= 1000) {
+		savedata.delay = d;
+	} else {
+		savedata.delay = 0;
+		setCookie('delay', savedata.delay);
+	}
+	let m = getCookie('mod');
+	let is = getCookie('imgsrc');
+	let numberload = function () {
+		savedata.mod = 'number';
+		setCookie('mod', savedata.mod);
+		puzzle.setting();
+	};
+	generator(function* () {
+		yield {
+			nextfunc: numberxmlinitial,
+			cbfunc: function () { }
+		};
+		yield {
+			nextfunc: coordinatexmlinitial,
+			cbfunc: function () { }
+		};
+		yield {
+			nextfunc: imagexmlinitial,
+			cbfunc: function () { }
+		};
+		let data = {};
+		switch (m) {
+			case 'number':
+				numberload();
+				break;
+			case 'coordinate':
+				savedata.mod = m;
+				puzzle.setting();
+				break;
+			case 'hostimage':
+				numberload();
+				break;
+			case 'netimage':
+				if (is != '') {
+					yield {
+						nextfunc: getimgsize,
+						argsfront: [is],
+						cbfunc: function (width, height) {
+							data.width = width;
+							data.height = height;
+						}
+					};
+					if (data.width == -1 || data.height == -1) {
+						numberload();
+						break;
+					}
+
+					setimagesize(data.width, data.height);
+
+					savedata.mod = m;
+					netfile.value = imgdata.src = is;
+					puzzle.setting();
+				} else {
+					numberload();
+				}
+				break;
+			default:
+				numberload();
+				break;
+		}
+	});
+};
+window.onkeydown = function () {
+	key = event.keyCode;
+	if (key == 13)
+		puzzle.random();
+	if (key == 27)
+		puzzle.reset();
+	if (key in direction) {
+		let d = direction[key];
+		let x = puzzle.none % savedata.len;
+		let y = Math.floor(puzzle.none / savedata.len);
+		if (x + d.x < 0 || y + d.y < 0 || x + d.x >= savedata.len || y + d.y >= savedata.len)
+			return;
+		puzzle.move(puzzle.indexOf(x + d.x + (y + d.y) * savedata.len));
+	}
+};
