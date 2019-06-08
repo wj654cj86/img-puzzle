@@ -1,16 +1,18 @@
 var geturl = url2array();
-var lang;
+var language = {
+	reg: {}
+};
 
 var sw;
 
 var savedata = {
-	lang: 'zh-Hant',
+	language: 'zh-Hant',
 	mod: 'number',
 	len: 4,
 	delay: 0
 };
 var setdata = {
-	lang: 'zh-Hant',
+	language: 'zh-Hant',
 	len: 4,
 	delay: 0
 };
@@ -46,8 +48,8 @@ function setfoundation() {
 }
 
 function setnowlenHTML(sl) {
-	nowlen.innerHTML = sl * sl - 1 + lang.unit
-		+ lang.frontbracket + sl + lang.time + sl + lang.backbracket;
+	nowlen.innerHTML = sl * sl - 1 + language.reg.unit
+		+ language.reg.frontbracket + sl + language.reg.time + sl + language.reg.backbracket;
 }
 
 function setimagesize(width, height) {
@@ -56,99 +58,99 @@ function setimagesize(width, height) {
 	imgdata.maximum = Math.max(imgdata.width, imgdata.height);
 }
 
-function languageset(lk, callback) {
+language.setting = function (lk, callback) {
 	generator(function* () {
-		if (lk in langlist) {
-			let langfilepath = 'language/' + lk + '.json';
+		if (lk in languagelist) {
+			let languagefilepath = 'language/' + lk + '.json';
 			yield {
 				nextfunc: openfile,
-				argsfront: [langfilepath],
+				argsfront: [languagefilepath],
 				cbfunc: function (str) {
-					Object.assign(lang, JSON.parse(str));
+					Object.assign(language.reg, JSON.parse(str));
 					nowlanguage.value = lk;
 				}
 			};
 		}
-		document.title = lang.imgpuzzle;
-		setting.value = lang.setting;
-		random.value = lang.random;
-		reset.value = lang.reset;
-		full.value = lang.full;
-		spanlanguage.innerHTML = lang.languagesetting;
-		spanlen.innerHTML = lang.len;
-		spandelay.innerHTML = lang.delay;
-		spanmod.innerHTML = lang.mod;
-		spannetimage.innerHTML = lang.imgsrc;
-		author.innerHTML = lang.spanauthor + lang.author;
-		provider.innerHTML = lang.spanprovider + lang.provider;
-		determine.value = lang.determine;
-		cancel.value = lang.cancel;
+		document.title = language.reg.imgpuzzle;
+		setting.value = language.reg.setting;
+		random.value = language.reg.random;
+		reset.value = language.reg.reset;
+		full.value = language.reg.full;
+		spanlanguage.innerHTML = language.reg.languagesetting;
+		spanlen.innerHTML = language.reg.len;
+		spandelay.innerHTML = language.reg.delay;
+		spanmod.innerHTML = language.reg.mod;
+		spannetimage.innerHTML = language.reg.imgsrc;
+		author.innerHTML = language.reg.spanauthor + language.reg.author;
+		provider.innerHTML = language.reg.spanprovider + language.reg.provider;
+		determine.value = language.reg.determine;
+		cancel.value = language.reg.cancel;
 
 		setnowlenHTML(setdata.len);
-		nowdelay.innerHTML = setdata.delay + lang.ms;
+		nowdelay.innerHTML = setdata.delay + language.reg.ms;
 
 		let nowmodoption = nowmod.getElementsByTagName("option");
-		nowmodoption[0].innerHTML = lang.number;
-		nowmodoption[1].innerHTML = lang.coordinate;
-		nowmodoption[2].innerHTML = lang.hostimage;
-		nowmodoption[3].innerHTML = lang.netimage;
+		nowmodoption[0].innerHTML = language.reg.number;
+		nowmodoption[1].innerHTML = language.reg.coordinate;
+		nowmodoption[2].innerHTML = language.reg.hostimage;
+		nowmodoption[3].innerHTML = language.reg.netimage;
 
-		setting.style.fontSize = lang.fontsize;
-		random.style.fontSize = lang.fontsize;
-		reset.style.fontSize = lang.fontsize;
-		full.style.fontSize = lang.fontsize;
-		stopwatch.style.fontSize = lang.fontsize;
-		complete.style.fontSize = lang.fontsize;
-		spanlanguage.style.fontSize = lang.fontsize;
-		nowlanguage.style.fontSize = lang.fontsize;
-		spanlen.style.fontSize = lang.fontsize;
-		nowlen.style.fontSize = lang.fontsize;
-		spandelay.style.fontSize = lang.fontsize;
-		nowdelay.style.fontSize = lang.fontsize;
-		spanmod.style.fontSize = lang.fontsize;
-		nowmod.style.fontSize = lang.fontsize;
-		spanhostimage.style.fontSize = lang.fontsize;
-		hostfile.style.fontSize = lang.fontsize;
-		spannetimage.style.fontSize = lang.fontsize;
-		netfile.style.fontSize = lang.fontsize;
-		author.style.fontSize = lang.fontsize;
-		provider.style.fontSize = lang.fontsize;
-		determine.style.fontSize = lang.fontsize;
-		cancel.style.fontSize = lang.fontsize;
+		setting.style.fontSize = language.reg.fontsize;
+		random.style.fontSize = language.reg.fontsize;
+		reset.style.fontSize = language.reg.fontsize;
+		full.style.fontSize = language.reg.fontsize;
+		stopwatch.style.fontSize = language.reg.fontsize;
+		complete.style.fontSize = language.reg.fontsize;
+		spanlanguage.style.fontSize = language.reg.fontsize;
+		nowlanguage.style.fontSize = language.reg.fontsize;
+		spanlen.style.fontSize = language.reg.fontsize;
+		nowlen.style.fontSize = language.reg.fontsize;
+		spandelay.style.fontSize = language.reg.fontsize;
+		nowdelay.style.fontSize = language.reg.fontsize;
+		spanmod.style.fontSize = language.reg.fontsize;
+		nowmod.style.fontSize = language.reg.fontsize;
+		spanhostimage.style.fontSize = language.reg.fontsize;
+		hostfile.style.fontSize = language.reg.fontsize;
+		spannetimage.style.fontSize = language.reg.fontsize;
+		netfile.style.fontSize = language.reg.fontsize;
+		author.style.fontSize = language.reg.fontsize;
+		provider.style.fontSize = language.reg.fontsize;
+		determine.style.fontSize = language.reg.fontsize;
+		cancel.style.fontSize = language.reg.fontsize;
 		callback();
 	});
-}
-function languagechange() {
-	setdata.lang = nowlanguage.value;
-	if (setdata.lang == 'zh-Hant') {
+};
+language.change = function () {
+	setdata.language = nowlanguage.value;
+	if (setdata.language == 'zh-Hant') {
 		delete geturl.lang;
 	} else {
-		geturl.lang = setdata.lang;
+		geturl.lang = setdata.language;
 	}
 	array2url(geturl);
-	languageset(nowlanguage.value, function () { });
+	language.setting(nowlanguage.value, function () { });
 }
-function languageinitial() {
+language.initial = function () {
 	generator(function* () {
 		yield {
 			nextfunc: openfile,
 			argsfront: ['language/zh-Hant.json'],
 			cbfunc: function (str) {
-				lang = JSON.parse(str);
+				language.reg = JSON.parse(str);
 				nowlanguage.value = 'zh-Hant';
 			}
 		};
 
-		for (let key in langlist) {
+		for (let key in languagelist) {
 			let lo = document.createElement("option");
 			lo.value = key;
-			lo.innerHTML = langlist[key];
+			lo.innerHTML = languagelist[key];
 			nowlanguage.appendChild(lo);
 		}
 
-		languageset(geturl.lang, function () {
-			savedata.lang = nowlanguage.value;
-			nowlanguage.onchange = languagechange;
+		language.setting(geturl.lang, function () {
+			savedata.language = nowlanguage.value;
+			nowlanguage.onchange = language.change;
 		});
 	});
 }
@@ -209,7 +211,7 @@ window.onload = function () {
 		setdata.len = savedata.len;
 		setnowlenHTML(setdata.len);
 		setdata.delay = savedata.delay;
-		nowdelay.innerHTML = setdata.delay + lang.ms;
+		nowdelay.innerHTML = setdata.delay + language.reg.ms;
 		nowmod.value = savedata.mod;
 		nowmodonchange();
 		settingfoundation.style.zIndex = 10;
@@ -231,20 +233,20 @@ window.onload = function () {
 	subdelay.onclick = function () {
 		if (setdata.delay > 0) {
 			setdata.delay -= 100;
-			nowdelay.innerHTML = setdata.delay + lang.ms;
+			nowdelay.innerHTML = setdata.delay + language.reg.ms;
 		}
 	};
 	adddelay.onclick = function () {
 		if (setdata.delay < 1000) {
 			setdata.delay *= 1;
 			setdata.delay += 100;
-			nowdelay.innerHTML = setdata.delay + lang.ms;
+			nowdelay.innerHTML = setdata.delay + language.reg.ms;
 		}
 	};
 
 	nowmod.onchange = nowmodonchange;
 	determine.onclick = function () {
-		savedata.lang = setdata.lang;
+		savedata.language = setdata.language;
 		generator(function* () {
 			let data = {}, url;
 			switch (nowmod.value) {
@@ -328,8 +330,8 @@ window.onload = function () {
 		});
 	};
 	cancel.onclick = function () {
-		nowlanguage.value = savedata.lang;
-		languagechange();
+		nowlanguage.value = savedata.language;
+		language.change();
 		settingfoundation.style.zIndex = 0;
 	};
 
@@ -345,7 +347,7 @@ window.onload = function () {
 		}
 	};
 	sw = new Stopwatch(stopwatch);
-	languageinitial();
+	language.initial();
 
 	let l = getCookie('len');
 	if (l != '' && !isNaN(l) && l >= 3 && l <= 10) {
@@ -614,7 +616,7 @@ function puzzlemove(i) {
 		return true;
 	}
 	if (iscomplete()) {
-		complete.innerHTML = lang.complete;
+		complete.innerHTML = language.reg.complete;
 		puzzle.status = 'complete';
 		sw.stop;
 		if (savedata.mod == 'hostimage' || savedata.mod == 'netimage') {
