@@ -75,7 +75,7 @@ body {
 	height: 600px;
 }
 
-#refpreview, #preview {
+#refpreview, #preview, #refpiece {
 	position: absolute;
 	width: 600px;
 	height: 600px;

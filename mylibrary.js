@@ -72,19 +72,19 @@ function openfile(url, callback) {
 	oReq.open("GET", url);
 	oReq.send();
 }
-function openfileforxml(url, callback) {
+function openfiletotext(url, callback) {
 	let oReq = new XMLHttpRequest();
 	oReq.onreadystatechange = function () {
 		if (this.readyState == 4 && this.status == 200) {
-			callback(oReq);
+			callback(oReq.responseText);
 		}
 	};
 	oReq.open("GET", url, true);
 	oReq.send();
 }
-function xhr2xml(oReq) {
+function text2xml(text) {
 	let parser = new DOMParser();
-	return parser.parseFromString(oReq.responseText, "text/xml");
+	return parser.parseFromString(text, "text/xml");
 }
 
 function generator(genfunc) {

@@ -345,6 +345,8 @@ window.onload = function () {
 
 	refpreview.setAttribute('xmlns', "http://www.w3.org/2000/svg");
 	refpreview.setAttribute('xmlns:xlink', "http://www.w3.org/1999/xlink");
+	refpiece.setAttribute('xmlns', "http://www.w3.org/2000/svg");
+	refpiece.setAttribute('xmlns:xlink', "http://www.w3.org/1999/xlink");
 	preview.setAttribute('xmlns', "http://www.w3.org/2000/svg");
 	preview.setAttribute('xmlns:xlink', "http://www.w3.org/1999/xlink");
 	preview.setAttribute('viewBox', '0 0 600 600');

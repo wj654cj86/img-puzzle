@@ -27,11 +27,29 @@ var segment = {
 	]
 };
 var number = {
-	xml: {},
+	text: {},
 	reg: [],
 	initial: function (callback) {
-		openfileforxml("number/style.svg", function (oReq) {
-			number.xml = oReq;
+		openfiletotext("number/style.svg", function (text) {
+			number.text = text;
+			let piece = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+			piece.setAttribute('d', 'M10,0L7,3L-7,3L-10,0L-7-3L7-3z');
+			piece.setAttribute('fill', '#a00');
+			piece.setAttribute('id', 'segmentpiece');
+			refpiece.appendChild(piece);
+			for (let i = 0; i <= 9; i++) {
+				let gref = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+				gref.setAttribute('id', 'segment' + i);
+				for (let j = 0; j < 7; j++) {
+					if (segment.led[i][j] == 0)
+						continue;
+					let useref = document.createElementNS('http://www.w3.org/2000/svg', 'use');
+					useref.setAttributeNS('http://www.w3.org/1999/xlink', 'xlink:href', '#segmentpiece');
+					useref.setAttribute('transform', segment.seat[j]);
+					gref.appendChild(useref);
+				}
+				refpiece.appendChild(gref);
+			}
 			callback();
 		});
 	},
@@ -44,20 +62,12 @@ var number = {
 		}
 		let s = n + '';
 		let len = s.length;
-		let svg = xhr2xml(number.xml);
+		let svg = text2xml(number.text);
 		for (let i = len - 1; i >= 0; i--) {
-			let sb = svg.createElementNS('http://www.w3.org/2000/svg', 'g');
-			sb.setAttribute('transform', segment.number[len - 1][3 - len + i]);
-			sb.setAttribute('fill', '#a00');
-			for (let j = 0; j < 7; j++) {
-				if (segment.led[s[i]][j] == 0)
-					continue;
-				let ss = svg.createElementNS('http://www.w3.org/2000/svg', 'path');
-				ss.setAttribute('d', 'M10,0L7,3L-7,3L-10,0L-7-3L7-3z');
-				ss.setAttribute('transform', segment.seat[j]);
-				sb.appendChild(ss);
-			}
-			svg.getElementsByTagName('svg')[0].appendChild(sb);
+			let useref = svg.createElementNS('http://www.w3.org/2000/svg', 'use');
+			useref.setAttributeNS('http://www.w3.org/1999/xlink', 'xlink:href', '#segment' + s[i]);
+			useref.setAttribute('transform', segment.number[len - 1][3 - len + i]);
+			svg.getElementsByTagName('svg')[0].appendChild(useref);
 		}
 		number.reg[n] = svg.getElementsByTagName('svg')[0];
 		return number.reg[n];

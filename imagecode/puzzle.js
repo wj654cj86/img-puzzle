@@ -1,9 +1,9 @@
 var image = {
-	xml: {},
+	text: {},
 	reg: {},
 	initial: function (callback) {
-		openfileforxml("imagecode/style.svg", function (oReq) {
-			image.xml = oReq;
+		openfiletotext("imagecode/style.svg", function (text) {
+			image.text = text;
 			callback();
 		});
 	},
@@ -21,7 +21,7 @@ var image = {
 			image.reg[len][x] = {};
 		}
 
-		let svg = xhr2xml(image.xml);
+		let svg = text2xml(image.text);
 
 		let svgref = svg.getElementsByTagName('svg')[0];
 		svgref.setAttribute('viewBox', [0, 0, puzzlesize, puzzlesize].join(' '));
