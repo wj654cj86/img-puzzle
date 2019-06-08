@@ -154,7 +154,19 @@ language.initial = function () {
 		});
 	});
 };
-
+puzzle._reset = function () {
+	puzzle.seat = [];
+	for (let i = 0; i < puzzle.len; i++) {
+		puzzle.seat[i] = i;
+	}
+	puzzle.none = puzzle.len;
+};
+puzzle.setseat = function () {
+	for (let i = 0; i < puzzle.len; i++) {
+		puzzle.ref[i].style.top = puzzle.addr[puzzle.seat[i]].top;
+		puzzle.ref[i].style.left = puzzle.addr[puzzle.seat[i]].left;
+	}
+};
 puzzle.setting = function () {
 	if (savedata.mod == 'number' || savedata.mod == 'coordinate') {
 		preview.style.opacity = 0;
@@ -184,11 +196,7 @@ puzzle.setting = function () {
 	puzzle.len = savedata.len * savedata.len - 1;
 	let count;
 	let puzzlesize = 600 / savedata.len;
-	puzzle.seat = [];
-	for (let i = 0; i < puzzle.len; i++) {
-		puzzle.seat[i] = i;
-	}
-	puzzle.none = puzzle.len;
+	puzzle._reset();
 	puzzle.addr = [];
 	count = 0;
 	for (let i = 0; i < savedata.len; i++) {
@@ -215,8 +223,6 @@ puzzle.setting = function () {
 	puzzle.ref = [];
 	for (let i = 0; i < puzzle.len; i++) {
 		puzzle.ref[i] = puzzletagarr[i];
-		puzzle.ref[i].style.left = puzzle.addr[i].left;
-		puzzle.ref[i].style.top = puzzle.addr[i].top;
 		puzzle.ref[i].style.width = puzzlesize + 'px';
 		puzzle.ref[i].style.height = puzzlesize + 'px';
 		puzzle.ref[i].style.transition = 'all ' + savedata.delay + 'ms';
@@ -227,6 +233,7 @@ puzzle.setting = function () {
 			puzzle.move(i);
 		};
 	}
+	puzzle.setseat();
 };
 puzzle._move = function (i) {
 	let destination = puzzle.seat[i];
@@ -258,10 +265,7 @@ puzzle.random = function () {
 		preview.style.opacity = 0;
 		preview.style.zIndex = 1;
 	}
-	for (let i = 0; i < puzzle.len; i++) {
-		puzzle.seat[i] = i;
-	}
-	puzzle.none = puzzle.len;
+	puzzle._reset();
 	Math.floor(Math.random() * 4);
 	for (let i = 0; i < puzzle.len; i++) {
 		let j = Math.floor(Math.random() * puzzle.len);
@@ -282,10 +286,7 @@ puzzle.random = function () {
 		puzzle.seat[0] = puzzle.seat[1];
 		puzzle.seat[1] = t;
 	}
-	for (let i = 0; i < puzzle.len; i++) {
-		puzzle.ref[i].style.top = puzzle.addr[puzzle.seat[i]].top;
-		puzzle.ref[i].style.left = puzzle.addr[puzzle.seat[i]].left;
-	}
+	puzzle.setseat();
 	let r;
 	r = Math.floor(Math.random() * savedata.len);
 	if (r) {
@@ -304,14 +305,8 @@ puzzle.reset = function () {
 	complete.innerHTML = '';
 	puzzle.status = 'complete';
 	sw.reset;
-	for (let i = 0; i < puzzle.len; i++) {
-		puzzle.seat[i] = i;
-	}
-	puzzle.none = puzzle.len;
-	for (let i = 0; i < puzzle.len; i++) {
-		puzzle.ref[i].style.top = puzzle.addr[puzzle.seat[i]].top;
-		puzzle.ref[i].style.left = puzzle.addr[puzzle.seat[i]].left;
-	}
+	puzzle._reset();
+	puzzle.setseat();
 };
 puzzle.move = function (i) {
 	if (puzzle.status == 'complete')
