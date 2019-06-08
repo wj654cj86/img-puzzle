@@ -47,12 +47,12 @@ function numberstyle(n) {
 	for (let i = len - 1; i >= 0; i--) {
 		let sb = svg.createElementNS('http://www.w3.org/2000/svg', 'g');
 		sb.setAttribute('transform', coordinate[len - 1][3 - len + i]);
+		sb.setAttribute('fill', '#a00');
 		for (let j = 0; j < 7; j++) {
 			if (sevenSegment[s[i]][j] == 0)
 				continue;
 			let ss = svg.createElementNS('http://www.w3.org/2000/svg', 'path');
 			ss.setAttribute('d', 'M10,0L7,3L-7,3L-10,0L-7-3L7-3z');
-			ss.setAttribute('fill', '#a00');
 			ss.setAttribute('transform', segment[j]);
 			sb.appendChild(ss);
 		}
