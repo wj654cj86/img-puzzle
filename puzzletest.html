@@ -14,22 +14,22 @@
 	<script>
 		var n = 0, x = 0, y = 0;
 		function numbershow() {
-			number.innerHTML = '';
-			number.appendChild(numberstyle(n));
+			numberimg.innerHTML = '';
+			numberimg.appendChild(number.style(n));
 		}
 		function coordinateshow() {
 			coordinateimg.innerHTML = '';
-			coordinateimg.appendChild(coordinatestyle(String.fromCharCode(x + 65), String.fromCharCode(y + 65)));
+			coordinateimg.appendChild(coordinate.style(String.fromCharCode(x + 65), String.fromCharCode(y + 65)));
 		}
 		window.onload = function () {
-			numberxmlinitial(numbershow);
-			coordinatexmlinitial(coordinateshow);
+			number.initial(numbershow);
+			coordinate.initial(coordinateshow);
 		}
 	</script>
 </head>
 
 <body>
-	<div id="number"></div>
+	<div id="numberimg"></div>
 	<br>
 	<input type="button" value="-" onclick="if(n>0){n--;numbershow();}" />
 	<input type="button" value="+" onclick="if(n<199){n++;numbershow();}" />
