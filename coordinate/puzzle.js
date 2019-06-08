@@ -1,4 +1,4 @@
-var latinScript = {
+var latin = {
 	'A': ['m15,95h11l29.5-90h-11z', 'm85,95h-11l-29.5-90h11z', 'm32,50v10h36v-10z'],
 	'B': ['m15,5h10v90h-10z', 'm19,5h35a25,25,180,0,1,0,50h-35v-10h35a15,15,180,0,0,0-30h-35z', 'm19,45h40a25,25,180,0,1,0,50h-40v-10h40a15,15,180,0,0,0-30h-40z'],
 	'C': ['m81,25l7.071-7.071a45,45,270,1,0,0,63.64l-7.071-7.071a35,35,270,1,1,0-49.5z'],
@@ -27,39 +27,38 @@ var latinScript = {
 	'Z': ['m15,5v10h70v-10z', 'm15,85v10h70v-10z', 'm15,85l63-77l7,7l-63,77z']
 };
 
-var coordinatexml;
-var coordinatereg = {};
-
-function coordinatexmlinitial(callback) {
-	openfileforxml("coordinate/style.svg", function (oReq) {
-		coordinatexml = oReq;
-		callback();
-	});
-}
-
-function latinnew(ls, gn, svg) {
-	let len = latinScript[ls].length;
-	for (let i = 0; i < len; i++) {
-		let path = svg.createElementNS('http://www.w3.org/2000/svg', 'path');
-		path.setAttribute('d', 'M-80-80' + latinScript[ls][i]);
-		svg.getElementsByTagName('g')[gn].appendChild(path);
-	}
-}
-
-function coordinatestyle(x, y) {
-	if (x in coordinatereg) {
-		if (y in coordinatereg[x]) {
-			return coordinatereg[x][y];
+var coordinate = {
+	xml: {},
+	reg: {},
+	initial: function (callback) {
+		openfileforxml("coordinate/style.svg", function (oReq) {
+			coordinate.xml = oReq;
+			callback();
+		});
+	},
+	style: function (x, y) {
+		if (x in coordinate.reg) {
+			if (y in coordinate.reg[x]) {
+				return coordinate.reg[x][y];
+			}
+		} else {
+			coordinate.reg[x] = {};
 		}
-	} else {
-		coordinatereg[x] = {};
+
+		let svg = xhr2xml(coordinate.xml);
+
+		coordinate.newpath(x, 0, svg);
+		coordinate.newpath(y, 1, svg);
+
+		coordinate.reg[x][y] = svg.getElementsByTagName('svg')[0];
+		return coordinate.reg[x][y];
+	},
+	newpath: function (ls, gn, svg) {
+		let len = latin[ls].length;
+		for (let i = 0; i < len; i++) {
+			let path = svg.createElementNS('http://www.w3.org/2000/svg', 'path');
+			path.setAttribute('d', 'M-80-80' + latin[ls][i]);
+			svg.getElementsByTagName('g')[gn].appendChild(path);
+		}
 	}
-
-	let svg = xhr2xml(coordinatexml);
-
-	latinnew(x, 0, svg);
-	latinnew(y, 1, svg);
-
-	coordinatereg[x][y] = svg.getElementsByTagName('svg')[0];
-	return coordinatereg[x][y];
-}
+};

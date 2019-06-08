@@ -211,11 +211,11 @@ puzzle.setting = function () {
 
 	for (let i = 0; i < puzzle.len; i++) {
 		if (savedata.mod == 'number') {
-			main.appendChild(numberstyle(i + 1));
+			main.appendChild(number.style(i + 1));
 		} else if (savedata.mod == 'coordinate') {
-			main.appendChild(coordinatestyle(String.fromCharCode(Math.floor(i / savedata.len + 65)), String.fromCharCode(i % savedata.len + 65)));
+			main.appendChild(coordinate.style(String.fromCharCode(Math.floor(i / savedata.len + 65)), String.fromCharCode(i % savedata.len + 65)));
 		} else if (savedata.mod == 'hostimage' || savedata.mod == 'netimage') {
-			main.appendChild(imagestyle(savedata.len, puzzlesize, i % savedata.len, Math.floor(i / savedata.len)));
+			main.appendChild(image.style(savedata.len, puzzlesize, i % savedata.len, Math.floor(i / savedata.len)));
 		}
 	}
 
@@ -548,15 +548,15 @@ window.onload = function () {
 	};
 	generator(function* () {
 		yield {
-			nextfunc: numberxmlinitial,
+			nextfunc: number.initial,
 			cbfunc: function () { }
 		};
 		yield {
-			nextfunc: coordinatexmlinitial,
+			nextfunc: coordinate.initial,
 			cbfunc: function () { }
 		};
 		yield {
-			nextfunc: imagexmlinitial,
+			nextfunc: image.initial,
 			cbfunc: function () { }
 		};
 		let data = {};
