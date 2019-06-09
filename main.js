@@ -652,6 +652,8 @@ window.onkeydown = function () {
 	if (key == 27)
 		puzzle.reset();
 	if (key in direction) {
+		if (puzzle.status == 'complete')
+			return;
 		let d = direction[key];
 		let x = puzzle.none % savedata.len;
 		let y = Math.floor(puzzle.none / savedata.len);
