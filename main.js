@@ -655,8 +655,10 @@ window.onkeydown = function () {
 		let d = direction[key];
 		let x = puzzle.none % savedata.len;
 		let y = Math.floor(puzzle.none / savedata.len);
-		if (x + d.x < 0 || y + d.y < 0 || x + d.x >= savedata.len || y + d.y >= savedata.len)
+		if (x + d.x < 0 || y + d.y < 0 || x + d.x >= savedata.len || y + d.y >= savedata.len) {
+			soundeffect.play(false);
 			return;
-		puzzle.move(puzzle.indexOf(x + d.x + (y + d.y) * savedata.len));
+		}
+		puzzle.move(puzzle.seat.indexOf(x + d.x + (y + d.y) * savedata.len));
 	}
 };
