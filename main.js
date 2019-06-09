@@ -41,22 +41,25 @@ var direction = {
 	39: { x: -1, y: 0 },
 	40: { x: 0, y: -1 }
 };
-
-function playsoundeffect(ismove) {
-	if (savedata.soundeffect == false)
-		return;
-	try {
-		let se;
+var soundeffect = {
+	move: new Audio(),
+	warning: new Audio(),
+	initial: function () {
+		loadsound('soundeffect/move.wav', function (src) {
+			soundeffect.move.src = src;
+		});
+		loadsound('soundeffect/warning.wav', function (src) {
+			soundeffect.warning.src = src;
+		});
+	},
+	play: function (ismove) {
 		if (ismove) {
-			se = new Audio('soundeffect/move.wav');
+			soundeffect.move.cloneNode().play();
 		} else {
-			se = new Audio('soundeffect/warning.wav');
+			soundeffect.warning.cloneNode().play();
 		}
-		se.play();
-	} catch (err) {
-		console.log(err.message);
 	}
-}
+};
 
 function setfoundation() {
 	let fm = Math.min(window.innerWidth / 600, window.innerHeight / 800, 1.5);
@@ -334,7 +337,7 @@ puzzle.move = function (i) {
 	if (puzzle.status == 'complete')
 		return;
 	sw.start;
-	playsoundeffect(puzzle._move(i));
+	soundeffect.play(puzzle._move(i));
 	let iscomplete = function () {
 		for (let i = 0; i < puzzle.len; i++) {
 			if (puzzle.seat[i] != i)
@@ -556,6 +559,7 @@ window.onload = function () {
 	};
 	sw = new Stopwatch(stopwatch);
 	language.initial();
+	soundeffect.initial();
 
 	let l = getCookie('len');
 	if (l != '' && !isNaN(l) && l >= 3 && l <= 10) {

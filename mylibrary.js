@@ -114,3 +114,15 @@ function getimgsize(imgsrc, callback) {
 	};
 	a.src = imgsrc;
 }
+function loadsound(src, callback) {
+	let xhr = new XMLHttpRequest();
+	xhr.open('GET', src);
+	xhr.responseType = "blob";
+	xhr.send();
+	xhr.onreadystatechange = function () {
+		if (xhr.readyState === 4) {
+			let blob = this.response;
+			callback(URL.createObjectURL(blob));
+		}
+	}
+}
