@@ -53,6 +53,8 @@ var soundeffect = {
 		});
 	},
 	play: function (ismove) {
+		if (savedata.soundeffect == false)
+			return;
 		if (ismove) {
 			soundeffect.move.cloneNode().play();
 		} else {
