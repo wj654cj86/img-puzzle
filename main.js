@@ -193,13 +193,13 @@ puzzle.setseat = function () {
 };
 puzzle.setting = function () {
 	if (savedata.mod == 'number' || savedata.mod == 'coordinate') {
+		preview.style.transition = 'all 0ms';
 		preview.style.opacity = 0;
 		preview.style.zIndex = 1;
 	} else if (savedata.mod == 'hostimage' || savedata.mod == 'netimage') {
+		preview.style.transition = 'all 0ms';
 		preview.style.opacity = 1;
 		preview.style.zIndex = 3;
-		preview.style.transition = 'all ' + savedata.delay + 'ms';
-
 		refpreview.setAttribute('viewBox', [-imgdata.maximum / 2, -imgdata.maximum / 2, imgdata.maximum, imgdata.maximum].join(' '));
 		let ref = refpreview.getElementsByTagName('image')[0];
 		ref.setAttribute('x', -imgdata.width / 2);
@@ -285,55 +285,83 @@ puzzle._move = function (i) {
 	return ismove;
 };
 puzzle.random = function () {
-	complete.innerHTML = '';
-	puzzle.status = 'random';
-	sw.reset;
-	if (savedata.mod == 'hostimage' || savedata.mod == 'netimage') {
-		preview.style.opacity = 0;
-		preview.style.zIndex = 1;
-	}
-	puzzle._reset();
-	Math.floor(Math.random() * 4);
-	for (let i = 0; i < puzzle.len; i++) {
-		let j = Math.floor(Math.random() * puzzle.len);
-		let t = puzzle.seat[i];
-		puzzle.seat[i] = puzzle.seat[j];
-		puzzle.seat[j] = t;
-	}
-	let count = 0;
-	for (let i = 0; i < puzzle.len; i++) {
-		for (let j = i + 1; j < puzzle.len; j++) {
-			if (puzzle.seat[i] > puzzle.seat[j]) {
-				count++;
+	generator(function* () {
+		if (savedata.mod == 'hostimage' || savedata.mod == 'netimage') {
+			random.onclick = function () { };
+			reset.onclick = function () { };
+			preview.style.transition = 'all ' + savedata.delay + 'ms';
+			preview.style.opacity = 0;
+			preview.style.zIndex = 1;
+			if (puzzle.status == 'complete')
+				yield {
+					nextfunc: function (...args) {
+						setTimeout(...args);
+					},
+					cbfunc: function () { },
+					argsback: [savedata.delay]
+				};
+			random.onclick = puzzle.random;
+			reset.onclick = puzzle.reset;
+		}
+		complete.innerHTML = '';
+		puzzle.status = 'random';
+		sw.reset;
+		puzzle._reset();
+		Math.floor(Math.random() * 4);
+		for (let i = 0; i < puzzle.len; i++) {
+			let j = Math.floor(Math.random() * puzzle.len);
+			let t = puzzle.seat[i];
+			puzzle.seat[i] = puzzle.seat[j];
+			puzzle.seat[j] = t;
+		}
+		let count = 0;
+		for (let i = 0; i < puzzle.len; i++) {
+			for (let j = i + 1; j < puzzle.len; j++) {
+				if (puzzle.seat[i] > puzzle.seat[j]) {
+					count++;
+				}
 			}
 		}
-	}
-	if (count % 2) {
-		let t = puzzle.seat[0];
-		puzzle.seat[0] = puzzle.seat[1];
-		puzzle.seat[1] = t;
-	}
-	puzzle.setseat();
-	let r;
-	r = Math.floor(Math.random() * savedata.len);
-	if (r) {
-		puzzle._move(puzzle.seat.indexOf(puzzle.none - r));
-	}
-	r = Math.floor(Math.random() * savedata.len);
-	if (r) {
-		puzzle._move(puzzle.seat.indexOf(puzzle.none - r * savedata.len));
-	}
+		if (count % 2) {
+			let t = puzzle.seat[0];
+			puzzle.seat[0] = puzzle.seat[1];
+			puzzle.seat[1] = t;
+		}
+		puzzle.setseat();
+		let r;
+		r = Math.floor(Math.random() * savedata.len);
+		if (r) {
+			puzzle._move(puzzle.seat.indexOf(puzzle.none - r));
+		}
+		r = Math.floor(Math.random() * savedata.len);
+		if (r) {
+			puzzle._move(puzzle.seat.indexOf(puzzle.none - r * savedata.len));
+		}
+	});
 };
 puzzle.reset = function () {
-	if (savedata.mod == 'hostimage' || savedata.mod == 'netimage') {
-		preview.style.opacity = 1;
-		preview.style.zIndex = 3;
-	}
-	complete.innerHTML = '';
-	puzzle.status = 'complete';
-	sw.reset;
-	puzzle._reset();
-	puzzle.setseat();
+	generator(function* () {
+		complete.innerHTML = '';
+		puzzle.status = 'complete';
+		sw.reset;
+		puzzle._reset();
+		puzzle.setseat();
+		if (savedata.mod == 'hostimage' || savedata.mod == 'netimage') {
+			random.onclick = function () { };
+			reset.onclick = function () { };
+			yield {
+				nextfunc: function (...args) {
+					setTimeout(...args);
+				},
+				cbfunc: function () { },
+				argsback: [savedata.delay]
+			};
+			random.onclick = puzzle.random;
+			reset.onclick = puzzle.reset;
+			preview.style.opacity = 1;
+			preview.style.zIndex = 3;
+		}
+	});
 };
 puzzle.move = function (i) {
 	if (puzzle.status == 'complete')
@@ -348,13 +376,26 @@ puzzle.move = function (i) {
 		return true;
 	}
 	if (iscomplete()) {
-		complete.innerHTML = language.reg.complete;
-		puzzle.status = 'complete';
-		sw.stop;
-		if (savedata.mod == 'hostimage' || savedata.mod == 'netimage') {
-			preview.style.opacity = 1;
-			preview.style.zIndex = 3;
-		}
+		generator(function* () {
+			complete.innerHTML = language.reg.complete;
+			puzzle.status = 'complete';
+			sw.stop;
+			if (savedata.mod == 'hostimage' || savedata.mod == 'netimage') {
+				random.onclick = function () { };
+				reset.onclick = function () { };
+				yield {
+					nextfunc: function (...args) {
+						setTimeout(...args);
+					},
+					cbfunc: function () { },
+					argsback: [savedata.delay]
+				};
+				random.onclick = puzzle.random;
+				reset.onclick = puzzle.reset;
+				preview.style.opacity = 1;
+				preview.style.zIndex = 3;
+			}
+		});
 	}
 };
 
@@ -650,9 +691,9 @@ window.onload = function () {
 window.onkeydown = function () {
 	key = event.keyCode;
 	if (key == 13)
-		puzzle.random();
+		random.click();
 	if (key == 27)
-		puzzle.reset();
+		reset.click();
 	if (key in direction) {
 		if (puzzle.status == 'complete')
 			return;
