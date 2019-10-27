@@ -1,0 +1,14 @@
+{
+	"name": "Image-Puzzle",
+	"short_name": "ImagePuzzle",
+	"start_url": "./index.html",
+	"background_color": "#77f",
+	"display": "fullscreen",
+	"icons": [
+		{
+			"src": "icon.png",
+			"sizes": "378x378",
+			"type": "image/png"
+		}
+	]
+}

@@ -1,9 +1,16 @@
+html {
+	touch-action: none;
+}
+
 body {
 	position: relative;
 	margin: 0;
+	background-color: #77f;
 }
 
-#foundation, #settingfoundation, #cannotuseie {
+#foundation,
+#settingfoundation,
+#cannotuseie {
 	position: absolute;
 	width: 600px;
 	height: 800px;
@@ -48,7 +55,8 @@ body {
 	top: 0px;
 }
 
-#stopwatch, #complete {
+#stopwatch,
+#complete {
 	position: absolute;
 	height: 100px;
 	line-height: 50px;
@@ -75,7 +83,9 @@ body {
 	height: 600px;
 }
 
-#refpreview, #preview, #refpiece {
+#refpreview,
+#preview,
+#refpiece {
 	position: absolute;
 	width: 600px;
 	height: 600px;
@@ -115,7 +125,13 @@ body {
 	font-size: 40px;
 }
 
-#spanlanguage, #spanlen, #spandelay, #spansoundeffect, #spanmod, #spanhostimage, #spannetimage {
+#spanlanguage,
+#spanlen,
+#spandelay,
+#spansoundeffect,
+#spanmod,
+#spanhostimage,
+#spannetimage {
 	position: absolute;
 	text-align: right;
 	width: 250px;
@@ -124,7 +140,8 @@ body {
 	font-size: 40px;
 }
 
-#nowlen, #nowdelay {
+#nowlen,
+#nowdelay {
 	position: absolute;
 	width: 250px;
 	height: 80px;
@@ -249,7 +266,8 @@ body {
 	z-index: 0;
 }
 
-#author, #provider {
+#author,
+#provider {
 	position: absolute;
 	text-align: right;
 	width: 550px;
