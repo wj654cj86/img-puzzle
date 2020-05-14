@@ -56,9 +56,11 @@ var soundeffect = {
 		if (savedata.soundeffect == false)
 			return;
 		if (ismove) {
-			soundeffect.move.cloneNode().play();
+			soundeffect.move.currentTime = 0;
+			soundeffect.move.play();
 		} else {
-			soundeffect.warning.cloneNode().play();
+			soundeffect.warning.currentTime = 0;
+			soundeffect.warning.play();
 		}
 	}
 };
