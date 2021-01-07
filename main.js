@@ -309,7 +309,6 @@ puzzle.random = function () {
 		puzzle.status = 'random';
 		sw.reset;
 		puzzle._reset();
-		Math.floor(Math.random() * 4);
 		for (let i = 0; i < puzzle.len; i++) {
 			let j = Math.floor(Math.random() * puzzle.len);
 			let t = puzzle.seat[i];
