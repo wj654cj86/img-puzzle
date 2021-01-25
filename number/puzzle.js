@@ -30,7 +30,7 @@ var number = {
 	text: {},
 	reg: [],
 	initial: function (callback) {
-		openfiletotext("number/style.svg", function (text) {
+		openfile("number/style.svg", function (text) {
 			number.text = text;
 			let piece = document.createElementNS('http://www.w3.org/2000/svg', 'path');
 			piece.setAttribute('d', 'M10,0L7,3L-7,3L-10,0L-7-3L7-3z');

@@ -2,7 +2,7 @@ var image = {
 	text: {},
 	reg: {},
 	initial: function (callback) {
-		openfiletotext("imagecode/style.svg", function (text) {
+		openfile("imagecode/style.svg", function (text) {
 			image.text = text;
 			callback();
 		});

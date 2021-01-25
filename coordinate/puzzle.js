@@ -37,7 +37,7 @@ var coordinate = {
 	text: {},
 	reg: {},
 	initial: function (callback) {
-		openfiletotext("coordinate/style.svg", function (text) {
+		openfile("coordinate/style.svg", function (text) {
 			coordinate.text = text;
 			let cp = document.createElementNS('http://www.w3.org/2000/svg', 'clipPath');
 			cp.setAttribute('id', 'latinmask');
