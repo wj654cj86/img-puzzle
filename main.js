@@ -1,10 +1,6 @@
 var geturl = url2array();
 var sw;
 
-var language = {
-	reg: {}
-};
-
 var savedata = {
 	language: 'zh-Hant',
 	mod: 'number',
@@ -26,21 +22,13 @@ var imgdata = {
 	y: 0
 };
 
-var puzzle = {
-	seat: [],
-	none: 0,
-	len: 0,
-	status: 'complete',
-	ref: [],
-	addr: []
+var direction = {
+	'ArrowLeft': { x: 1, y: 0 },
+	'ArrowUp': { x: 0, y: 1 },
+	'ArrowRight': { x: -1, y: 0 },
+	'ArrowDown': { x: 0, y: -1 }
 };
 
-var direction = {
-	37: { x: 1, y: 0 },
-	38: { x: 0, y: 1 },
-	39: { x: -1, y: 0 },
-	40: { x: 0, y: -1 }
-};
 var soundeffect = {
 	move: new Audio(),
 	warning: new Audio(),
@@ -72,8 +60,8 @@ function setfoundation() {
 }
 
 function setnowlenHTML(sl) {
-	nowlen.innerHTML = sl * sl - 1 + language.reg.unit
-		+ language.reg.frontbracket + sl + language.reg.time + sl + language.reg.backbracket;
+	nowlen.innerHTML = sl * sl - 1 + language.reg[setdata.language].unit
+		+ language.reg[setdata.language].frontbracket + sl + language.reg[setdata.language].time + sl + language.reg[setdata.language].backbracket;
 }
 
 function setimagesize(width, height) {
@@ -81,326 +69,70 @@ function setimagesize(width, height) {
 	imgdata.height = height;
 	imgdata.maximum = Math.max(imgdata.width, imgdata.height);
 }
-
-language.setting = function (lk, callback) {
-	generator(function* () {
-		if (lk in languagelist) {
-			let languagefilepath = 'language/' + lk + '.json';
-			yield {
-				nextfunc: openfile,
-				argsfront: [languagefilepath],
-				cbfunc: function (str) {
-					Object.assign(language.reg, JSON.parse(str));
-					nowlanguage.value = lk;
-				}
-			};
-		}
-		document.title = language.reg.imgpuzzle;
-		setting.value = language.reg.setting;
-		random.value = language.reg.random;
-		reset.value = language.reg.reset;
-		full.value = language.reg.full;
-		spanlanguage.innerHTML = language.reg.languagesetting;
-		spanlen.innerHTML = language.reg.len;
-		spandelay.innerHTML = language.reg.delay;
-		spansoundeffect.innerHTML = language.reg.soundeffect;
-		spanmod.innerHTML = language.reg.mod;
-		spannetimage.innerHTML = language.reg.imgsrc;
-		author.innerHTML = language.reg.spanauthor + language.reg.author;
-		provider.innerHTML = language.reg.spanprovider + language.reg.provider;
-		determine.value = language.reg.determine;
-		cancel.value = language.reg.cancel;
-
-		setnowlenHTML(setdata.len);
-		nowdelay.innerHTML = setdata.delay + language.reg.ms;
-
-		let nowmodoption = nowmod.getElementsByTagName("option");
-		nowmodoption[0].innerHTML = language.reg.number;
-		nowmodoption[1].innerHTML = language.reg.coordinate;
-		nowmodoption[2].innerHTML = language.reg.hostimage;
-		nowmodoption[3].innerHTML = language.reg.netimage;
-
-		setting.style.fontSize = language.reg.fontsize;
-		random.style.fontSize = language.reg.fontsize;
-		reset.style.fontSize = language.reg.fontsize;
-		full.style.fontSize = language.reg.fontsize;
-		stopwatch.style.fontSize = language.reg.fontsize;
-		complete.style.fontSize = language.reg.fontsize;
-		spanlanguage.style.fontSize = language.reg.fontsize;
-		nowlanguage.style.fontSize = language.reg.fontsize;
-		spanlen.style.fontSize = language.reg.fontsize;
-		nowlen.style.fontSize = language.reg.fontsize;
-		spandelay.style.fontSize = language.reg.fontsize;
-		nowdelay.style.fontSize = language.reg.fontsize;
-		spansoundeffect.style.fontSize = language.reg.fontsize;
-		spanmod.style.fontSize = language.reg.fontsize;
-		nowmod.style.fontSize = language.reg.fontsize;
-		spanhostimage.style.fontSize = language.reg.fontsize;
-		hostfile.style.fontSize = language.reg.fontsize;
-		spannetimage.style.fontSize = language.reg.fontsize;
-		netfile.style.fontSize = language.reg.fontsize;
-		author.style.fontSize = language.reg.fontsize;
-		provider.style.fontSize = language.reg.fontsize;
-		determine.style.fontSize = language.reg.fontsize;
-		cancel.style.fontSize = language.reg.fontsize;
-		callback();
-	});
-};
-language.change = function () {
-	setdata.language = nowlanguage.value;
+async function changelanguage(lang) {
+	setdata.language = lang;
 	if (setdata.language == 'zh-Hant') {
 		delete geturl.lang;
 	} else {
 		geturl.lang = setdata.language;
 	}
 	array2url(geturl);
-	language.setting(nowlanguage.value, function () { });
-};
-language.initial = function () {
-	generator(function* () {
-		yield {
-			nextfunc: openfile,
-			argsfront: ['language/zh-Hant.json'],
-			cbfunc: function (str) {
-				language.reg = JSON.parse(str);
-				nowlanguage.value = 'zh-Hant';
-			}
-		};
+	await language.setting(setdata.language);
+	loadlanguage();
+}
+function loadlanguage() {
+	let reg = language.reg[setdata.language];
+	document.title = reg.imgpuzzle;
+	setting.value = reg.setting;
+	random.value = reg.random;
+	reset.value = reg.reset;
+	full.value = reg.full;
+	spanlanguage.innerHTML = reg.languagesetting;
+	spanlen.innerHTML = reg.len;
+	spandelay.innerHTML = reg.delay;
+	spansoundeffect.innerHTML = reg.soundeffect;
+	spanmod.innerHTML = reg.mod;
+	spannetimage.innerHTML = reg.imgsrc;
+	author.innerHTML = reg.spanauthor + reg.author;
+	provider.innerHTML = reg.spanprovider + reg.provider;
+	determine.value = reg.determine;
+	cancel.value = reg.cancel;
 
-		for (let key in languagelist) {
-			let lo = document.createElement("option");
-			lo.value = key;
-			lo.innerHTML = languagelist[key];
-			nowlanguage.appendChild(lo);
-		}
+	setnowlenHTML(setdata.len);
+	nowdelay.innerHTML = setdata.delay + reg.ms;
 
-		language.setting(geturl.lang, function () {
-			savedata.language = nowlanguage.value;
-			nowlanguage.onchange = language.change;
-		});
-	});
-};
-puzzle._reset = function () {
-	puzzle.seat = [];
-	for (let i = 0; i < puzzle.len; i++) {
-		puzzle.seat[i] = i;
-	}
-	puzzle.none = puzzle.len;
-};
-puzzle.setseat = function () {
-	for (let i = 0; i < puzzle.len; i++) {
-		puzzle.ref[i].style.top = puzzle.addr[puzzle.seat[i]].top;
-		puzzle.ref[i].style.left = puzzle.addr[puzzle.seat[i]].left;
-	}
-};
-puzzle.setting = function () {
-	if (savedata.mod == 'number' || savedata.mod == 'coordinate') {
-		preview.style.transition = 'all 0ms';
-		preview.style.opacity = 0;
-		preview.style.zIndex = 1;
-	} else if (savedata.mod == 'hostimage' || savedata.mod == 'netimage') {
-		preview.style.transition = 'all 0ms';
-		preview.style.opacity = 1;
-		preview.style.zIndex = 3;
-		refpreview.setAttribute('viewBox', [-imgdata.maximum / 2, -imgdata.maximum / 2, imgdata.maximum, imgdata.maximum].join(' '));
-		let ref = refpreview.getElementsByTagName('image')[0];
-		ref.setAttribute('x', -imgdata.width / 2);
-		ref.setAttribute('y', -imgdata.height / 2);
-		ref.setAttribute('width', imgdata.width);
-		ref.setAttribute('height', imgdata.height);
-		ref.setAttribute('xlink:href', imgdata.src);
-		ref = refpreview.getElementsByTagName('rect')[0];
-		ref.setAttribute('x', -imgdata.maximum / 2);
-		ref.setAttribute('y', -imgdata.maximum / 2);
-		ref.setAttribute('width', imgdata.maximum);
-		ref.setAttribute('height', imgdata.maximum);
-	}
-	main.innerHTML = '';
-	complete.innerHTML = '';
-	puzzle.status = 'complete';
-	sw.reset;
-	puzzle.len = savedata.len * savedata.len - 1;
-	let count;
-	let puzzlesize = 600 / savedata.len;
-	puzzle._reset();
-	puzzle.addr = [];
-	count = 0;
-	for (let i = 0; i < savedata.len; i++) {
-		for (let j = 0; j < savedata.len; j++) {
-			puzzle.addr[count] = {
-				left: puzzlesize * j + 'px',
-				top: puzzlesize * i + 'px'
-			};
-			count++;
-		}
-	}
+	let nowmodoption = nowmod.getElementsByTagName("option");
+	nowmodoption[0].innerHTML = reg.number;
+	nowmodoption[1].innerHTML = reg.coordinate;
+	nowmodoption[2].innerHTML = reg.hostimage;
+	nowmodoption[3].innerHTML = reg.netimage;
 
-	for (let i = 0; i < puzzle.len; i++) {
-		if (savedata.mod == 'number') {
-			main.appendChild(number.style(i + 1));
-		} else if (savedata.mod == 'coordinate') {
-			main.appendChild(coordinate.style(String.fromCharCode(Math.floor(i / savedata.len + 65)), String.fromCharCode(i % savedata.len + 65)));
-		} else if (savedata.mod == 'hostimage' || savedata.mod == 'netimage') {
-			main.appendChild(image.style(savedata.len, puzzlesize, i % savedata.len, Math.floor(i / savedata.len)));
-		}
-	}
+	setting.style.fontSize = reg.fontsize;
+	random.style.fontSize = reg.fontsize;
+	reset.style.fontSize = reg.fontsize;
+	full.style.fontSize = reg.fontsize;
+	stopwatch.style.fontSize = reg.fontsize;
+	complete.style.fontSize = reg.fontsize;
+	spanlanguage.style.fontSize = reg.fontsize;
+	nowlanguage.style.fontSize = reg.fontsize;
+	spanlen.style.fontSize = reg.fontsize;
+	nowlen.style.fontSize = reg.fontsize;
+	spandelay.style.fontSize = reg.fontsize;
+	nowdelay.style.fontSize = reg.fontsize;
+	spansoundeffect.style.fontSize = reg.fontsize;
+	spanmod.style.fontSize = reg.fontsize;
+	nowmod.style.fontSize = reg.fontsize;
+	spanhostimage.style.fontSize = reg.fontsize;
+	hostfile.style.fontSize = reg.fontsize;
+	spannetimage.style.fontSize = reg.fontsize;
+	netfile.style.fontSize = reg.fontsize;
+	author.style.fontSize = reg.fontsize;
+	provider.style.fontSize = reg.fontsize;
+	determine.style.fontSize = reg.fontsize;
+	cancel.style.fontSize = reg.fontsize;
+}
 
-	let puzzletagarr = main.getElementsByTagName('svg');
-	puzzle.ref = [];
-	for (let i = 0; i < puzzle.len; i++) {
-		puzzle.ref[i] = puzzletagarr[i];
-		puzzle.ref[i].style.width = puzzlesize + 'px';
-		puzzle.ref[i].style.height = puzzlesize + 'px';
-		puzzle.ref[i].style.transition = 'all ' + savedata.delay + 'ms';
-		puzzle.ref[i].onmousedown = function () {
-			puzzle.move(i);
-		};
-		puzzle.ref[i].ontouchstart = function () {
-			puzzle.move(i);
-		};
-	}
-	puzzle.setseat();
-};
-puzzle._move = function (i) {
-	let destination = puzzle.seat[i];
-	let ix = destination % savedata.len;
-	let iy = Math.floor(destination / savedata.len);
-	let x = puzzle.none % savedata.len;
-	let y = Math.floor(puzzle.none / savedata.len);
-	let ismove = false;
-	let move = function (m) {
-		while (destination != puzzle.none) {
-			let nnull = puzzle.none + m;
-			let ref = puzzle.seat.indexOf(nnull);
-			puzzle.seat[ref] = puzzle.none;
-			puzzle.none = nnull;
-			puzzle.ref[ref].style.top = puzzle.addr[puzzle.seat[ref]].top;
-			puzzle.ref[ref].style.left = puzzle.addr[puzzle.seat[ref]].left;
-			ismove = true;
-		}
-	}
-	if (ix == x) {
-		move(Math.sign(iy - y) * savedata.len);
-	} else if (iy == y) {
-		move(Math.sign(ix - x) * 1);
-	}
-	return ismove;
-};
-puzzle.random = function () {
-	generator(function* () {
-		if (savedata.mod == 'hostimage' || savedata.mod == 'netimage') {
-			random.onclick = function () { };
-			reset.onclick = function () { };
-			preview.style.transition = 'all ' + savedata.delay + 'ms';
-			preview.style.opacity = 0;
-			preview.style.zIndex = 1;
-			if (puzzle.status == 'complete')
-				yield {
-					nextfunc: function (...args) {
-						setTimeout(...args);
-					},
-					cbfunc: function () { },
-					argsback: [savedata.delay]
-				};
-			random.onclick = puzzle.random;
-			reset.onclick = puzzle.reset;
-		}
-		complete.innerHTML = '';
-		puzzle.status = 'random';
-		sw.reset;
-		puzzle._reset();
-		for (let i = 0; i < puzzle.len; i++) {
-			let j = Math.floor(Math.random() * puzzle.len);
-			let t = puzzle.seat[i];
-			puzzle.seat[i] = puzzle.seat[j];
-			puzzle.seat[j] = t;
-		}
-		let count = 0;
-		for (let i = 0; i < puzzle.len; i++) {
-			for (let j = i + 1; j < puzzle.len; j++) {
-				if (puzzle.seat[i] > puzzle.seat[j]) {
-					count++;
-				}
-			}
-		}
-		if (count % 2) {
-			let t = puzzle.seat[0];
-			puzzle.seat[0] = puzzle.seat[1];
-			puzzle.seat[1] = t;
-		}
-		puzzle.setseat();
-		let r;
-		r = Math.floor(Math.random() * savedata.len);
-		if (r) {
-			puzzle._move(puzzle.seat.indexOf(puzzle.none - r));
-		}
-		r = Math.floor(Math.random() * savedata.len);
-		if (r) {
-			puzzle._move(puzzle.seat.indexOf(puzzle.none - r * savedata.len));
-		}
-	});
-};
-puzzle.reset = function () {
-	generator(function* () {
-		complete.innerHTML = '';
-		puzzle.status = 'complete';
-		sw.reset;
-		puzzle._reset();
-		puzzle.setseat();
-		if (savedata.mod == 'hostimage' || savedata.mod == 'netimage') {
-			random.onclick = function () { };
-			reset.onclick = function () { };
-			yield {
-				nextfunc: function (...args) {
-					setTimeout(...args);
-				},
-				cbfunc: function () { },
-				argsback: [savedata.delay]
-			};
-			random.onclick = puzzle.random;
-			reset.onclick = puzzle.reset;
-			preview.style.opacity = 1;
-			preview.style.zIndex = 3;
-		}
-	});
-};
-puzzle.move = function (i) {
-	if (puzzle.status == 'complete')
-		return;
-	sw.start;
-	soundeffect.play(puzzle._move(i));
-	let iscomplete = function () {
-		for (let i = 0; i < puzzle.len; i++) {
-			if (puzzle.seat[i] != i)
-				return false;
-		}
-		return true;
-	}
-	if (iscomplete()) {
-		generator(function* () {
-			complete.innerHTML = language.reg.complete;
-			puzzle.status = 'complete';
-			sw.stop;
-			if (savedata.mod == 'hostimage' || savedata.mod == 'netimage') {
-				random.onclick = function () { };
-				reset.onclick = function () { };
-				yield {
-					nextfunc: function (...args) {
-						setTimeout(...args);
-					},
-					cbfunc: function () { },
-					argsback: [savedata.delay]
-				};
-				random.onclick = puzzle.random;
-				reset.onclick = puzzle.reset;
-				preview.style.opacity = 1;
-				preview.style.zIndex = 3;
-			}
-		});
-	}
-};
-
-window.onload = function () {
+window.onload = async function () {
 	if (navigator.userAgent.search("MSIE") == -1) {
 		cannotuseie.style.zIndex = 0;
 	}
@@ -458,7 +190,7 @@ window.onload = function () {
 		setdata.len = savedata.len;
 		setnowlenHTML(setdata.len);
 		setdata.delay = savedata.delay;
-		nowdelay.innerHTML = setdata.delay + language.reg.ms;
+		nowdelay.innerHTML = setdata.delay + language.reg[setdata.language].ms;
 		nowmod.value = savedata.mod;
 		nowmodonchange();
 		settingfoundation.style.zIndex = 10;
@@ -480,113 +212,96 @@ window.onload = function () {
 	subdelay.onclick = function () {
 		if (setdata.delay > 0) {
 			setdata.delay -= 100;
-			nowdelay.innerHTML = setdata.delay + language.reg.ms;
+			nowdelay.innerHTML = setdata.delay + language.reg[setdata.language].ms;
 		}
 	};
 	adddelay.onclick = function () {
 		if (setdata.delay < 1000) {
 			setdata.delay *= 1;
 			setdata.delay += 100;
-			nowdelay.innerHTML = setdata.delay + language.reg.ms;
+			nowdelay.innerHTML = setdata.delay + language.reg[setdata.language].ms;
 		}
 	};
 
 	nowmod.onchange = nowmodonchange;
-	determine.onclick = function () {
+	determine.onclick = async function () {
 		savedata.language = setdata.language;
-		generator(function* () {
-			let data = {}, url;
-			switch (nowmod.value) {
-				case 'number':
-					savedata.mod = nowmod.value;
-					savedata.len = setdata.len;
-					savedata.delay = setdata.delay;
-					savedata.soundeffect = nowsoundeffect.checked;
-					setCookie('mod', savedata.mod);
-					setCookie('len', savedata.len);
-					setCookie('delay', savedata.delay);
-					setCookie('soundeffect', savedata.soundeffect);
-					puzzle.setting();
+		let data = {}, url;
+		switch (nowmod.value) {
+			case 'number':
+				savedata.mod = nowmod.value;
+				savedata.len = setdata.len;
+				savedata.delay = setdata.delay;
+				savedata.soundeffect = nowsoundeffect.checked;
+				setCookie('mod', savedata.mod);
+				setCookie('len', savedata.len);
+				setCookie('delay', savedata.delay);
+				setCookie('soundeffect', savedata.soundeffect);
+				puzzle.setting();
+				break;
+			case 'coordinate':
+				savedata.mod = nowmod.value;
+				savedata.len = setdata.len;
+				savedata.delay = setdata.delay;
+				savedata.soundeffect = nowsoundeffect.checked;
+				setCookie('mod', savedata.mod);
+				setCookie('len', savedata.len);
+				setCookie('delay', savedata.delay);
+				setCookie('soundeffect', savedata.soundeffect);
+				puzzle.setting();
+				break;
+			case 'hostimage':
+				try {
+					url = URL.createObjectURL(hostfile.files[0]);
+					[data.width, data.height] = await promisearr(getimgsize, url);
+				} catch (err) {
 					break;
-				case 'coordinate':
-					savedata.mod = nowmod.value;
-					savedata.len = setdata.len;
-					savedata.delay = setdata.delay;
-					savedata.soundeffect = nowsoundeffect.checked;
-					setCookie('mod', savedata.mod);
-					setCookie('len', savedata.len);
-					setCookie('delay', savedata.delay);
-					setCookie('soundeffect', savedata.soundeffect);
-					puzzle.setting();
+				}
+
+				if (data.width == -1 || data.height == -1) {
 					break;
-				case 'hostimage':
-					try {
-						url = URL.createObjectURL(hostfile.files[0]);
-						yield {
-							nextfunc: getimgsize,
-							argsfront: [url],
-							cbfunc: function (width, height) {
-								data.width = width;
-								data.height = height;
-							}
-						};
-					} catch (err) {
-						break;
-					}
+				}
 
-					if (data.width == -1 || data.height == -1) {
-						break;
-					}
+				savedata.mod = nowmod.value;
+				savedata.len = setdata.len;
+				savedata.delay = setdata.delay;
+				savedata.soundeffect = nowsoundeffect.checked;
+				imgdata.src = url;
+				setCookie('len', savedata.len);
+				setCookie('delay', savedata.delay);
+				setCookie('soundeffect', savedata.soundeffect);
 
-					savedata.mod = nowmod.value;
-					savedata.len = setdata.len;
-					savedata.delay = setdata.delay;
-					savedata.soundeffect = nowsoundeffect.checked;
-					imgdata.src = url;
-					setCookie('len', savedata.len);
-					setCookie('delay', savedata.delay);
-					setCookie('soundeffect', savedata.soundeffect);
+				setimagesize(data.width, data.height);
+				puzzle.setting();
+				break;
+			case 'netimage':
+				[data.width, data.height] = await promisearr(getimgsize, netfile.value);
 
-					setimagesize(data.width, data.height);
-					puzzle.setting();
+				if (data.width == -1 || data.height == -1) {
 					break;
-				case 'netimage':
-					yield {
-						nextfunc: getimgsize,
-						argsfront: [netfile.value],
-						cbfunc: function (width, height) {
-							data.width = width;
-							data.height = height;
-						}
-					};
+				}
 
-					if (data.width == -1 || data.height == -1) {
-						break;
-					}
+				savedata.mod = nowmod.value;
+				savedata.len = setdata.len;
+				savedata.delay = setdata.delay;
+				savedata.soundeffect = nowsoundeffect.checked;
+				imgdata.src = netfile.value;
+				setCookie('mod', savedata.mod);
+				setCookie('len', savedata.len);
+				setCookie('delay', savedata.delay);
+				setCookie('soundeffect', savedata.soundeffect);
+				setCookie('imgsrc', imgdata.src);
 
-					savedata.mod = nowmod.value;
-					savedata.len = setdata.len;
-					savedata.delay = setdata.delay;
-					savedata.soundeffect = nowsoundeffect.checked;
-					imgdata.src = netfile.value;
-					setCookie('mod', savedata.mod);
-					setCookie('len', savedata.len);
-					setCookie('delay', savedata.delay);
-					setCookie('soundeffect', savedata.soundeffect);
-					setCookie('imgsrc', imgdata.src);
-
-					setimagesize(data.width, data.height);
-					puzzle.setting();
-					break;
-				default:
-					break;
-			}
-			settingfoundation.style.zIndex = 0;
-		});
+				setimagesize(data.width, data.height);
+				puzzle.setting();
+				break;
+			default:
+				break;
+		}
+		settingfoundation.style.zIndex = 0;
 	};
-	cancel.onclick = function () {
-		nowlanguage.value = savedata.language;
-		language.change();
+	cancel.onclick = async function () {
+		await changelanguage(nowlanguage.value = savedata.language);
 		settingfoundation.style.zIndex = 0;
 	};
 
@@ -602,7 +317,13 @@ window.onload = function () {
 		}
 	};
 	sw = new Stopwatch(stopwatch);
-	language.initial();
+	await language.initial(nowlanguage);
+	nowlanguage.value = savedata.language = geturl.lang || 'zh-Hant';
+	await changelanguage(nowlanguage.value);
+	nowlanguage.onchange = async () => {
+		await changelanguage(nowlanguage.value);
+	};
+
 	soundeffect.initial();
 
 	let l = getCookie('len');
@@ -634,77 +355,49 @@ window.onload = function () {
 		setCookie('mod', savedata.mod);
 		puzzle.setting();
 	};
-	generator(function* () {
-		yield {
-			nextfunc: number.initial,
-			cbfunc: function () { }
-		};
-		yield {
-			nextfunc: coordinate.initial,
-			cbfunc: function () { }
-		};
-		yield {
-			nextfunc: image.initial,
-			cbfunc: function () { }
-		};
-		let data = {};
-		switch (m) {
-			case 'number':
-				numberload();
-				break;
-			case 'coordinate':
-				savedata.mod = m;
-				puzzle.setting();
-				break;
-			case 'hostimage':
-				numberload();
-				break;
-			case 'netimage':
-				if (is != '') {
-					yield {
-						nextfunc: getimgsize,
-						argsfront: [is],
-						cbfunc: function (width, height) {
-							data.width = width;
-							data.height = height;
-						}
-					};
-					if (data.width == -1 || data.height == -1) {
-						numberload();
-						break;
-					}
 
-					setimagesize(data.width, data.height);
-
-					savedata.mod = m;
-					netfile.value = imgdata.src = is;
-					puzzle.setting();
-				} else {
+	await number.initial();
+	await coordinate.initial();
+	await image.initial();
+	let data = {};
+	switch (m) {
+		case 'number':
+			numberload();
+			break;
+		case 'coordinate':
+			savedata.mod = m;
+			puzzle.setting();
+			break;
+		case 'hostimage':
+			numberload();
+			break;
+		case 'netimage':
+			if (is != '') {
+				[data.width, data.height] = await promisearr(getimgsize, is);
+				if (data.width == -1 || data.height == -1) {
 					numberload();
+					break;
 				}
-				break;
-			default:
+				setimagesize(data.width, data.height);
+				savedata.mod = m;
+				netfile.value = imgdata.src = is;
+				puzzle.setting();
+			} else {
 				numberload();
-				break;
-		}
-	});
+			}
+			break;
+		default:
+			numberload();
+			break;
+	}
 };
-window.onkeydown = function () {
-	key = event.keyCode;
-	if (key == 13)
-		random.click();
-	if (key == 27)
-		reset.click();
+window.onkeydown = function (e) {
+	key = e.code;
+	if (key == 'Enter')
+		puzzle.random();
+	if (key == 'Escape')
+		puzzle.reset();
 	if (key in direction) {
-		if (puzzle.status == 'complete')
-			return;
-		let d = direction[key];
-		let x = puzzle.none % savedata.len;
-		let y = Math.floor(puzzle.none / savedata.len);
-		if (x + d.x < 0 || y + d.y < 0 || x + d.x >= savedata.len || y + d.y >= savedata.len) {
-			soundeffect.play(false);
-			return;
-		}
-		puzzle.move(puzzle.seat.indexOf(x + d.x + (y + d.y) * savedata.len));
+		puzzle.keymove(direction[key]);
 	}
 };

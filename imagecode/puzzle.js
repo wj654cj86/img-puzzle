@@ -1,40 +1,36 @@
-var image = {
-	text: {},
-	reg: {},
-	initial: function (callback) {
-		openfile("imagecode/style.svg", function (text) {
-			image.text = text;
-			callback();
-		});
-	},
-	style: function (len, puzzlesize, x, y) {
-		if (len in image.reg) {
-			if (x in image.reg[len]) {
-				if (y in image.reg[len][x]) {
-					return image.reg[len][x][y];
+var image = (() => {
+	let str = {},
+		reg = {};
+	async function initial() {
+		str = await promise(openfile, 'imagecode/style.svg');
+	}
+	function style(len, puzzlesize, x, y) {
+		if (len in reg) {
+			if (x in reg[len]) {
+				if (y in reg[len][x]) {
+					return reg[len][x][y];
 				}
 			} else {
-				image.reg[len][x] = {};
+				reg[len][x] = {};
 			}
 		} else {
-			image.reg[len] = {};
-			image.reg[len][x] = {};
+			reg[len] = {};
+			reg[len][x] = {};
 		}
-
-		let svg = text2xml(image.text);
-
+		let svg = text2xml(str);
 		let svgref = svg.getElementsByTagName('svg')[0];
 		svgref.setAttribute('viewBox', [0, 0, puzzlesize, puzzlesize].join(' '));
-
 		let useref = svg.getElementsByTagName('use')[0];
 		useref.setAttribute('x', - puzzlesize * x);
 		useref.setAttribute('y', - puzzlesize * y);
-
 		let rectref = svg.getElementsByTagName('rect')[0];
 		rectref.setAttribute('width', puzzlesize);
 		rectref.setAttribute('height', puzzlesize);
-
-		image.reg[len][x][y] = svgref;
-		return image.reg[len][x][y];
+		reg[len][x][y] = svgref;
+		return reg[len][x][y];
 	}
-};
+	return {
+		initial: initial,
+		style: style
+	};
+})();
