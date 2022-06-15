@@ -75,13 +75,27 @@ function sleep(ms) {
 }
 
 function openfile(url, callback) {
-	if (typeof callback == "undefined") {
-		callback = function (str) { };
-	}
 	let oReq = new XMLHttpRequest();
 	oReq.addEventListener("load", function () {
-		if (oReq.status != 404) {
+		if (this.status != 404) {
 			callback(this.responseText);
+		} else {
+			callback('{}');
+		}
+	});
+	oReq.addEventListener("error", function () {
+		callback('{}');
+	});
+	oReq.open("GET", url);
+	oReq.send();
+}
+
+function openfilebinary(url, callback) {
+	let oReq = new XMLHttpRequest();
+	oReq.responseType = "arraybuffer";
+	oReq.addEventListener("load", function () {
+		if (this.status != 404) {
+			callback(new Uint8Array(this.response));
 		} else {
 			callback('{}');
 		}
@@ -109,10 +123,10 @@ function copyxml(xml) {
 
 function getimgsize(imgsrc, callback) {
 	let a = new Image();
-	a.onload = function () {
+	a.onload = () => {
 		callback(a.naturalWidth, a.naturalHeight);
 	};
-	a.onerror = function () {
+	a.onerror = () => {
 		callback(-1, -1);
 	};
 	a.src = imgsrc;
@@ -120,7 +134,7 @@ function getimgsize(imgsrc, callback) {
 
 function loadimg(imgsrc, callback) {
 	let img = new Image();
-	img.onload = function () {
+	img.onload = () => {
 		callback(img);
 	};
 	img.src = imgsrc;
@@ -131,7 +145,7 @@ function loadsound(src, callback) {
 	xhr.open('GET', src);
 	xhr.responseType = "blob";
 	xhr.send();
-	xhr.onreadystatechange = function () {
+	xhr.onreadystatechange = () => {
 		if (xhr.readyState === 4) {
 			let blob = this.response;
 			callback(URL.createObjectURL(blob));

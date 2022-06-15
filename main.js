@@ -32,15 +32,15 @@ var direction = {
 var soundeffect = {
 	move: new Audio(),
 	warning: new Audio(),
-	initial: function () {
-		loadsound('soundeffect/move.wav', function (src) {
+	initial: () => {
+		loadsound('soundeffect/move.wav', (src) => {
 			soundeffect.move.src = src;
 		});
-		loadsound('soundeffect/warning.wav', function (src) {
+		loadsound('soundeffect/warning.wav', (src) => {
 			soundeffect.warning.src = src;
 		});
 	},
-	play: function (ismove) {
+	play: (ismove) => {
 		if (savedata.soundeffect == false)
 			return;
 		if (ismove) {
@@ -56,7 +56,6 @@ var soundeffect = {
 function setfoundation() {
 	let fm = Math.min(window.innerWidth / 600, window.innerHeight / 800, 1.5);
 	fm = Math.max(fm, 0.25);
-	cannotuseie.style.transform = settingfoundation.style.transform = foundation.style.transform = 'scale(' + fm + ',' + fm + ')';
 }
 
 function setnowlenHTML(sl) {
@@ -132,12 +131,9 @@ function loadlanguage() {
 	cancel.style.fontSize = reg.fontsize;
 }
 
-window.onload = async function () {
-	if (navigator.userAgent.search("MSIE") == -1) {
-		cannotuseie.style.zIndex = 0;
-	}
-	if (typeof geturl['fbclid'] != 'undefined') {
-		delete geturl['fbclid'];
+window.onload = async () => {
+	if (typeof geturl.fbclid != 'undefined') {
+		delete geturl.fbclid;
 		array2url(geturl);
 	}
 
@@ -154,12 +150,12 @@ window.onload = async function () {
 	let ref = preview.getElementsByTagName('use')[0];
 	ref.setAttribute('width', 600);
 	ref.setAttribute('height', 600);
-	main.ondragstart = function () {
+	main.ondragstart = () => {
 		return false;
 	};
 
-	let nowmodonchange = function () {
-		let callback = function (a, b, c) {
+	let nowmodonchange = () => {
+		let callback = (a, b, c) => {
 			spanhostimage.style.zIndex = a;
 			hostfile.style.opacity = b;
 			hostfile.style.zIndex = b;
@@ -186,7 +182,7 @@ window.onload = async function () {
 				break;
 		}
 	};
-	setting.onclick = function () {
+	setting.onclick = () => {
 		setdata.len = savedata.len;
 		setnowlenHTML(setdata.len);
 		setdata.delay = savedata.delay;
@@ -197,25 +193,25 @@ window.onload = async function () {
 	};
 	random.onclick = puzzle.random;
 	reset.onclick = puzzle.reset;
-	subsize.onclick = function () {
+	subsize.onclick = () => {
 		if (setdata.len > 3) {
 			setdata.len--;
 			setnowlenHTML(setdata.len);
 		}
 	};
-	addsize.onclick = function () {
+	addsize.onclick = () => {
 		if (setdata.len < 10) {
 			setdata.len++;
 			setnowlenHTML(setdata.len);
 		}
 	};
-	subdelay.onclick = function () {
+	subdelay.onclick = () => {
 		if (setdata.delay > 0) {
 			setdata.delay -= 100;
 			nowdelay.innerHTML = setdata.delay + language.reg[setdata.language].ms;
 		}
 	};
-	adddelay.onclick = function () {
+	adddelay.onclick = () => {
 		if (setdata.delay < 1000) {
 			setdata.delay *= 1;
 			setdata.delay += 100;
@@ -224,7 +220,7 @@ window.onload = async function () {
 	};
 
 	nowmod.onchange = nowmodonchange;
-	determine.onclick = async function () {
+	determine.onclick = async () => {
 		savedata.language = setdata.language;
 		let data = {}, url;
 		switch (nowmod.value) {
@@ -300,12 +296,12 @@ window.onload = async function () {
 		}
 		settingfoundation.style.zIndex = 0;
 	};
-	cancel.onclick = async function () {
+	cancel.onclick = async () => {
 		await changelanguage(nowlanguage.value = savedata.language);
 		settingfoundation.style.zIndex = 0;
 	};
 
-	full.onclick = function () {
+	full.onclick = () => {
 		if (document.documentElement.requestFullscreen) {
 			document.documentElement.requestFullscreen();
 		} else if (document.documentElement.mozRequestFullScreen) { /* Firefox */
@@ -350,7 +346,7 @@ window.onload = async function () {
 	}
 	let m = getCookie('mod');
 	let is = getCookie('imgsrc');
-	let numberload = function () {
+	let numberload = () => {
 		savedata.mod = 'number';
 		setCookie('mod', savedata.mod);
 		puzzle.setting();
@@ -391,7 +387,7 @@ window.onload = async function () {
 			break;
 	}
 };
-window.onkeydown = function (e) {
+window.onkeydown = (e) => {
 	key = e.code;
 	if (key == 'Enter')
 		puzzle.random();

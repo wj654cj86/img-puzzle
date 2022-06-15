@@ -32,13 +32,15 @@ var language = (() => {
 			});
 		});
 	}
-	function modrt() {
-		return mod;
-	}
 	return {
 		reg: reg,
 		initial: initial,
 		setting: setting,
-		modrt: modrt
+		get mod() {
+			return mod;
+		},
+		set mod(m) {
+			mod = m;
+		}
 	}
 })();
