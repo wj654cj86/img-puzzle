@@ -15,11 +15,11 @@
 		var n = 0, x = 0, y = 0;
 		function numbershow() {
 			numberimg.innerHTML = '';
-			numberimg.appendChild(number.style(n));
+			numberimg.append(number.style(n));
 		}
 		function coordinateshow() {
 			coordinateimg.innerHTML = '';
-			coordinateimg.appendChild(coordinate.style(String.fromCharCode(x + 65), String.fromCharCode(y + 65)));
+			coordinateimg.append(coordinate.style(String.fromCharCode(x + 65), String.fromCharCode(y + 65)));
 		}
 		window.onload = function () {
 			number.initial(numbershow);

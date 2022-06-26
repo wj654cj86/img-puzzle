@@ -35,7 +35,7 @@ var number = (() => {
 		piece.setAttribute('d', 'M10,0L7,3L-7,3L-10,0L-7-3L7-3z');
 		piece.setAttribute('fill', '#a00');
 		piece.setAttribute('id', 'segmentpiece');
-		refpiece.appendChild(piece);
+		refpiece.append(piece);
 		for (let i = 0; i <= 9; i++) {
 			let gref = document.createElementNS('http://www.w3.org/2000/svg', 'g');
 			gref.setAttribute('id', 'segment' + i);
@@ -45,9 +45,9 @@ var number = (() => {
 				let useref = document.createElementNS('http://www.w3.org/2000/svg', 'use');
 				useref.setAttributeNS('http://www.w3.org/1999/xlink', 'xlink:href', '#segmentpiece');
 				useref.setAttribute('transform', segment.seat[j]);
-				gref.appendChild(useref);
+				gref.append(useref);
 			}
-			refpiece.appendChild(gref);
+			refpiece.append(gref);
 		}
 	}
 	function style(n) {
@@ -64,7 +64,7 @@ var number = (() => {
 			let useref = svg.createElementNS('http://www.w3.org/2000/svg', 'use');
 			useref.setAttributeNS('http://www.w3.org/1999/xlink', 'xlink:href', '#segment' + s[i]);
 			useref.setAttribute('transform', segment.number[len - 1][3 - len + i]);
-			svg.getElementsByTagName('svg')[0].appendChild(useref);
+			svg.getElementsByTagName('svg')[0].append(useref);
 		}
 		reg[n] = svg.getElementsByTagName('svg')[0];
 		return reg[n];

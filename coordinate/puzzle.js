@@ -41,8 +41,8 @@ var coordinate = (() => {
 		cp.setAttribute('id', 'latinmask');
 		let path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
 		path.setAttribute('d', 'M-80-80m50,50l50,30v20h-100v-100h100v20z');
-		cp.appendChild(path);
-		refpiece.appendChild(cp);
+		cp.append(path);
+		refpiece.append(cp);
 	}
 	function style(x, y) {
 		if (x in reg) {
@@ -68,7 +68,7 @@ var coordinate = (() => {
 					path.setAttribute('clip-path', 'url(#latinmask)');
 				}
 			}
-			svg.getElementsByTagName('g')[gn].appendChild(path);
+			svg.getElementsByTagName('g')[gn].append(path);
 		}
 	}
 	return {

@@ -62,11 +62,11 @@ var puzzle = (() => {
 
 		for (let i = 0; i < len; i++) {
 			if (savedata.mod == 'number') {
-				main.appendChild(number.style(i + 1));
+				main.append(number.style(i + 1));
 			} else if (savedata.mod == 'coordinate') {
-				main.appendChild(coordinate.style(String.fromCharCode(Math.floor(i / savedata.len + 65)), String.fromCharCode(i % savedata.len + 65)));
+				main.append(coordinate.style(String.fromCharCode(Math.floor(i / savedata.len + 65)), String.fromCharCode(i % savedata.len + 65)));
 			} else if (savedata.mod == 'hostimage' || savedata.mod == 'netimage') {
-				main.appendChild(image.style(savedata.len, puzzlesize, i % savedata.len, Math.floor(i / savedata.len)));
+				main.append(image.style(savedata.len, puzzlesize, i % savedata.len, Math.floor(i / savedata.len)));
 			}
 		}
 
