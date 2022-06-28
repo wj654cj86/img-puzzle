@@ -317,8 +317,8 @@ window.onload = async () => {
 		puzzle.setting();
 	};
 
-	await Promise.all([number.initial(), coordinate.initial(), image.initial()]);
-
+	number.initial();
+	coordinate.initial();
 	let data = {};
 	switch (m) {
 		case 'number':

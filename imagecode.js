@@ -1,9 +1,9 @@
 var image = (() => {
-	let str = {},
+	let str = '<svg viewBox="0 0 100 100">'
+		+ '<use xlink:href="#refpreview" width="600" height="600" />'
+		+ '<rect stroke="#000" stroke-width="4" fill-opacity="0" />'
+		+ '</svg>',
 		reg = {};
-	async function initial() {
-		str = await promise(openfile, 'imagecode/style.svg');
-	}
 	function style(len, puzzlesize, x, y) {
 		if (len in reg) {
 			if (x in reg[len]) {
@@ -17,7 +17,7 @@ var image = (() => {
 			reg[len] = {};
 			reg[len][x] = {};
 		}
-		let svg = text2xml(str).getElementsByTagName('svg')[0];
+		let svg = nodetext2svgnode(str);
 		svg.setAttribute('viewBox', [0, 0, puzzlesize, puzzlesize].join(' '));
 		let use = svg.getElementsByTagName('use')[0];
 		use.setAttribute('x', - puzzlesize * x);
@@ -29,7 +29,6 @@ var image = (() => {
 		return reg[len][x][y];
 	}
 	return {
-		initial: initial,
 		style: style
 	};
 })();

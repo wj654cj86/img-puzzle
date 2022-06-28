@@ -70,13 +70,13 @@ var puzzle = (() => {
 			}
 		}
 
+		main.style.setProperty('--puzzle-width', puzzlesize + 'px');
+		main.style.setProperty('--puzzle-height', puzzlesize + 'px');
+		main.style.setProperty('--puzzle-transition', 'all ' + savedata.delay + 'ms');
 		let puzzletagarr = main.getElementsByTagName('svg');
 		ref = [];
 		for (let i = 0; i < len; i++) {
 			ref[i] = puzzletagarr[i];
-			ref[i].style.width = puzzlesize + 'px';
-			ref[i].style.height = puzzlesize + 'px';
-			ref[i].style.transition = 'all ' + savedata.delay + 'ms';
 			ref[i].onmousedown = function () {
 				move(i);
 			};

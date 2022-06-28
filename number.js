@@ -27,10 +27,12 @@ var number = (() => {
 			['translate(-43,0)', 'translate(-10,0)', 'translate(23,0)']
 		]
 	},
-		str = {},
+		str = '<svg viewBox="-50 -50 100 100">'
+			+ '<rect x="-50" y="-50" width="100" height="100" fill="#777"/>'
+			+ '<rect x="-45" y="-45" width="90" height="90" fill="#000"/>'
+			+ '</svg>',
 		reg = [];
-	async function initial() {
-		str = await promise(openfile, 'number/style.svg');
+	function initial() {
 		let piece = nodetext2svgnode(`<path d="M10,0L7,3L-7,3L-10,0L-7-3L7-3z" fill="#a00" id="segmentpiece"/>`);
 		refpiece.append(piece);
 		for (let i = 0; i <= 9; i++) {
@@ -45,17 +47,15 @@ var number = (() => {
 		}
 	}
 	function style(n) {
-		if (n >= 200) {
-			n = n % 100 + 100;
-		}
 		if (typeof reg[n] == 'string') {
 			return reg[n];
 		}
 		let s = n + '';
 		let len = s.length;
-		let svg = text2xml(str).getElementsByTagName('svg')[0];
+		let svg = nodetext2svgnode(str);
 		for (let i = len - 1; i >= 0; i--) {
-			let use = nodetext2svgnode(`<use xlink:href="#segment${s[i]}" transform="${segment.number[len - 1][3 - len + i]}"/>`);
+			let ts = segment.number[len - 1][3 - len + i];
+			let use = nodetext2svgnode(`<use xlink:href="#segment${s[i]}"${ts != '' ? ` transform="${ts}"` : ''}/>`);
 			svg.append(use);
 		}
 		reg[n] = svg;

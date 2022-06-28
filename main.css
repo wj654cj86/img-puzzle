@@ -105,8 +105,11 @@ select {
 	background-color: #aaa;
 }
 
-#main svg {
+#main > svg {
 	position: absolute;
+	width: var(--puzzle-width);
+	height: var(--puzzle-height);
+	transition : var(--puzzle-transition);
 }
 
 #settingfoundation {
