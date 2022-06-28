@@ -17,16 +17,15 @@ var image = (() => {
 			reg[len] = {};
 			reg[len][x] = {};
 		}
-		let svg = text2xml(str);
-		let svgref = svg.getElementsByTagName('svg')[0];
-		svgref.setAttribute('viewBox', [0, 0, puzzlesize, puzzlesize].join(' '));
-		let useref = svg.getElementsByTagName('use')[0];
-		useref.setAttribute('x', - puzzlesize * x);
-		useref.setAttribute('y', - puzzlesize * y);
-		let rectref = svg.getElementsByTagName('rect')[0];
-		rectref.setAttribute('width', puzzlesize);
-		rectref.setAttribute('height', puzzlesize);
-		reg[len][x][y] = svgref;
+		let svg = text2xml(str).getElementsByTagName('svg')[0];
+		svg.setAttribute('viewBox', [0, 0, puzzlesize, puzzlesize].join(' '));
+		let use = svg.getElementsByTagName('use')[0];
+		use.setAttribute('x', - puzzlesize * x);
+		use.setAttribute('y', - puzzlesize * y);
+		let rect = svg.getElementsByTagName('rect')[0];
+		rect.setAttribute('width', puzzlesize);
+		rect.setAttribute('height', puzzlesize);
+		reg[len][x][y] = svg;
 		return reg[len][x][y];
 	}
 	return {

@@ -37,12 +37,18 @@ var coordinate = (() => {
 		reg = {};
 	async function initial() {
 		str = await promise(openfile, 'coordinate/style.svg');
-		let cp = document.createElementNS('http://www.w3.org/2000/svg', 'clipPath');
-		cp.setAttribute('id', 'latinmask');
-		let path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-		path.setAttribute('d', 'M-80-80m50,50l50,30v20h-100v-100h100v20z');
-		cp.append(path);
+		let cp = nodetext2svgnode(`<clipPath id="latinmask"><path d="M-80-80m50,50l50,30v20h-100v-100h100v20z"></path></clipPath>`);
 		refpiece.append(cp);
+		for (let ls in latin.script) {
+			let g = nodetext2svgnode(`<g id="latin${ls}"></g>`);
+			let len = latin.script[ls].length;
+			for (let i = 0; i < len; i++) {
+				let cpstr = ls in latin.mask && latin.mask[ls][i] == 1 ? ' clip-path="url(#latinmask)"' : '';
+				let path = nodetext2svgnode(`<path d="M-80-80${latin.script[ls][i]}"${cpstr} fill-rule="evenodd"/>`);
+				g.append(path);
+			}
+			refpiece.append(g);
+		}
 	}
 	function style(x, y) {
 		if (x in reg) {
@@ -52,24 +58,15 @@ var coordinate = (() => {
 		} else {
 			reg[x] = {};
 		}
-		let svg = text2xml(str);
+		let svg = text2xml(str).getElementsByTagName('svg')[0];
 		newpath(x, 0, svg);
 		newpath(y, 1, svg);
-		reg[x][y] = svg.getElementsByTagName('svg')[0];
+		reg[x][y] = svg;
 		return reg[x][y];
 	}
 	function newpath(ls, gn, svg) {
-		let len = latin.script[ls].length;
-		for (let i = 0; i < len; i++) {
-			let path = svg.createElementNS('http://www.w3.org/2000/svg', 'path');
-			path.setAttribute('d', 'M-80-80' + latin.script[ls][i]);
-			if (ls in latin.mask) {
-				if (latin.mask[ls][i] == 1) {
-					path.setAttribute('clip-path', 'url(#latinmask)');
-				}
-			}
-			svg.getElementsByTagName('g')[gn].append(path);
-		}
+		let use = nodetext2svgnode(`<use xlink:href="#latin${ls}"/>`);
+		svg.getElementsByTagName('g')[gn].append(use);
 	}
 	return {
 		initial: initial,

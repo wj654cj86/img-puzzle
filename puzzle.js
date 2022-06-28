@@ -14,8 +14,8 @@ var puzzle = (() => {
 	}
 	function setseat() {
 		for (let i = 0; i < len; i++) {
-			ref[i].style.top = addr[seat[i]].top;
 			ref[i].style.left = addr[seat[i]].left;
+			ref[i].style.top = addr[seat[i]].top;
 		}
 	}
 	function setting() {
@@ -99,8 +99,8 @@ var puzzle = (() => {
 				let rref = seat.indexOf(nnull);
 				seat[rref] = none;
 				none = nnull;
-				ref[rref].style.top = addr[seat[rref]].top;
 				ref[rref].style.left = addr[seat[rref]].left;
+				ref[rref].style.top = addr[seat[rref]].top;
 				ismove = true;
 			}
 		}

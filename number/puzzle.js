@@ -31,23 +31,17 @@ var number = (() => {
 		reg = [];
 	async function initial() {
 		str = await promise(openfile, 'number/style.svg');
-		let piece = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-		piece.setAttribute('d', 'M10,0L7,3L-7,3L-10,0L-7-3L7-3z');
-		piece.setAttribute('fill', '#a00');
-		piece.setAttribute('id', 'segmentpiece');
+		let piece = nodetext2svgnode(`<path d="M10,0L7,3L-7,3L-10,0L-7-3L7-3z" fill="#a00" id="segmentpiece"/>`);
 		refpiece.append(piece);
 		for (let i = 0; i <= 9; i++) {
-			let gref = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-			gref.setAttribute('id', 'segment' + i);
+			let g = nodetext2svgnode(`<g id="segment${i}"></g>`);
 			for (let j = 0; j < 7; j++) {
 				if (segment.led[i][j] == 0)
 					continue;
-				let useref = document.createElementNS('http://www.w3.org/2000/svg', 'use');
-				useref.setAttributeNS('http://www.w3.org/1999/xlink', 'xlink:href', '#segmentpiece');
-				useref.setAttribute('transform', segment.seat[j]);
-				gref.append(useref);
+				let use = nodetext2svgnode(`<use xlink:href="#segmentpiece" transform="${segment.seat[j]}"/>`);
+				g.append(use);
 			}
-			refpiece.append(gref);
+			refpiece.append(g);
 		}
 	}
 	function style(n) {
@@ -59,14 +53,12 @@ var number = (() => {
 		}
 		let s = n + '';
 		let len = s.length;
-		let svg = text2xml(str);
+		let svg = text2xml(str).getElementsByTagName('svg')[0];
 		for (let i = len - 1; i >= 0; i--) {
-			let useref = svg.createElementNS('http://www.w3.org/2000/svg', 'use');
-			useref.setAttributeNS('http://www.w3.org/1999/xlink', 'xlink:href', '#segment' + s[i]);
-			useref.setAttribute('transform', segment.number[len - 1][3 - len + i]);
-			svg.getElementsByTagName('svg')[0].append(useref);
+			let use = nodetext2svgnode(`<use xlink:href="#segment${s[i]}" transform="${segment.number[len - 1][3 - len + i]}"/>`);
+			svg.append(use);
 		}
-		reg[n] = svg.getElementsByTagName('svg')[0];
+		reg[n] = svg;
 		return reg[n];
 	}
 	return {

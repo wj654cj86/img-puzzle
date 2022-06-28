@@ -1,4 +1,4 @@
-var	geturl = window.parent.url2array();
+var geturl = window.parent.url2array();
 var sw;
 
 var savedata = {
@@ -77,6 +77,7 @@ async function changelanguage(lang) {
 function loadlanguage() {
 	let reg = language.reg[setdata.language];
 	document.title = reg.imgpuzzle;
+	window.parent.document.title = reg.imgpuzzle;
 	setting.value = reg.setting;
 	random.value = reg.random;
 	reset.value = reg.reset;
@@ -101,29 +102,7 @@ function loadlanguage() {
 	nowmodoption[2].innerHTML = reg.hostimage;
 	nowmodoption[3].innerHTML = reg.netimage;
 
-	setting.style.fontSize = reg.fontsize;
-	random.style.fontSize = reg.fontsize;
-	reset.style.fontSize = reg.fontsize;
-	full.style.fontSize = reg.fontsize;
-	stopwatch.style.fontSize = reg.fontsize;
-	complete.style.fontSize = reg.fontsize;
-	spanlanguage.style.fontSize = reg.fontsize;
-	nowlanguage.style.fontSize = reg.fontsize;
-	spanlen.style.fontSize = reg.fontsize;
-	nowlen.style.fontSize = reg.fontsize;
-	spandelay.style.fontSize = reg.fontsize;
-	nowdelay.style.fontSize = reg.fontsize;
-	spansoundeffect.style.fontSize = reg.fontsize;
-	spanmod.style.fontSize = reg.fontsize;
-	nowmod.style.fontSize = reg.fontsize;
-	spanhostimage.style.fontSize = reg.fontsize;
-	hostfile.style.fontSize = reg.fontsize;
-	spannetimage.style.fontSize = reg.fontsize;
-	netfile.style.fontSize = reg.fontsize;
-	author.style.fontSize = reg.fontsize;
-	provider.style.fontSize = reg.fontsize;
-	determine.style.fontSize = reg.fontsize;
-	cancel.style.fontSize = reg.fontsize;
+	document.body.style.setProperty('--font-size', reg.fontsize);
 }
 
 window.onload = async () => {
@@ -132,12 +111,6 @@ window.onload = async () => {
 		window.parent.array2url(geturl);
 	}
 
-	refpreview.setAttribute('xmlns', "http://www.w3.org/2000/svg");
-	refpreview.setAttribute('xmlns:xlink', "http://www.w3.org/1999/xlink");
-	refpiece.setAttribute('xmlns', "http://www.w3.org/2000/svg");
-	refpiece.setAttribute('xmlns:xlink', "http://www.w3.org/1999/xlink");
-	preview.setAttribute('xmlns', "http://www.w3.org/2000/svg");
-	preview.setAttribute('xmlns:xlink', "http://www.w3.org/1999/xlink");
 	preview.setAttribute('viewBox', '0 0 600 600');
 	let ref = preview.getElementsByTagName('use')[0];
 	ref.setAttribute('width', 600);
@@ -344,9 +317,8 @@ window.onload = async () => {
 		puzzle.setting();
 	};
 
-	await number.initial();
-	await coordinate.initial();
-	await image.initial();
+	await Promise.all([number.initial(), coordinate.initial(), image.initial()]);
+
 	let data = {};
 	switch (m) {
 		case 'number':
