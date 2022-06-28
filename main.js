@@ -1,4 +1,4 @@
-var geturl = url2array();
+var	geturl = window.parent.url2array();
 var sw;
 
 var savedata = {
@@ -53,11 +53,6 @@ var soundeffect = {
 	}
 };
 
-function setfoundation() {
-	let fm = Math.min(window.innerWidth / 600, window.innerHeight / 800, 1.5);
-	fm = Math.max(fm, 0.25);
-}
-
 function setnowlenHTML(sl) {
 	nowlen.innerHTML = sl * sl - 1 + language.reg[setdata.language].unit
 		+ language.reg[setdata.language].frontbracket + sl + language.reg[setdata.language].time + sl + language.reg[setdata.language].backbracket;
@@ -75,7 +70,7 @@ async function changelanguage(lang) {
 	} else {
 		geturl.lang = setdata.language;
 	}
-	array2url(geturl);
+	window.parent.array2url(geturl);
 	await language.setting(setdata.language);
 	loadlanguage();
 }
@@ -134,11 +129,8 @@ function loadlanguage() {
 window.onload = async () => {
 	if (typeof geturl.fbclid != 'undefined') {
 		delete geturl.fbclid;
-		array2url(geturl);
+		window.parent.array2url(geturl);
 	}
-
-	document.body.onresize = setfoundation;
-	setfoundation();
 
 	refpreview.setAttribute('xmlns', "http://www.w3.org/2000/svg");
 	refpreview.setAttribute('xmlns:xlink', "http://www.w3.org/1999/xlink");

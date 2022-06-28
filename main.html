@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
+	<meta charset="utf-8">
+	<title></title>
+	<link rel="manifest" href="manifest.json">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+	<meta name="apple-mobile-web-app-title" content="Weather App">
+	<link rel="apple-touch-icon" href="icon.png">
+	<link href="icon.png" rel="icon">
+	<script src="language/language.js"></script>
+	<script src="number/puzzle.js"></script>
+	<script src="coordinate/puzzle.js"></script>
+	<script src="imagecode/puzzle.js"></script>
+	<script src="mylibrary.js"></script>
+	<script src="stopwatch.js"></script>
+	<script src="puzzle.js"></script>
+	<script src="main.js"></script>
+	<link rel="stylesheet" href="main.css">
+</head>
+
+<body>
+	<div id="foundation">
+		<input type="button" id="setting" />
+		<input type="button" id="random" />
+		<input type="button" id="reset" />
+		<input type="button" id="full" />
+		<span id="stopwatch"></span><span id="complete"></span>
+		<div id="puzzlediv">
+			<svg id="refpreview">
+				<rect fill="#fff" />
+				<image xlink:href="icon.png" />
+			</svg>
+			<svg id="refpiece">
+			</svg>
+			<svg id="preview">
+				<use xlink:href="#refpreview" />
+			</svg>
+			<div id="main"></div>
+		</div>
+	</div>
+	<div id="settingfoundation">
+		<span id="spanlanguage"></span>
+		<select id="nowlanguage">
+		</select>
+		<span id="spanlen"></span>
+		<input type="button" class="addsub" id="subsize" value="-" />
+		<span id="nowlen"></span>
+		<input type="button" class="addsub" id="addsize" value="+" />
+		<span id="spandelay"></span>
+		<input type="button" class="addsub" id="subdelay" value="-" />
+		<span id="nowdelay"></span>
+		<input type="button" class="addsub" id="adddelay" value="+" />
+		<span id="spansoundeffect"></span>
+		<input id="nowsoundeffect" type="checkbox" />
+		<span id="spanmod"></span>
+		<select id="nowmod">
+			<option value="number"></option>
+			<option value="coordinate"></option>
+			<option value="hostimage"></option>
+			<option value="netimage"></option>
+		</select>
+		<span id="spanhostimage"></span>
+		<input id="hostfile" type="file" accept="image/*" />
+		<span id="spannetimage"></span>
+		<input id="netfile" type="text" />
+		<span id="author"></span>
+		<span id="provider"></span>
+		<input type="button" class="determinecancel" id="determine" />
+		<input type="button" class="determinecancel" id="cancel" />
+	</div>
+</body>
+
+</html>
