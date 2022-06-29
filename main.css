@@ -126,7 +126,7 @@ select {
 
 #settingfoundation .determinecancel {
 	position: absolute;
-	width: 200px;
+	width: 250px;
 	height: 80px;
 	background-color: #aaa;
 }
@@ -148,10 +148,11 @@ select {
 #nowlen,
 #nowdelay {
 	position: absolute;
-	width: 250px;
+	width: 350px;
 	height: 80px;
 	text-align: center;
 	line-height: 100px;
+	z-index: -1;
 }
 
 #spanlanguage {
@@ -180,8 +181,6 @@ select {
 #nowlen {
 	left: 250px;
 	top: 80px;
-	width: 350px;
-	z-index: -1;
 }
 
 #addsize {
@@ -200,7 +199,7 @@ select {
 }
 
 #nowdelay {
-	left: 300px;
+	left: 250px;
 	top: 160px;
 }
 
@@ -288,12 +287,12 @@ select {
 }
 
 #determine {
-	left: 200px;
+	left: 100px;
 	top: 720px;
 }
 
 #cancel {
-	left: 400px;
+	left: 350px;
 	top: 720px;
 }
 
