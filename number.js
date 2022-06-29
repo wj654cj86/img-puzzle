@@ -47,7 +47,7 @@ var number = (() => {
 		}
 	}
 	function style(n) {
-		if (typeof reg[n] == 'string') {
+		if (n in reg) {
 			return reg[n];
 		}
 		let s = n + '';

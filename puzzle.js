@@ -4,7 +4,8 @@ var puzzle = (() => {
 		len = 0,
 		status = 'complete',
 		ref = [],
-		addr = [];
+		addr = [],
+		mask = document.createElement('div');
 	function _reset() {
 		seat = [];
 		for (let i = 0; i < len; i++) {
@@ -40,7 +41,7 @@ var puzzle = (() => {
 			ref.setAttribute('width', imgdata.maximum);
 			ref.setAttribute('height', imgdata.maximum);
 		}
-		main.innerHTML = '';
+		mask.append(...main.getElementsByTagName('svg'));
 		complete.innerHTML = '';
 		status = 'complete';
 		sw.reset;
