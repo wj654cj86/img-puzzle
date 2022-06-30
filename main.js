@@ -319,6 +319,7 @@ window.onload = async () => {
 			break;
 	}
 	puzzle.setting();
+	document.body.style.opacity = 1;
 };
 window.onkeydown = (e) => {
 	key = e.code;

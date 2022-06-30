@@ -6,6 +6,7 @@ body {
 	position: relative;
 	margin: 0;
 	background-color: #77f;
+	opacity: 0;
 }
 
 div,
