@@ -20,6 +20,8 @@
 	"hostimage": "上傳圖片版",
 	"netimage": "網路圖片版",
 	"imgsrc": "圖片網址：",
+	"hostimageerror": "上傳圖片錯誤",
+	"netimageerror": "圖片網址錯誤",
 	"determine": "確定",
 	"cancel": "取消",
 	"unit": "個",

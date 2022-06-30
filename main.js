@@ -1,15 +1,43 @@
 var geturl = window.parent.url2array();
+
+var cookie = {
+	lang: getCookie('lang'),
+	mod: getCookie('mod'),
+	len: getCookie('len'),
+	delay: getCookie('delay'),
+	soundeffect: getCookie('soundeffect'),
+	imgsrc: getCookie('imgsrc')
+};
+
 var sw;
 
-var savedata = {
-	language: 'zh-Hant',
+var savedata = new (function (obj, encode) {
+	for (let dataname in obj) {
+		let data = obj[dataname];
+		let ef = dataname in encode ? encode[dataname] : d => d;
+		Object.defineProperty(this, dataname, {
+			set(_data) {
+				data = _data;
+				setCookie(dataname, ef(_data));
+			},
+			get() {
+				return data;
+			}
+		});
+	}
+})({
+	lang: 'zh-Hant',
 	mod: 'number',
 	len: 4,
 	delay: 0,
-	soundeffect: false
-};
+	soundeffect: false,
+	imgsrc: ''
+}, {
+	imgsrc: imgsrc => encodeURIComponent(imgsrc)
+});
+
 var setdata = {
-	language: 'zh-Hant',
+	lang: 'zh-Hant',
 	len: 4,
 	delay: 0
 };
@@ -54,8 +82,11 @@ var soundeffect = {
 };
 
 function setnowlenHTML(sl) {
-	nowlen.innerHTML = sl * sl - 1 + language.reg[setdata.language].unit
-		+ language.reg[setdata.language].frontbracket + sl + language.reg[setdata.language].time + sl + language.reg[setdata.language].backbracket;
+	nowlen.innerHTML = sl * sl - 1 + language.reg[setdata.lang].unit
+		+ language.reg[setdata.lang].frontbracket + sl + language.reg[setdata.lang].time + sl + language.reg[setdata.lang].backbracket;
+}
+function setnowdelayHTML(sd) {
+	nowdelay.innerHTML = sd + language.reg[setdata.lang].ms;
 }
 
 function setimagesize(width, height) {
@@ -63,19 +94,14 @@ function setimagesize(width, height) {
 	imgdata.height = height;
 	imgdata.maximum = Math.max(imgdata.width, imgdata.height);
 }
+
 async function changelanguage(lang) {
-	setdata.language = lang;
-	if (setdata.language == 'zh-Hant') {
-		delete geturl.lang;
-	} else {
-		geturl.lang = setdata.language;
-	}
-	window.parent.array2url(geturl);
-	await language.setting(setdata.language);
+	await language.setting(lang);
+	setdata.lang = language.mod;
 	loadlanguage();
 }
 function loadlanguage() {
-	let reg = language.reg[setdata.language];
+	let reg = language.reg[setdata.lang];
 	document.title = reg.imgpuzzle;
 	window.parent.document.title = reg.imgpuzzle;
 	setting.value = reg.setting;
@@ -94,7 +120,7 @@ function loadlanguage() {
 	cancel.value = reg.cancel;
 
 	setnowlenHTML(setdata.len);
-	nowdelay.innerHTML = setdata.delay + reg.ms;
+	setnowdelayHTML(setdata.delay);
 
 	let nowmodoption = nowmod.getElementsByTagName("option");
 	nowmodoption[0].innerHTML = reg.number;
@@ -106,11 +132,6 @@ function loadlanguage() {
 }
 
 window.onload = async () => {
-	if (typeof geturl.fbclid != 'undefined') {
-		delete geturl.fbclid;
-		window.parent.array2url(geturl);
-	}
-
 	preview.setAttribute('viewBox', '0 0 600 600');
 	let ref = preview.getElementsByTagName('use')[0];
 	ref.setAttribute('width', 600);
@@ -120,6 +141,7 @@ window.onload = async () => {
 	};
 
 	let nowmodonchange = () => {
+		imageerror.innerHTML = '';
 		let callback = (a, b, c) => {
 			spanhostimage.style.zIndex = a;
 			hostfile.style.opacity = b;
@@ -147,203 +169,165 @@ window.onload = async () => {
 				break;
 		}
 	};
+
 	setting.onclick = () => {
-		setdata.len = savedata.len;
-		setnowlenHTML(setdata.len);
-		setdata.delay = savedata.delay;
-		nowdelay.innerHTML = setdata.delay + language.reg[setdata.language].ms;
-		nowmod.value = savedata.mod;
-		nowmodonchange();
+		nowlanguage.value = savedata.lang;
+		nowmod.value = savedata.mod; nowmodonchange();
+		setnowlenHTML(setdata.len = savedata.len);
+		setnowdelayHTML(setdata.delay = savedata.delay);
+		nowsoundeffect.checked = savedata.soundeffect;
+		netfile.value = savedata.imgsrc;
 		settingfoundation.style.zIndex = 10;
 	};
 	random.onclick = puzzle.random;
 	reset.onclick = puzzle.reset;
+	full.onclick = () => {
+		if (document.documentElement.requestFullscreen) {
+			document.documentElement.requestFullscreen();
+		} else if (document.documentElement.mozRequestFullScreen) { /* Firefox */
+			document.documentElement.mozRequestFullScreen();
+		} else if (document.documentElement.webkitRequestFullscreen) { /*Edge, Chrome, Safari & Opera */
+			document.documentElement.webkitRequestFullscreen();
+		}
+	};
+
+	nowlanguage.onchange = async () => {
+		imageerror.innerHTML = '';
+		await changelanguage(nowlanguage.value);
+	};
 	subsize.onclick = () => {
+		imageerror.innerHTML = '';
 		if (setdata.len > 3) {
 			setdata.len--;
 			setnowlenHTML(setdata.len);
 		}
 	};
 	addsize.onclick = () => {
+		imageerror.innerHTML = '';
 		if (setdata.len < 10) {
 			setdata.len++;
 			setnowlenHTML(setdata.len);
 		}
 	};
 	subdelay.onclick = () => {
+		imageerror.innerHTML = '';
 		if (setdata.delay > 0) {
 			setdata.delay -= 100;
-			nowdelay.innerHTML = setdata.delay + language.reg[setdata.language].ms;
+			setnowdelayHTML(setdata.delay);
 		}
 	};
 	adddelay.onclick = () => {
+		imageerror.innerHTML = '';
 		if (setdata.delay < 1000) {
 			setdata.delay *= 1;
 			setdata.delay += 100;
-			nowdelay.innerHTML = setdata.delay + language.reg[setdata.language].ms;
+			setnowdelayHTML(setdata.delay);
 		}
 	};
-
+	nowsoundeffect.onclick = () => {
+		imageerror.innerHTML = '';
+	};
 	nowmod.onchange = nowmodonchange;
+	hostfile.onclick = () => {
+		imageerror.innerHTML = '';
+	};
+	netfile.onclick = () => {
+		imageerror.innerHTML = '';
+	};
 	determine.onclick = async () => {
-		savedata.language = setdata.language;
 		let data = {}, url;
-		switch (nowmod.value) {
-			case 'number':
-				savedata.mod = nowmod.value;
-				savedata.len = setdata.len;
-				savedata.delay = setdata.delay;
-				savedata.soundeffect = nowsoundeffect.checked;
-				setCookie('mod', savedata.mod);
-				setCookie('len', savedata.len);
-				setCookie('delay', savedata.delay);
-				setCookie('soundeffect', savedata.soundeffect);
-				puzzle.setting();
-				break;
-			case 'coordinate':
-				savedata.mod = nowmod.value;
-				savedata.len = setdata.len;
-				savedata.delay = setdata.delay;
-				savedata.soundeffect = nowsoundeffect.checked;
-				setCookie('mod', savedata.mod);
-				setCookie('len', savedata.len);
-				setCookie('delay', savedata.delay);
-				setCookie('soundeffect', savedata.soundeffect);
-				puzzle.setting();
-				break;
-			case 'hostimage':
-				try {
-					url = URL.createObjectURL(hostfile.files[0]);
+		try {
+			switch (nowmod.value) {
+				case 'hostimage':
+					try {
+						url = URL.createObjectURL(hostfile.files[0]);
+						[data.width, data.height] = await promisearr(getimgsize, url);
+					} catch (err) {
+						throw 'hostimageerror';
+					}
+					if (data.width == -1 || data.height == -1) {
+						throw 'hostimageerror';
+					}
+					imgdata.src = url;
+					setimagesize(data.width, data.height);
+					break;
+				case 'netimage':
+					url = netfile.value;
 					[data.width, data.height] = await promisearr(getimgsize, url);
-				} catch (err) {
+					if (data.width == -1 || data.height == -1) {
+						throw 'netimageerror';
+					}
+					savedata.imgsrc = url;
+					imgdata.src = url;
+					setimagesize(data.width, data.height);
 					break;
-				}
-
-				if (data.width == -1 || data.height == -1) {
+				default:
 					break;
-				}
-
-				savedata.mod = nowmod.value;
-				savedata.len = setdata.len;
-				savedata.delay = setdata.delay;
-				savedata.soundeffect = nowsoundeffect.checked;
-				imgdata.src = url;
-				setCookie('len', savedata.len);
-				setCookie('delay', savedata.delay);
-				setCookie('soundeffect', savedata.soundeffect);
-
-				setimagesize(data.width, data.height);
-				puzzle.setting();
-				break;
-			case 'netimage':
-				[data.width, data.height] = await promisearr(getimgsize, netfile.value);
-
-				if (data.width == -1 || data.height == -1) {
-					break;
-				}
-
-				savedata.mod = nowmod.value;
-				savedata.len = setdata.len;
-				savedata.delay = setdata.delay;
-				savedata.soundeffect = nowsoundeffect.checked;
-				imgdata.src = netfile.value;
-				setCookie('mod', savedata.mod);
-				setCookie('len', savedata.len);
-				setCookie('delay', savedata.delay);
-				setCookie('soundeffect', savedata.soundeffect);
-				setCookie('imgsrc', imgdata.src);
-
-				setimagesize(data.width, data.height);
-				puzzle.setting();
-				break;
-			default:
-				break;
+			}
+			savedata.lang = setdata.lang;
+			savedata.mod = nowmod.value;
+			savedata.len = setdata.len;
+			savedata.delay = setdata.delay;
+			savedata.soundeffect = nowsoundeffect.checked;
+			puzzle.setting();
+			settingfoundation.style.zIndex = 0;
+		} catch (err) {
+			imageerror.innerHTML = language.reg[setdata.lang][err];
 		}
-		settingfoundation.style.zIndex = 0;
 	};
 	cancel.onclick = async () => {
-		await changelanguage(nowlanguage.value = savedata.language);
+		await changelanguage(savedata.lang);
 		settingfoundation.style.zIndex = 0;
 	};
 
-	full.onclick = () => {
-		if (document.documentElement.requestFullscreen) {
-			document.documentElement.requestFullscreen();
-		} else if (document.documentElement.mozRequestFullScreen) { /* Firefox */
-			document.documentElement.mozRequestFullScreen();
-		} else if (document.documentElement.webkitRequestFullscreen) { /* Chrome, Safari & Opera */
-			document.documentElement.webkitRequestFullscreen();
-		} else if (document.documentElement.msRequestFullscreen) { /* IE/Edge */
-			document.documentElement.msRequestFullscreen();
-		}
-	};
 	sw = new Stopwatch(stopwatch);
 	await language.initial(nowlanguage);
-	nowlanguage.value = savedata.language = geturl.lang || 'zh-Hant';
-	await changelanguage(nowlanguage.value);
-	nowlanguage.onchange = async () => {
-		await changelanguage(nowlanguage.value);
-	};
-
+	number.initial();
+	coordinate.initial();
 	soundeffect.initial();
 
-	let l = getCookie('len');
-	if (l != '' && !isNaN(l) && l >= 3 && l <= 10) {
-		savedata.len = l;
-	} else {
-		savedata.len = 4;
-		setCookie('len', savedata.len);
-	}
-	let d = getCookie('delay');
-	if (d != '' && !isNaN(d) && d >= 0 && d <= 1000) {
-		savedata.delay = d;
-	} else {
-		savedata.delay = 0;
-		setCookie('delay', savedata.delay);
-	}
-	let se = getCookie('soundeffect');
-	if (se == 'true') {
-		savedata.soundeffect = true;
-		nowsoundeffect.checked = true;
-	} else {
-		savedata.soundeffect = false;
-		nowsoundeffect.checked = false;
-	}
-	let m = getCookie('mod');
-	let is = getCookie('imgsrc');
+	let loaddata = (dataname, initial, check, transform = d => d) => {
+		if (dataname in geturl && check(geturl[dataname])) {
+			return transform(geturl[dataname]);
+		} else if (check(cookie[dataname])) {
+			return transform(cookie[dataname]);
+		} else {
+			return initial;
+		}
+	};
+
+	await changelanguage(loaddata('lang', 'zh-Hant', lang => lang in language.list));
+	savedata.lang = language.mod;
+	savedata.mod = loaddata('mod', 'number', mod => ['number', 'coordinate', 'hostimage', 'netimage'].indexOf(mod) != -1);
+	savedata.len = loaddata('len', 4, len => !isNaN(len) && len >= 3 && len <= 10, len => Number(len));
+	savedata.delay = loaddata('delay', 0, delay => !isNaN(delay) && delay >= 0 && delay <= 1000, delay => Number(delay));
+	savedata.soundeffect = loaddata('soundeffect', false, soundeffect => soundeffect == 'true' || soundeffect == 'false', soundeffect => soundeffect == 'true');
+	imgdata.src = savedata.imgsrc = loaddata('imgsrc', '', imgsrc => imgsrc != '', imgsrc => decodeURIComponent(imgsrc));
+	window.parent.array2url({});
+
 	let numberload = () => {
 		savedata.mod = 'number';
-		setCookie('mod', savedata.mod);
 		puzzle.setting();
 	};
 
-	number.initial();
-	coordinate.initial();
 	let data = {};
-	switch (m) {
+	switch (savedata.mod) {
 		case 'number':
 			numberload();
 			break;
 		case 'coordinate':
-			savedata.mod = m;
 			puzzle.setting();
 			break;
 		case 'hostimage':
 			numberload();
 			break;
 		case 'netimage':
-			if (is != '') {
-				[data.width, data.height] = await promisearr(getimgsize, is);
-				if (data.width == -1 || data.height == -1) {
-					numberload();
-					break;
-				}
-				setimagesize(data.width, data.height);
-				savedata.mod = m;
-				netfile.value = imgdata.src = is;
-				puzzle.setting();
-			} else {
+			[data.width, data.height] = await promisearr(getimgsize, imgdata.src);
+			if (data.width == -1 || data.height == -1) {
 				numberload();
+			} else {
+				setimagesize(data.width, data.height);
+				puzzle.setting();
 			}
 			break;
 		default:

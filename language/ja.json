@@ -20,6 +20,8 @@
 	"hostimage": "アップロード画像版",
 	"netimage": "インターネット画像版",
 	"imgsrc": "画像のURL：",
+	"hostimageerror": "アップロード画像エラー",
+	"netimageerror": "画像のURLエラー",
 	"determine": "OK",
 	"cancel": "キャンセル",
 	"unit": "枚",

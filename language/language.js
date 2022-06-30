@@ -7,7 +7,7 @@ var language = (() => {
 			'en': "English",
 			'ja': "日本語"
 		};
-	function initial(slt) {
+	async function initial(slt) {
 		if (typeof slt != 'undefined') {
 			for (let key in list) {
 				let lo = document.createElement("option");
@@ -16,25 +16,22 @@ var language = (() => {
 				slt.append(lo);
 			}
 		}
-		return setting('zh-Hant');
+		await setting('zh-Hant');
 	}
-	function setting(languagename) {
-		return new Promise((resolve, reject) => {
-			if (languagename in list) {
-				mod = languagename;
-			} else {
-				mod = 'zh-Hant';
-			}
-			openfile('language/' + mod + '.json', (str) => {
-				reg[mod] = {};
-				Object.assign(reg[mod], reg['zh-Hant'], JSON.parse(str));
-				document.getElementsByTagName('html')[0].lang = language.mod;
-				resolve(reg[mod]);
-			});
-		});
+	async function setting(languagename) {
+		if (languagename in list) {
+			mod = languagename;
+		} else {
+			mod = 'zh-Hant';
+		}
+		if (!(mod in reg)) {
+			reg[mod] = Object.assign({}, reg['zh-Hant'], JSON.parse(await promise(openfile, `language/${mod}.json`)));
+		}
+		document.getElementsByTagName('html')[0].lang = language.mod;
 	}
 	return {
 		reg: reg,
+		list: list,
 		initial: initial,
 		setting: setting,
 		get mod() {

@@ -187,7 +187,7 @@ var puzzle = (() => {
 			return true;
 		}
 		if (iscomplete()) {
-			complete.innerHTML = language.reg[setdata.language].complete;
+			complete.innerHTML = language.reg[setdata.lang].complete;
 			status = 'complete';
 			sw.stop;
 			if (savedata.mod == 'hostimage' || savedata.mod == 'netimage') {

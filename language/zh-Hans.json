@@ -20,6 +20,8 @@
 	"hostimage": "上传图像版",
 	"netimage": "网络图像版",
 	"imgsrc": "图像网址：",
+	"hostimageerror": "上传图像错误",
+	"netimageerror": "图像网址错误",
 	"determine": "确定",
 	"cancel": "取消",
 	"unit": "个",

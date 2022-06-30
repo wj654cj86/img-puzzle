@@ -20,6 +20,8 @@
 	"hostimage": "Upload image version",
 	"netimage": "Internet image version",
 	"imgsrc": "Image URL:",
+	"hostimageerror": "Upload image error",
+	"netimageerror": "Image URL error",
 	"determine": "OK",
 	"cancel": "Cancel",
 	"unit": " ",

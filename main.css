@@ -8,6 +8,14 @@ body {
 	background-color: #77f;
 }
 
+div,
+span,
+svg,
+input,
+select {
+	position: absolute;
+}
+
 span,
 input,
 select {
@@ -17,7 +25,6 @@ select {
 #foundation,
 #settingfoundation,
 #cannotuseie {
-	position: absolute;
 	width: 600px;
 	height: 800px;
 	background-color: #77f;
@@ -33,7 +40,6 @@ select {
 }
 
 #foundation input[type="button"] {
-	position: absolute;
 	white-space: normal;
 	width: 150px;
 	height: 100px;
@@ -62,7 +68,6 @@ select {
 
 #stopwatch,
 #complete {
-	position: absolute;
 	height: 100px;
 	line-height: 50px;
 }
@@ -80,7 +85,6 @@ select {
 }
 
 #puzzlediv {
-	position: absolute;
 	left: 0px;
 	top: 200px;
 	width: 600px;
@@ -90,7 +94,6 @@ select {
 #refpreview,
 #preview,
 #refpiece {
-	position: absolute;
 	width: 600px;
 	height: 600px;
 	opacity: 1;
@@ -98,7 +101,6 @@ select {
 }
 
 #main {
-	position: absolute;
 	width: 600px;
 	height: 600px;
 	z-index: 2;
@@ -106,7 +108,6 @@ select {
 }
 
 #main > svg {
-	position: absolute;
 	width: var(--puzzle-width);
 	height: var(--puzzle-height);
 	transition : var(--puzzle-transition);
@@ -117,7 +118,6 @@ select {
 }
 
 #settingfoundation .addsub {
-	position: absolute;
 	width: 50px;
 	height: 80px;
 	background-color: #aaa;
@@ -125,7 +125,6 @@ select {
 }
 
 #settingfoundation .determinecancel {
-	position: absolute;
 	width: 250px;
 	height: 80px;
 	background-color: #aaa;
@@ -138,7 +137,6 @@ select {
 #spanmod,
 #spanhostimage,
 #spannetimage {
-	position: absolute;
 	text-align: right;
 	width: 250px;
 	height: 80px;
@@ -147,7 +145,6 @@ select {
 
 #nowlen,
 #nowdelay {
-	position: absolute;
 	width: 350px;
 	height: 80px;
 	text-align: center;
@@ -161,7 +158,6 @@ select {
 }
 
 #nowlanguage {
-	position: absolute;
 	left: 250px;
 	top: 0px;
 	width: 350px;
@@ -214,7 +210,6 @@ select {
 }
 
 #nowsoundeffect {
-	position: absolute;
 	left: 280px;
 	top: 270px;
 	transform: scale(6, 6);
@@ -226,7 +221,6 @@ select {
 }
 
 #nowmod {
-	position: absolute;
 	left: 250px;
 	top: 320px;
 	width: 350px;
@@ -248,7 +242,6 @@ select {
 }
 
 #hostfile {
-	position: absolute;
 	left: 50px;
 	top: 400px;
 	width: 500px;
@@ -258,7 +251,6 @@ select {
 }
 
 #netfile {
-	position: absolute;
 	left: 250px;
 	top: 400px;
 	width: 340px;
@@ -267,9 +259,17 @@ select {
 	z-index: 0;
 }
 
+#imageerror {
+	text-align: right;
+	color: #f00;
+	left: 0px;
+	top: 480px;
+	width: 600px;
+	height: 80px;
+}
+
 #author,
 #provider {
-	position: absolute;
 	text-align: right;
 	width: 550px;
 	height: 80px;
