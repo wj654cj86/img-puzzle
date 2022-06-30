@@ -1,20 +1,20 @@
 var geturl = window.parent.url2array();
 
-var cookie = {
-	lang: getCookie('lang'),
-	mod: getCookie('mod'),
-	len: getCookie('len'),
-	delay: getCookie('delay'),
-	soundeffect: getCookie('soundeffect'),
-	imgsrc: getCookie('imgsrc')
-};
-
 var sw;
 
-var savedata = new (function (obj, encode) {
+var savedata = new (function (obj, check, decode, encode) {
 	for (let dataname in obj) {
 		let data = obj[dataname];
+		let ck = getCookie(dataname);
+		let cf = check[dataname];
+		let df = dataname in decode ? decode[dataname] : d => d;
+		if (dataname in geturl && cf(geturl[dataname])) {
+			data = df(geturl[dataname]);
+		} else if (cf(ck)) {
+			data = df(ck);
+		}
 		let ef = dataname in encode ? encode[dataname] : d => d;
+		setCookie(dataname, ef(data));
 		Object.defineProperty(this, dataname, {
 			set(_data) {
 				data = _data;
@@ -25,6 +25,7 @@ var savedata = new (function (obj, encode) {
 			}
 		});
 	}
+	window.parent.array2url({});
 })({
 	lang: 'zh-Hant',
 	mod: 'number',
@@ -32,6 +33,18 @@ var savedata = new (function (obj, encode) {
 	delay: 0,
 	soundeffect: false,
 	imgsrc: ''
+}, {
+	lang: lang => lang in language.list,
+	mod: mod => ['number', 'coordinate', 'hostimage', 'netimage'].indexOf(mod) != -1,
+	len: len => !isNaN(len) && len >= 3 && len <= 10,
+	delay: delay => !isNaN(delay) && delay >= 0 && delay <= 1000,
+	soundeffect: soundeffect => soundeffect == 'true' || soundeffect == 'false',
+	imgsrc: imgsrc => imgsrc != ''
+}, {
+	len: len => Number(len),
+	delay: delay => Number(delay),
+	soundeffect: soundeffect => soundeffect == 'true',
+	imgsrc: imgsrc => decodeURIComponent(imgsrc)
 }, {
 	imgsrc: imgsrc => encodeURIComponent(imgsrc)
 });
@@ -285,55 +298,27 @@ window.onload = async () => {
 	number.initial();
 	coordinate.initial();
 	soundeffect.initial();
-
-	let loaddata = (dataname, initial, check, transform = d => d) => {
-		if (dataname in geturl && check(geturl[dataname])) {
-			return transform(geturl[dataname]);
-		} else if (check(cookie[dataname])) {
-			return transform(cookie[dataname]);
-		} else {
-			return initial;
-		}
-	};
-
-	await changelanguage(loaddata('lang', 'zh-Hant', lang => lang in language.list));
-	savedata.lang = language.mod;
-	savedata.mod = loaddata('mod', 'number', mod => ['number', 'coordinate', 'hostimage', 'netimage'].indexOf(mod) != -1);
-	savedata.len = loaddata('len', 4, len => !isNaN(len) && len >= 3 && len <= 10, len => Number(len));
-	savedata.delay = loaddata('delay', 0, delay => !isNaN(delay) && delay >= 0 && delay <= 1000, delay => Number(delay));
-	savedata.soundeffect = loaddata('soundeffect', false, soundeffect => soundeffect == 'true' || soundeffect == 'false', soundeffect => soundeffect == 'true');
-	imgdata.src = savedata.imgsrc = loaddata('imgsrc', '', imgsrc => imgsrc != '', imgsrc => decodeURIComponent(imgsrc));
-	window.parent.array2url({});
-
-	let numberload = () => {
-		savedata.mod = 'number';
-		puzzle.setting();
-	};
+	await changelanguage(savedata.lang);
 
 	let data = {};
 	switch (savedata.mod) {
-		case 'number':
-			numberload();
-			break;
-		case 'coordinate':
-			puzzle.setting();
-			break;
 		case 'hostimage':
-			numberload();
+			savedata.mod = 'number';
 			break;
 		case 'netimage':
-			[data.width, data.height] = await promisearr(getimgsize, imgdata.src);
+			[data.width, data.height] = await promisearr(getimgsize, savedata.imgsrc);
 			if (data.width == -1 || data.height == -1) {
-				numberload();
+				savedata.imgsrc = '';
+				savedata.mod = 'number';
 			} else {
+				imgdata.src = savedata.imgsrc;
 				setimagesize(data.width, data.height);
-				puzzle.setting();
 			}
 			break;
 		default:
-			numberload();
 			break;
 	}
+	puzzle.setting();
 };
 window.onkeydown = (e) => {
 	key = e.code;
