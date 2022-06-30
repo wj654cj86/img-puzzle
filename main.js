@@ -320,8 +320,10 @@ window.onload = async () => {
 	}
 	puzzle.setting();
 	document.body.style.opacity = 1;
-	if (geturl.random == 'true')
+	if (geturl.random == 'true') {
+		await sleep(1000);
 		puzzle.random();
+	}
 };
 window.onkeydown = (e) => {
 	key = e.code;
