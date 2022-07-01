@@ -20,6 +20,8 @@ var puzzle = (() => {
 		}
 	}
 	function setting() {
+		window.random.onclick = () => { };
+		window.reset.onclick = () => { };
 		if (savedata.mod == 'number' || savedata.mod == 'coordinate') {
 			preview.style.transition = 'all 0ms';
 			preview.style.opacity = 0;
@@ -29,19 +31,19 @@ var puzzle = (() => {
 			preview.style.opacity = 1;
 			preview.style.zIndex = 3;
 			refpreview.setAttribute('viewBox', [-imgdata.maximum / 2, -imgdata.maximum / 2, imgdata.maximum, imgdata.maximum].join(' '));
-			let ref = refpreview.getElementsByTagName('image')[0];
+			let ref = refpreview.querySelector('image');
 			ref.setAttribute('x', -imgdata.width / 2);
 			ref.setAttribute('y', -imgdata.height / 2);
 			ref.setAttribute('width', imgdata.width);
 			ref.setAttribute('height', imgdata.height);
 			ref.setAttribute('xlink:href', imgdata.src);
-			ref = refpreview.getElementsByTagName('rect')[0];
+			ref = refpreview.querySelector('rect');
 			ref.setAttribute('x', -imgdata.maximum / 2);
 			ref.setAttribute('y', -imgdata.maximum / 2);
 			ref.setAttribute('width', imgdata.maximum);
 			ref.setAttribute('height', imgdata.maximum);
 		}
-		mask.append(...main.getElementsByTagName('svg'));
+		mask.append(...ref);
 		complete.innerHTML = '';
 		status = 'complete';
 		sw.reset;
@@ -74,10 +76,8 @@ var puzzle = (() => {
 		main.style.setProperty('--puzzle-width', puzzlesize + 'px');
 		main.style.setProperty('--puzzle-height', puzzlesize + 'px');
 		main.style.setProperty('--puzzle-transition', 'all ' + savedata.delay + 'ms');
-		let puzzletagarr = main.getElementsByTagName('svg');
-		ref = [];
+		ref = main.querySelectorAll(':scope > svg');
 		for (let i = 0; i < len; i++) {
-			ref[i] = puzzletagarr[i];
 			ref[i].onmousedown = function () {
 				move(i);
 			};
@@ -86,6 +86,8 @@ var puzzle = (() => {
 			};
 		}
 		setseat();
+		window.random.onclick = random;
+		window.reset.onclick = reset;
 	}
 	function _move(i) {
 		let destination = seat[i];
@@ -113,16 +115,14 @@ var puzzle = (() => {
 		return ismove;
 	}
 	async function random() {
+		window.random.onclick = () => { };
+		window.reset.onclick = () => { };
 		if (savedata.mod == 'hostimage' || savedata.mod == 'netimage') {
-			random.onclick = function () { };
-			reset.onclick = function () { };
 			preview.style.transition = 'all ' + savedata.delay + 'ms';
 			preview.style.opacity = 0;
-			preview.style.zIndex = 1;
 			if (status == 'complete')
 				await sleep(savedata.delay);
-			random.onclick = random;
-			reset.onclick = reset;
+			preview.style.zIndex = 1;
 		}
 		complete.innerHTML = '';
 		status = 'random';
@@ -157,22 +157,29 @@ var puzzle = (() => {
 		if (r) {
 			_move(seat.indexOf(none - r * savedata.len));
 		}
+		window.random.onclick = random;
+		window.reset.onclick = reset;
 	}
 	async function reset() {
+		if (status == 'complete') {
+			complete.innerHTML = '';
+			return;
+		}
+		window.random.onclick = () => { };
+		window.reset.onclick = () => { };
 		complete.innerHTML = '';
 		status = 'complete';
 		sw.reset;
 		_reset();
 		setseat();
 		if (savedata.mod == 'hostimage' || savedata.mod == 'netimage') {
-			random.onclick = function () { };
-			reset.onclick = function () { };
 			await sleep(savedata.delay);
-			random.onclick = random;
-			reset.onclick = reset;
 			preview.style.opacity = 1;
 			preview.style.zIndex = 3;
+			await sleep(savedata.delay);
 		}
+		window.random.onclick = random;
+		window.reset.onclick = reset;
 	}
 	async function move(i) {
 		if (status == 'complete')
@@ -187,18 +194,18 @@ var puzzle = (() => {
 			return true;
 		}
 		if (iscomplete()) {
-			complete.innerHTML = language.reg[setdata.lang].complete;
+			window.random.onclick = () => { };
+			window.reset.onclick = () => { };
+			complete.innerHTML = language.reg[savedata.lang].complete;
 			status = 'complete';
 			sw.stop;
 			if (savedata.mod == 'hostimage' || savedata.mod == 'netimage') {
-				random.onclick = function () { };
-				reset.onclick = function () { };
-				await sleep(savedata.delay);
-				random.onclick = random;
-				reset.onclick = reset;
 				preview.style.opacity = 1;
 				preview.style.zIndex = 3;
+				await sleep(savedata.delay);
 			}
+			window.random.onclick = random;
+			window.reset.onclick = reset;
 		}
 	}
 	function keymove(d) {

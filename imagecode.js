@@ -19,10 +19,10 @@ var image = (() => {
 		}
 		let svg = nodetext2svgnode(str);
 		svg.setAttribute('viewBox', [0, 0, puzzlesize, puzzlesize].join(' '));
-		let use = svg.getElementsByTagName('use')[0];
+		let use = svg.querySelector('use');
 		use.setAttribute('x', - puzzlesize * x);
 		use.setAttribute('y', - puzzlesize * y);
-		let rect = svg.getElementsByTagName('rect')[0];
+		let rect = svg.querySelector('rect');
 		rect.setAttribute('width', puzzlesize);
 		rect.setAttribute('height', puzzlesize);
 		reg[len][x][y] = svg;

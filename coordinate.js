@@ -72,7 +72,7 @@ var coordinate = (() => {
 	}
 	function newpath(ls, gn, svg) {
 		let use = nodetext2svgnode(`<use xlink:href="#latin${ls}"/>`);
-		svg.getElementsByTagName('g')[gn].append(use);
+		svg.querySelectorAll('g')[gn].append(use);
 	}
 	return {
 		initial: initial,

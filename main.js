@@ -3,25 +3,25 @@ var geturl = window.parent.url2array();
 var sw;
 
 var savedata = new (function (obj, check, decode, encode) {
-	for (let dataname in obj) {
-		let data = obj[dataname];
-		let ck = getCookie(dataname);
-		let cf = check[dataname];
-		let df = dataname in decode ? decode[dataname] : d => d;
-		if (dataname in geturl && cf(geturl[dataname])) {
-			data = df(geturl[dataname]);
+	for (let key in obj) {
+		let value = obj[key];
+		let ck = getCookie(key);
+		let cf = check[key];
+		let df = key in decode ? decode[key] : d => d;
+		if (key in geturl && cf(geturl[key])) {
+			value = df(geturl[key]);
 		} else if (cf(ck)) {
-			data = df(ck);
+			value = df(ck);
 		}
-		let ef = dataname in encode ? encode[dataname] : d => d;
-		setCookie(dataname, ef(data));
-		Object.defineProperty(this, dataname, {
-			set(_data) {
-				data = _data;
-				setCookie(dataname, ef(_data));
+		let ef = key in encode ? encode[key] : d => d;
+		setCookie(key, ef(value));
+		Object.defineProperty(this, key, {
+			set(_value) {
+				value = _value;
+				setCookie(key, ef(_value));
 			},
 			get() {
-				return data;
+				return value;
 			}
 		});
 	}
@@ -49,18 +49,80 @@ var savedata = new (function (obj, check, decode, encode) {
 	imgsrc: imgsrc => encodeURIComponent(imgsrc)
 });
 
-var setdata = {
+var setdata = new (function (obj, sfs) {
+	for (let key in obj) {
+		let value = obj[key];
+		let sf = sfs[key];
+		Object.defineProperty(this, key, {
+			set(_value) {
+				value = _value;
+				sf(_value);
+			},
+			get() {
+				return value;
+			}
+		});
+	}
+})({
 	lang: 'zh-Hant',
 	len: 4,
 	delay: 0
-};
+}, {
+	async lang(lang) {
+		await language.setting(lang);
+
+		let reg = language.reg[lang];
+		document.title = reg.imgpuzzle;
+		window.parent.document.title = reg.imgpuzzle;
+		setting.value = reg.setting;
+		random.value = reg.random;
+		reset.value = reg.reset;
+		full.value = reg.full;
+		spanlanguage.innerHTML = reg.languagesetting;
+		spanlen.innerHTML = reg.len;
+		spandelay.innerHTML = reg.delay;
+		spansoundeffect.innerHTML = reg.soundeffect;
+		spanmod.innerHTML = reg.mod;
+		spannetimage.innerHTML = reg.imgsrc;
+		author.innerHTML = reg.spanauthor + reg.author;
+		provider.innerHTML = reg.spanprovider + reg.provider;
+		determine.value = reg.determine;
+		cancel.value = reg.cancel;
+
+		setdata.len = setdata.len;
+		setdata.delay = setdata.delay;
+
+		let nowmodoption = nowmod.querySelectorAll("option");
+		nowmodoption[0].innerHTML = reg.number;
+		nowmodoption[1].innerHTML = reg.coordinate;
+		nowmodoption[2].innerHTML = reg.hostimage;
+		nowmodoption[3].innerHTML = reg.netimage;
+
+		document.body.style.setProperty('--font-size', reg.fontsize);
+	},
+	len(len) {
+		let reg = language.reg[setdata.lang];
+		nowlen.innerHTML = len * len - 1 + reg.unit + reg.frontbracket + len + reg.time + len + reg.backbracket;
+	},
+	delay(delay) {
+		let reg = language.reg[setdata.lang];
+		nowdelay.innerHTML = delay + reg.ms;
+	}
+});
+
 var imgdata = {
 	src: '',
 	width: 0,
 	height: 0,
 	maximum: 0,
 	x: 0,
-	y: 0
+	y: 0,
+	setdata(src, width, height) {
+		this.src = src;
+		this.width = width;
+		this.height = height;
+		this.maximum = Math.max(width, height);
+	}
 };
 
 var direction = {
@@ -94,59 +156,9 @@ var soundeffect = {
 	}
 };
 
-function setnowlenHTML(sl) {
-	nowlen.innerHTML = sl * sl - 1 + language.reg[setdata.lang].unit
-		+ language.reg[setdata.lang].frontbracket + sl + language.reg[setdata.lang].time + sl + language.reg[setdata.lang].backbracket;
-}
-function setnowdelayHTML(sd) {
-	nowdelay.innerHTML = sd + language.reg[setdata.lang].ms;
-}
-
-function setimagesize(width, height) {
-	imgdata.width = width;
-	imgdata.height = height;
-	imgdata.maximum = Math.max(imgdata.width, imgdata.height);
-}
-
-async function changelanguage(lang) {
-	await language.setting(lang);
-	setdata.lang = language.mod;
-	loadlanguage();
-}
-function loadlanguage() {
-	let reg = language.reg[setdata.lang];
-	document.title = reg.imgpuzzle;
-	window.parent.document.title = reg.imgpuzzle;
-	setting.value = reg.setting;
-	random.value = reg.random;
-	reset.value = reg.reset;
-	full.value = reg.full;
-	spanlanguage.innerHTML = reg.languagesetting;
-	spanlen.innerHTML = reg.len;
-	spandelay.innerHTML = reg.delay;
-	spansoundeffect.innerHTML = reg.soundeffect;
-	spanmod.innerHTML = reg.mod;
-	spannetimage.innerHTML = reg.imgsrc;
-	author.innerHTML = reg.spanauthor + reg.author;
-	provider.innerHTML = reg.spanprovider + reg.provider;
-	determine.value = reg.determine;
-	cancel.value = reg.cancel;
-
-	setnowlenHTML(setdata.len);
-	setnowdelayHTML(setdata.delay);
-
-	let nowmodoption = nowmod.getElementsByTagName("option");
-	nowmodoption[0].innerHTML = reg.number;
-	nowmodoption[1].innerHTML = reg.coordinate;
-	nowmodoption[2].innerHTML = reg.hostimage;
-	nowmodoption[3].innerHTML = reg.netimage;
-
-	document.body.style.setProperty('--font-size', reg.fontsize);
-}
-
 window.onload = async () => {
 	preview.setAttribute('viewBox', '0 0 600 600');
-	let ref = preview.getElementsByTagName('use')[0];
+	let ref = preview.querySelector('use');
 	ref.setAttribute('width', 600);
 	ref.setAttribute('height', 600);
 	main.ondragstart = () => {
@@ -186,47 +198,43 @@ window.onload = async () => {
 	setting.onclick = () => {
 		nowlanguage.value = savedata.lang;
 		nowmod.value = savedata.mod; nowmodonchange();
-		setnowlenHTML(setdata.len = savedata.len);
-		setnowdelayHTML(setdata.delay = savedata.delay);
+		setdata.len = savedata.len;
+		setdata.delay = savedata.delay
 		nowsoundeffect.checked = savedata.soundeffect;
 		netfile.value = savedata.imgsrc;
 		settingfoundation.style.zIndex = 10;
 	};
-	random.onclick = puzzle.random;
-	reset.onclick = puzzle.reset;
 	full.onclick = () => {
-		if (document.documentElement.requestFullscreen) {
-			document.documentElement.requestFullscreen();
-		} else if (document.documentElement.mozRequestFullScreen) { /* Firefox */
-			document.documentElement.mozRequestFullScreen();
-		} else if (document.documentElement.webkitRequestFullscreen) { /*Edge, Chrome, Safari & Opera */
-			document.documentElement.webkitRequestFullscreen();
+		let de = window.parent.document.documentElement;
+		if (de.requestFullscreen) {
+			de.requestFullscreen();
+		} else if (de.mozRequestFullScreen) { /* Firefox */
+			de.mozRequestFullScreen();
+		} else if (de.webkitRequestFullscreen) { /*Edge, Chrome, Safari & Opera */
+			de.webkitRequestFullscreen();
 		}
 	};
 
 	nowlanguage.onchange = async () => {
 		imageerror.innerHTML = '';
-		await changelanguage(nowlanguage.value);
+		setdata.lang = nowlanguage.value;
 	};
 	subsize.onclick = () => {
 		imageerror.innerHTML = '';
 		if (setdata.len > 3) {
 			setdata.len--;
-			setnowlenHTML(setdata.len);
 		}
 	};
 	addsize.onclick = () => {
 		imageerror.innerHTML = '';
 		if (setdata.len < 10) {
 			setdata.len++;
-			setnowlenHTML(setdata.len);
 		}
 	};
 	subdelay.onclick = () => {
 		imageerror.innerHTML = '';
 		if (setdata.delay > 0) {
 			setdata.delay -= 100;
-			setnowdelayHTML(setdata.delay);
 		}
 	};
 	adddelay.onclick = () => {
@@ -234,7 +242,6 @@ window.onload = async () => {
 		if (setdata.delay < 1000) {
 			setdata.delay *= 1;
 			setdata.delay += 100;
-			setnowdelayHTML(setdata.delay);
 		}
 	};
 	nowsoundeffect.onclick = () => {
@@ -261,8 +268,7 @@ window.onload = async () => {
 					if (data.width == -1 || data.height == -1) {
 						throw 'hostimageerror';
 					}
-					imgdata.src = url;
-					setimagesize(data.width, data.height);
+					imgdata.setdata(url, data.width, data.height);
 					break;
 				case 'netimage':
 					url = netfile.value;
@@ -271,8 +277,7 @@ window.onload = async () => {
 						throw 'netimageerror';
 					}
 					savedata.imgsrc = url;
-					imgdata.src = url;
-					setimagesize(data.width, data.height);
+					imgdata.setdata(url, data.width, data.height);
 					break;
 				default:
 					break;
@@ -289,7 +294,7 @@ window.onload = async () => {
 		}
 	};
 	cancel.onclick = async () => {
-		await changelanguage(savedata.lang);
+		setdata.lang = savedata.lang;
 		settingfoundation.style.zIndex = 0;
 	};
 
@@ -298,7 +303,7 @@ window.onload = async () => {
 	number.initial();
 	coordinate.initial();
 	soundeffect.initial();
-	await changelanguage(savedata.lang);
+	setdata.lang = savedata.lang;
 
 	let data = {};
 	switch (savedata.mod) {
@@ -311,8 +316,7 @@ window.onload = async () => {
 				savedata.imgsrc = '';
 				savedata.mod = 'number';
 			} else {
-				imgdata.src = savedata.imgsrc;
-				setimagesize(data.width, data.height);
+				imgdata.setdata(savedata.imgsrc, data.width, data.height);
 			}
 			break;
 		default:
