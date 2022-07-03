@@ -43,14 +43,14 @@ var coordinate = (() => {
 			+ '</svg>',
 		reg = {};
 	function initial() {
-		let cp = nodetext2svgnode(`<clipPath id="latinmask"><path d="M-80-80m50,50l50,30v20h-100v-100h100v20z"></path></clipPath>`);
+		let cp = text2svg(`<clipPath id="latinmask"><path d="M-80-80m50,50l50,30v20h-100v-100h100v20z"></path></clipPath>`);
 		refpiece.append(cp);
 		for (let ls in latin.script) {
-			let g = nodetext2svgnode(`<g id="latin${ls}"></g>`);
+			let g = text2svg(`<g id="latin${ls}"></g>`);
 			let len = latin.script[ls].length;
 			for (let i = 0; i < len; i++) {
 				let cpstr = ls in latin.mask && latin.mask[ls][i] == 1 ? ' clip-path="url(#latinmask)"' : '';
-				let path = nodetext2svgnode(`<path d="M-80-80${latin.script[ls][i]}"${cpstr} fill-rule="evenodd"/>`);
+				let path = text2svg(`<path d="M-80-80${latin.script[ls][i]}"${cpstr} fill-rule="evenodd"/>`);
 				g.append(path);
 			}
 			refpiece.append(g);
@@ -64,14 +64,14 @@ var coordinate = (() => {
 		} else {
 			reg[x] = {};
 		}
-		let svg = nodetext2svgnode(str);
+		let svg = text2svg(str);
 		newpath(x, 0, svg);
 		newpath(y, 1, svg);
 		reg[x][y] = svg;
 		return reg[x][y];
 	}
 	function newpath(ls, gn, svg) {
-		let use = nodetext2svgnode(`<use xlink:href="#latin${ls}"/>`);
+		let use = text2svg(`<use xlink:href="#latin${ls}"/>`);
 		svg.querySelectorAll('g')[gn].append(use);
 	}
 	return {

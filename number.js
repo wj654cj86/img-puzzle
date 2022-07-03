@@ -33,14 +33,14 @@ var number = (() => {
 			+ '</svg>',
 		reg = [];
 	function initial() {
-		let piece = nodetext2svgnode(`<path d="M10,0L7,3L-7,3L-10,0L-7-3L7-3z" fill="#a00" id="segmentpiece"/>`);
+		let piece = text2svg(`<path d="M10,0L7,3L-7,3L-10,0L-7-3L7-3z" fill="#a00" id="segmentpiece"/>`);
 		refpiece.append(piece);
 		for (let i = 0; i <= 9; i++) {
-			let g = nodetext2svgnode(`<g id="segment${i}"></g>`);
+			let g = text2svg(`<g id="segment${i}"></g>`);
 			for (let j = 0; j < 7; j++) {
 				if (segment.led[i][j] == 0)
 					continue;
-				let use = nodetext2svgnode(`<use xlink:href="#segmentpiece" transform="${segment.seat[j]}"/>`);
+				let use = text2svg(`<use xlink:href="#segmentpiece" transform="${segment.seat[j]}"/>`);
 				g.append(use);
 			}
 			refpiece.append(g);
@@ -52,10 +52,10 @@ var number = (() => {
 		}
 		let s = n + '';
 		let len = s.length;
-		let svg = nodetext2svgnode(str);
+		let svg = text2svg(str);
 		for (let i = len - 1; i >= 0; i--) {
 			let ts = segment.number[len - 1][3 - len + i];
-			let use = nodetext2svgnode(`<use xlink:href="#segment${s[i]}"${ts != '' ? ` transform="${ts}"` : ''}/>`);
+			let use = text2svg(`<use xlink:href="#segment${s[i]}"${ts != '' ? ` transform="${ts}"` : ''}/>`);
 			svg.append(use);
 		}
 		reg[n] = svg;

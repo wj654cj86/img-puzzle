@@ -1,7 +1,7 @@
 var image = (() => {
-	let str = '<svg viewBox="0 0 100 100">'
+	let str = '<svg>'
 		+ '<use xlink:href="#refpreview" width="600" height="600" />'
-		+ '<rect stroke="#000" stroke-width="4" fill-opacity="0" />'
+		+ '<rect stroke="#000" stroke-width="4" fill="none" />'
 		+ '</svg>',
 		reg = {};
 	function style(len, puzzlesize, x, y) {
@@ -17,7 +17,7 @@ var image = (() => {
 			reg[len] = {};
 			reg[len][x] = {};
 		}
-		let svg = nodetext2svgnode(str);
+		let svg = text2svg(str);
 		svg.setAttribute('viewBox', [0, 0, puzzlesize, puzzlesize].join(' '));
 		let use = svg.querySelector('use');
 		use.setAttribute('x', - puzzlesize * x);

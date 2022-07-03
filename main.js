@@ -72,7 +72,6 @@ var setdata = new (function (obj, sfs) {
 		await language.setting(lang);
 
 		let reg = language.reg[lang];
-		document.title = reg.imgpuzzle;
 		window.parent.document.title = reg.imgpuzzle;
 		setting.value = reg.setting;
 		random.value = reg.random;
@@ -117,11 +116,16 @@ var imgdata = {
 	maximum: 0,
 	x: 0,
 	y: 0,
-	setdata(src, width, height) {
-		this.src = src;
-		this.width = width;
-		this.height = height;
-		this.maximum = Math.max(width, height);
+	async checkandsetdata(url) {
+		let data = {};
+		[data.width, data.height] = await promisearr(getimgsize, url);
+		if (data.width == -1 || data.height == -1) {
+			throw 'error';
+		}
+		this.src = url;
+		this.width = data.width;
+		this.height = data.height;
+		this.maximum = Math.max(data.width, data.height);
 	}
 };
 
@@ -156,6 +160,35 @@ var soundeffect = {
 	}
 };
 
+function nowmodonchange() {
+	let callback = (a, b, c) => {
+		spanhostimage.style.zIndex = a;
+		hostfile.style.opacity = b;
+		hostfile.style.zIndex = b;
+		spannetimage.style.opacity = c;
+		spannetimage.style.zIndex = c;
+		netfile.style.opacity = c;
+		netfile.style.zIndex = c;
+	};
+	switch (nowmod.value) {
+		case 'number':
+			callback(1, 0, 0);
+			break;
+		case 'coordinate':
+			callback(1, 0, 0);
+			break;
+		case 'hostimage':
+			callback(0, 1, 0);
+			break;
+		case 'netimage':
+			callback(0, 0, 1);
+			break;
+		default:
+			callback(1, 0, 0);
+			break;
+	}
+};
+
 window.onload = async () => {
 	preview.setAttribute('viewBox', '0 0 600 600');
 	let ref = preview.querySelector('use');
@@ -163,36 +196,6 @@ window.onload = async () => {
 	ref.setAttribute('height', 600);
 	main.ondragstart = () => {
 		return false;
-	};
-
-	let nowmodonchange = () => {
-		imageerror.innerHTML = '';
-		let callback = (a, b, c) => {
-			spanhostimage.style.zIndex = a;
-			hostfile.style.opacity = b;
-			hostfile.style.zIndex = b;
-			spannetimage.style.opacity = c;
-			spannetimage.style.zIndex = c;
-			netfile.style.opacity = c;
-			netfile.style.zIndex = c;
-		};
-		switch (nowmod.value) {
-			case 'number':
-				callback(1, 0, 0);
-				break;
-			case 'coordinate':
-				callback(1, 0, 0);
-				break;
-			case 'hostimage':
-				callback(0, 1, 0);
-				break;
-			case 'netimage':
-				callback(0, 0, 1);
-				break;
-			default:
-				callback(1, 0, 0);
-				break;
-		}
 	};
 
 	setting.onclick = () => {
@@ -215,69 +218,44 @@ window.onload = async () => {
 		}
 	};
 
+	settingfoundation.onclick = (e) => {
+		if (e.target.id != 'determine')
+			imageerror.innerHTML = '';
+	};
 	nowlanguage.onchange = async () => {
-		imageerror.innerHTML = '';
 		setdata.lang = nowlanguage.value;
 	};
 	subsize.onclick = () => {
-		imageerror.innerHTML = '';
 		if (setdata.len > 3) {
 			setdata.len--;
 		}
 	};
 	addsize.onclick = () => {
-		imageerror.innerHTML = '';
 		if (setdata.len < 10) {
 			setdata.len++;
 		}
 	};
 	subdelay.onclick = () => {
-		imageerror.innerHTML = '';
 		if (setdata.delay > 0) {
 			setdata.delay -= 100;
 		}
 	};
 	adddelay.onclick = () => {
-		imageerror.innerHTML = '';
 		if (setdata.delay < 1000) {
 			setdata.delay *= 1;
 			setdata.delay += 100;
 		}
 	};
-	nowsoundeffect.onclick = () => {
-		imageerror.innerHTML = '';
-	};
 	nowmod.onchange = nowmodonchange;
-	hostfile.onclick = () => {
-		imageerror.innerHTML = '';
-	};
-	netfile.onclick = () => {
-		imageerror.innerHTML = '';
-	};
 	determine.onclick = async () => {
-		let data = {}, url;
 		try {
 			switch (nowmod.value) {
 				case 'hostimage':
-					try {
-						url = URL.createObjectURL(hostfile.files[0]);
-						[data.width, data.height] = await promisearr(getimgsize, url);
-					} catch (err) {
-						throw 'hostimageerror';
-					}
-					if (data.width == -1 || data.height == -1) {
-						throw 'hostimageerror';
-					}
-					imgdata.setdata(url, data.width, data.height);
+					await imgdata.checkandsetdata(URL.createObjectURL(hostfile.files[0]));
 					break;
 				case 'netimage':
-					url = netfile.value;
-					[data.width, data.height] = await promisearr(getimgsize, url);
-					if (data.width == -1 || data.height == -1) {
-						throw 'netimageerror';
-					}
-					savedata.imgsrc = url;
-					imgdata.setdata(url, data.width, data.height);
+					await imgdata.checkandsetdata(netfile.value);
+					savedata.imgsrc = imgdata.src;
 					break;
 				default:
 					break;
@@ -290,7 +268,7 @@ window.onload = async () => {
 			puzzle.setting();
 			settingfoundation.style.zIndex = 0;
 		} catch (err) {
-			imageerror.innerHTML = language.reg[setdata.lang][err];
+			imageerror.innerHTML = language.reg[setdata.lang][nowmod.value + 'error'];
 		}
 	};
 	cancel.onclick = async () => {
@@ -305,25 +283,22 @@ window.onload = async () => {
 	soundeffect.initial();
 	setdata.lang = savedata.lang;
 
-	let data = {};
-	switch (savedata.mod) {
-		case 'hostimage':
-			savedata.mod = 'number';
-			break;
-		case 'netimage':
-			[data.width, data.height] = await promisearr(getimgsize, savedata.imgsrc);
-			if (data.width == -1 || data.height == -1) {
-				savedata.imgsrc = '';
-				savedata.mod = 'number';
-			} else {
-				imgdata.setdata(savedata.imgsrc, data.width, data.height);
-			}
-			break;
-		default:
-			break;
+	try {
+		switch (savedata.mod) {
+			case 'hostimage':
+				savedata.mod = 'netimage';
+			case 'netimage':
+				await imgdata.checkandsetdata(savedata.imgsrc);
+				break;
+			default:
+				break;
+		}
+	} catch (err) {
+		savedata.mod = 'number';
 	}
 	puzzle.setting();
 	document.body.style.opacity = 1;
+	window.parent.document.body.style.opacity = 1;
 	if (geturl.random == 'true') {
 		await sleep(1000);
 		puzzle.random();
