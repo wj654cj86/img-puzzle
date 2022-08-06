@@ -1,4 +1,4 @@
-var image = (() => {
+let image = (() => {
 	let str = '<svg>'
 		+ '<use xlink:href="#refpreview" width="600" height="600" />'
 		+ '<rect stroke="#000" stroke-width="4" fill="none" />'

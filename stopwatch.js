@@ -22,7 +22,7 @@ function Stopwatch(obj) {
 		let m = Math.floor(sw.nowtime / 60000);
 		let s = Math.floor(sw.nowtime / 1000) % 60;
 		let cs = Math.floor(sw.nowtime / 10) % 100;
-		sw.number.innerHTML = paddingLeft(m, 2) + ':' + paddingLeft(s, 2) + '.' + paddingLeft(cs, 2);
+		sw.number.innerHTML = m.padStart(2, 0) + ':' + s.padStart(2, 0) + '.' + cs.padStart(2, 0);
 	};
 	Object.defineProperty(this, 'start', {
 		get: function () {

@@ -1,8 +1,8 @@
-var geturl = window.parent.url2array();
+let geturl = window.parent.url2obj();
 
-var sw;
+let sw;
 
-var savedata = new (function (obj, check, decode, encode) {
+let savedata = new (function (obj, check, decode, encode) {
 	for (let key in obj) {
 		let value = obj[key];
 		let ck = getCookie(key);
@@ -25,7 +25,7 @@ var savedata = new (function (obj, check, decode, encode) {
 			}
 		});
 	}
-	window.parent.array2url({});
+	window.parent.obj2url({});
 })({
 	lang: 'zh-Hant',
 	mod: 'number',
@@ -49,7 +49,7 @@ var savedata = new (function (obj, check, decode, encode) {
 	imgsrc: imgsrc => encodeURIComponent(imgsrc)
 });
 
-var setdata = new (function (obj, sfs) {
+let setdata = new (function (obj, sfs) {
 	for (let key in obj) {
 		let value = obj[key];
 		let sf = sfs[key];
@@ -109,7 +109,7 @@ var setdata = new (function (obj, sfs) {
 	}
 });
 
-var imgdata = {
+let imgdata = {
 	src: '',
 	width: 0,
 	height: 0,
@@ -118,7 +118,7 @@ var imgdata = {
 	y: 0,
 	async checkandsetdata(url) {
 		let data = {};
-		[data.width, data.height] = await promisearr(getimgsize, url);
+		[data.width, data.height] = await getimgsize(url);
 		if (data.width == -1 || data.height == -1) {
 			throw 'error';
 		}
@@ -129,33 +129,27 @@ var imgdata = {
 	}
 };
 
-var direction = {
+let direction = {
 	'ArrowLeft': { x: 1, y: 0 },
 	'ArrowUp': { x: 0, y: 1 },
 	'ArrowRight': { x: -1, y: 0 },
 	'ArrowDown': { x: 0, y: -1 }
 };
 
-var soundeffect = {
-	move: new Audio(),
-	warning: new Audio(),
-	initial: () => {
-		loadsound('soundeffect/move.wav', (src) => {
-			soundeffect.move.src = src;
-		});
-		loadsound('soundeffect/warning.wav', (src) => {
-			soundeffect.warning.src = src;
-		});
+let soundeffect = {
+	async initial() {
+		this.move = await loadsound('soundeffect/move.wav');
+		this.warning = await loadsound('soundeffect/warning.wav');
 	},
-	play: (ismove) => {
+	play(ismove) {
 		if (savedata.soundeffect == false)
 			return;
 		if (ismove) {
-			soundeffect.move.currentTime = 0;
-			soundeffect.move.play();
+			this.move.currentTime = 0;
+			this.move.play();
 		} else {
-			soundeffect.warning.currentTime = 0;
-			soundeffect.warning.play();
+			this.warning.currentTime = 0;
+			this.warning.play();
 		}
 	}
 };
@@ -280,7 +274,7 @@ window.onload = async () => {
 	await language.initial(nowlanguage);
 	number.initial();
 	coordinate.initial();
-	soundeffect.initial();
+	await soundeffect.initial();
 	setdata.lang = savedata.lang;
 
 	try {

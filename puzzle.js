@@ -1,4 +1,4 @@
-var puzzle = (() => {
+let puzzle = (() => {
 	let seat = [],
 		none = 0,
 		len = 0,

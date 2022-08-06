@@ -1,4 +1,4 @@
-var coordinate = (() => {
+let coordinate = (() => {
 	let latin = {
 		script: {
 			'A': ['m15,95h11l29.5-90h-11z', 'm85,95h-11l-29.5-90h11z', 'm32,50v10h36v-10z'],

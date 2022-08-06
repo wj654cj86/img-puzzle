@@ -1,4 +1,4 @@
-var number = (() => {
+let number = (() => {
 	let segment = {
 		led: [
 			[1, 1, 1, 1, 1, 1, 0], //0

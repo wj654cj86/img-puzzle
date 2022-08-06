@@ -8,7 +8,7 @@ var language = (() => {
 			'ja': "日本語"
 		};
 	async function initial(slt) {
-		if (typeof slt != 'undefined') {
+		if (slt !== undefined) {
 			for (let key in list) {
 				let lo = document.createElement("option");
 				lo.value = key;
@@ -25,9 +25,9 @@ var language = (() => {
 			mod = 'zh-Hant';
 		}
 		if (!(mod in reg)) {
-			reg[mod] = Object.assign({}, reg['zh-Hant'], JSON.parse(await promise(openfile, `language/${mod}.json`)));
+			reg[mod] = Object.assign({}, reg['zh-Hant'], await loadfile('json', `language/${mod}.json`));
 		}
-		document.getElementsByTagName('html')[0].lang = language.mod;
+		document.querySelector('html').lang = language.mod;
 	}
 	return {
 		reg: reg,
