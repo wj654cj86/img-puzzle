@@ -1,4 +1,4 @@
-function Stopwatch(obj) {
+export default function Stopwatch(obj) {
 	switch (typeof obj) {
 		case 'object':
 			this.obj = obj;

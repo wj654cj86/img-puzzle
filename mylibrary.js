@@ -70,3 +70,44 @@ let loadimg = src => new Promise((res, rej) => {
 	img.onerror = rej;
 	img.src = src;
 });
+
+function svgtourl(svg) {
+	let svgstring = xml2text(svg);
+	let blob = new Blob([svgstring], { type: 'image/svg+xml' });
+	return URL.createObjectURL(blob);
+}
+
+let svgtoimg = svg => loadimg(svgtourl(svg));
+
+let svgtopngurl = svg => svgtoimg(svg).then(img => {
+	let canvas = text2html(`<canvas width="${img.naturalWidth}" height="${img.naturalHeight}"/>`);
+	let ctx = canvas.getContext("2d");
+	ctx.drawImage(img, 0, 0);
+	return new Promise(r => canvas.toBlob(blob => r(URL.createObjectURL(blob))));
+});
+
+let pngtobase64 = src => loadimg(src).then(img => {
+	let canvas = text2html(`<canvas width="${img.naturalWidth}" height="${img.naturalHeight}"/>`);
+	let ctx = canvas.getContext("2d");
+	ctx.drawImage(img, 0, 0);
+	return canvas.toDataURL();
+});
+
+let startDownload = (url, name) => text2html(`<a href="${url}" download="${name}"></a>`).click();
+
+let componentToHex = c => Math.floor(c * 1).toString(16).padStart(2, '0');
+let rgbToHex = (r, g, b) => "#" + componentToHex(r) + componentToHex(g) + componentToHex(b);
+
+function hexToRgb(h) {
+	let r, g, b;
+	if (h.length == 4) {
+		r = 0x11 * ('0x' + h[1]);
+		g = 0x11 * ('0x' + h[2]);
+		b = 0x11 * ('0x' + h[3]);
+	} else {
+		r = 1 * ('0x' + h[1] + h[2]);
+		g = 1 * ('0x' + h[3] + h[4]);
+		b = 1 * ('0x' + h[5] + h[6]);
+	}
+	return [r, g, b];
+}
