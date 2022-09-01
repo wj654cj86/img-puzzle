@@ -46,9 +46,10 @@ export let savedata = new (function (obj, check, decode, encode) {
 	len: len => Number(len),
 	delay: delay => Number(delay),
 	soundeffect: soundeffect => soundeffect == 'true',
-	imgsrc: imgsrc => imgsrc == 'null' ? '' : imgsrc,
+	imgsrc: imgsrc => imgsrc == 'null' ? '' : decodeURIComponent(imgsrc),
 	hostimg: hostimg => hostimg == 'null' ? '' : hostimg
 }, {
+	imgsrc: imgsrc => encodeURIComponent(imgsrc)
 });
 
 export let setdata = new (function (obj, sfs) {
