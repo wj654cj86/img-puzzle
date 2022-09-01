@@ -40,14 +40,13 @@ export let savedata = new (function (obj, check, decode, encode) {
 	len: len => !isNaN(len) && len >= 3 && len <= 10,
 	delay: delay => !isNaN(delay) && delay >= 0 && delay <= 1000,
 	soundeffect: soundeffect => soundeffect == 'true' || soundeffect == 'false',
-	imgsrc: imgsrc => imgsrc != '',
-	hostimg: hostimg => hostimg != '',
+	imgsrc: imgsrc => imgsrc != '' && imgsrc != 'null',
+	hostimg: hostimg => hostimg != '' && hostimg != 'null'
 }, {
 	len: len => Number(len),
 	delay: delay => Number(delay),
 	soundeffect: soundeffect => soundeffect == 'true',
-	imgsrc: imgsrc => imgsrc == 'null' ? '' : decodeURIComponent(imgsrc),
-	hostimg: hostimg => hostimg == 'null' ? '' : hostimg
+	imgsrc: imgsrc => decodeURIComponent(imgsrc)
 }, {
 	imgsrc: imgsrc => encodeURIComponent(imgsrc)
 });
