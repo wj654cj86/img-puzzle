@@ -93,7 +93,12 @@ let pngtobase64 = src => loadimg(src).then(img => {
 	return canvas.toDataURL();
 });
 
-let startDownload = (url, name) => text2html(`<a href="${url}" download="${name}"></a>`).click();
+function startDownload(url, name) {
+	let a = document.createElement('a');
+	a.href = url;
+	a.download = name;
+	a.click();
+}
 
 let componentToHex = c => Math.floor(c * 1).toString(16).padStart(2, '0');
 let rgbToHex = (r, g, b) => "#" + componentToHex(r) + componentToHex(g) + componentToHex(b);

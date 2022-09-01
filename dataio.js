@@ -5,7 +5,7 @@ export let geturl = window.parent.url2obj();
 export let savedata = new (function (obj, check, decode, encode) {
 	for (let key in obj) {
 		let value = obj[key];
-		let ck = getCookie(key);
+		let ck = localStorage.getItem(key);
 		let cf = check[key];
 		let df = key in decode ? decode[key] : d => d;
 		if (key in geturl && cf(geturl[key])) {
@@ -14,11 +14,11 @@ export let savedata = new (function (obj, check, decode, encode) {
 			value = df(ck);
 		}
 		let ef = key in encode ? encode[key] : d => d;
-		setCookie(key, ef(value));
+		localStorage.setItem(key, ef(value));
 		Object.defineProperty(this, key, {
 			set(_value) {
 				value = _value;
-				setCookie(key, ef(_value));
+				localStorage.setItem(key, ef(_value));
 			},
 			get() {
 				return value;
@@ -32,21 +32,23 @@ export let savedata = new (function (obj, check, decode, encode) {
 	len: 4,
 	delay: 0,
 	soundeffect: false,
-	imgsrc: ''
+	imgsrc: '',
+	hostimg: '',
 }, {
 	lang: lang => lang in language.list,
 	mod: mod => ['number', 'coordinate', 'hostimage', 'netimage'].indexOf(mod) != -1,
 	len: len => !isNaN(len) && len >= 3 && len <= 10,
 	delay: delay => !isNaN(delay) && delay >= 0 && delay <= 1000,
 	soundeffect: soundeffect => soundeffect == 'true' || soundeffect == 'false',
-	imgsrc: imgsrc => imgsrc != ''
+	imgsrc: imgsrc => imgsrc != '',
+	hostimg: hostimg => hostimg != '',
 }, {
 	len: len => Number(len),
 	delay: delay => Number(delay),
 	soundeffect: soundeffect => soundeffect == 'true',
-	imgsrc: imgsrc => decodeURIComponent(imgsrc)
+	imgsrc: imgsrc => imgsrc == 'null' ? '' : imgsrc,
+	hostimg: hostimg => hostimg == 'null' ? '' : hostimg
 }, {
-	imgsrc: imgsrc => encodeURIComponent(imgsrc)
 });
 
 export let setdata = new (function (obj, sfs) {

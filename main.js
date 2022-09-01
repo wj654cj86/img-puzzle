@@ -43,121 +43,123 @@ function nowmodonchange() {
 	}
 };
 
-window.onload = async () => {
-	preview.setAttribute('viewBox', '0 0 600 600');
-	let ref = preview.querySelector('use');
-	ref.setAttribute('width', 600);
-	ref.setAttribute('height', 600);
-	main.ondragstart = () => {
-		return false;
-	};
+preview.setAttribute('viewBox', '0 0 600 600');
+let ref = preview.querySelector('use');
+ref.setAttribute('width', 600);
+ref.setAttribute('height', 600);
+main.ondragstart = () => {
+	return false;
+};
 
-	setting.onclick = () => {
-		nowlanguage.value = savedata.lang;
-		nowmod.value = savedata.mod; nowmodonchange();
-		setdata.len = savedata.len;
-		setdata.delay = savedata.delay
-		nowsoundeffect.checked = savedata.soundeffect;
-		netfile.value = savedata.imgsrc;
-		settingfoundation.style.zIndex = 10;
-	};
-	full.onclick = () => {
-		let de = window.parent.document.documentElement;
-		if (de.requestFullscreen) {
-			de.requestFullscreen();
-		} else if (de.mozRequestFullScreen) { /* Firefox */
-			de.mozRequestFullScreen();
-		} else if (de.webkitRequestFullscreen) { /*Edge, Chrome, Safari & Opera */
-			de.webkitRequestFullscreen();
-		}
-	};
+setting.onclick = () => {
+	nowlanguage.value = savedata.lang;
+	nowmod.value = savedata.mod; nowmodonchange();
+	setdata.len = savedata.len;
+	setdata.delay = savedata.delay
+	nowsoundeffect.checked = savedata.soundeffect;
+	netfile.value = savedata.imgsrc;
+	settingfoundation.style.zIndex = 10;
+};
+full.onclick = () => {
+	let de = window.parent.document.documentElement;
+	if (de.requestFullscreen) {
+		de.requestFullscreen();
+	} else if (de.mozRequestFullScreen) { /* Firefox */
+		de.mozRequestFullScreen();
+	} else if (de.webkitRequestFullscreen) { /*Edge, Chrome, Safari & Opera */
+		de.webkitRequestFullscreen();
+	}
+};
 
-	settingfoundation.onclick = (e) => {
-		if (e.target.id != 'determine')
-			imageerror.innerHTML = '';
-	};
-	nowlanguage.onchange = async () => {
-		setdata.lang = nowlanguage.value;
-	};
-	subsize.onclick = () => {
-		if (setdata.len > 3) {
-			setdata.len--;
-		}
-	};
-	addsize.onclick = () => {
-		if (setdata.len < 10) {
-			setdata.len++;
-		}
-	};
-	subdelay.onclick = () => {
-		if (setdata.delay > 0) {
-			setdata.delay -= 100;
-		}
-	};
-	adddelay.onclick = () => {
-		if (setdata.delay < 1000) {
-			setdata.delay *= 1;
-			setdata.delay += 100;
-		}
-	};
-	nowmod.onchange = nowmodonchange;
-	determine.onclick = async () => {
-		try {
-			switch (nowmod.value) {
-				case 'hostimage':
-					await imgdata.checkandsetdata(URL.createObjectURL(hostfile.files[0]));
-					break;
-				case 'netimage':
-					await imgdata.checkandsetdata(netfile.value);
-					savedata.imgsrc = imgdata.src;
-					break;
-				default:
-					break;
-			}
-			savedata.lang = setdata.lang;
-			savedata.mod = nowmod.value;
-			savedata.len = setdata.len;
-			savedata.delay = setdata.delay;
-			savedata.soundeffect = nowsoundeffect.checked;
-			puzzle.setting();
-			settingfoundation.style.zIndex = 0;
-		} catch (err) {
-			imageerror.innerHTML = language.reg[setdata.lang][nowmod.value + 'error'];
-		}
-	};
-	cancel.onclick = async () => {
-		setdata.lang = savedata.lang;
-		settingfoundation.style.zIndex = 0;
-	};
-
-	window.sw = new Stopwatch(stopwatch);
-	await language.initial(nowlanguage);
-	number.initial();
-	coordinate.initial();
-	await soundeffect.initial();
-	setdata.lang = savedata.lang;
-
+settingfoundation.onclick = (e) => {
+	if (e.target.id != 'determine')
+		imageerror.innerHTML = '';
+};
+nowlanguage.onchange = async () => {
+	setdata.lang = nowlanguage.value;
+};
+subsize.onclick = () => {
+	if (setdata.len > 3) {
+		setdata.len--;
+	}
+};
+addsize.onclick = () => {
+	if (setdata.len < 10) {
+		setdata.len++;
+	}
+};
+subdelay.onclick = () => {
+	if (setdata.delay > 0) {
+		setdata.delay -= 100;
+	}
+};
+adddelay.onclick = () => {
+	if (setdata.delay < 1000) {
+		setdata.delay *= 1;
+		setdata.delay += 100;
+	}
+};
+nowmod.onchange = nowmodonchange;
+determine.onclick = async () => {
 	try {
-		switch (savedata.mod) {
+		switch (nowmod.value) {
 			case 'hostimage':
-				savedata.mod = 'netimage';
+				let url = URL.createObjectURL(hostfile.files[0])
+				await imgdata.checkandsetdata(url);
+				savedata.hostimg = await pngtobase64(url);
+				break;
 			case 'netimage':
-				await imgdata.checkandsetdata(savedata.imgsrc);
+				await imgdata.checkandsetdata(netfile.value);
+				savedata.imgsrc = imgdata.src;
 				break;
 			default:
 				break;
 		}
+		savedata.lang = setdata.lang;
+		savedata.mod = nowmod.value;
+		savedata.len = setdata.len;
+		savedata.delay = setdata.delay;
+		savedata.soundeffect = nowsoundeffect.checked;
+		puzzle.setting();
+		settingfoundation.style.zIndex = 0;
 	} catch (err) {
-		savedata.mod = 'number';
-	}
-	puzzle.setting();
-	document.body.style.opacity = 1;
-	window.parent.document.body.style.opacity = 1;
-	if (geturl.random == 'true') {
-		await sleep(1000);
-		puzzle.random();
+		imageerror.innerHTML = language.reg[setdata.lang][nowmod.value + 'error'];
 	}
 };
+cancel.onclick = async () => {
+	setdata.lang = savedata.lang;
+	settingfoundation.style.zIndex = 0;
+};
+
+window.sw = new Stopwatch(stopwatch);
+await language.initial(nowlanguage);
+number.initial();
+coordinate.initial();
+await soundeffect.initial();
+setdata.lang = savedata.lang;
+
+try {
+	switch (savedata.mod) {
+		case 'hostimage':
+			await imgdata.checkandsetdata(savedata.hostimg);
+			break;
+		case 'netimage':
+			await imgdata.checkandsetdata(savedata.imgsrc);
+			break;
+		default:
+			break;
+	}
+} catch (err) {
+	savedata.mod = 'number';
+}
+puzzle.setting();
+document.body.style.opacity = 1;
+window.parent.document.body.style.opacity = 1;
+if (geturl.random == 'true') {
+	await sleep(1000);
+	puzzle.random();
+}
+
 window.onkeydown = (e) => {
 	let key = e.code;
 	if (key == 'Enter')
