@@ -2,9 +2,9 @@ import { geturl, savedata, setdata, imgdata } from './dataio.js';
 import number from './number.js';
 import coordinate from './coordinate.js';
 import image from './imagecode.js';
-import language from './language/language.js';
+import language from './language.js';
 import Stopwatch from './stopwatch.js';
-import soundeffect from './soundeffect/soundeffect.js';
+import soundeffect from './soundeffect.js';
 import puzzle from './puzzle.js';
 
 let direction = {
@@ -133,9 +133,6 @@ cancel.onclick = async () => {
 
 window.sw = new Stopwatch(stopwatch);
 await language.initial(nowlanguage);
-number.initial();
-coordinate.initial();
-await soundeffect.initial();
 setdata.lang = savedata.lang;
 
 try {

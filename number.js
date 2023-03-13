@@ -31,21 +31,21 @@ let segment = {
 		+ '<rect x="-45" y="-45" width="90" height="90" fill="#000"/>'
 		+ '</svg>',
 	reg = [];
-function initial() {
-	let piece = text2svg(`<path d="M10,0L7,3L-7,3L-10,0L-7-3L7-3z" fill="#a00" id="segmentpiece"/>`);
-	refpiece.append(piece);
-	for (let i = 0; i <= 9; i++) {
-		let g = text2svg(`<g id="segment${i}"></g>`);
-		for (let j = 0; j < 7; j++) {
-			if (segment.led[i][j] == 0)
-				continue;
-			let use = text2svg(`<use xlink:href="#segmentpiece" transform="${segment.seat[j]}"/>`);
-			g.append(use);
-		}
-		refpiece.append(g);
+
+let piece = text2svg(`<path d="M10,0L7,3L-7,3L-10,0L-7-3L7-3z" fill="#a00" id="segmentpiece"/>`);
+refpiece.append(piece);
+for (let i = 0; i <= 9; i++) {
+	let g = text2svg(`<g id="segment${i}"></g>`);
+	for (let j = 0; j < 7; j++) {
+		if (segment.led[i][j] == 0)
+			continue;
+		let use = text2svg(`<use xlink:href="#segmentpiece" transform="${segment.seat[j]}"/>`);
+		g.append(use);
 	}
+	refpiece.append(g);
 }
-function style(n) {
+
+export default function (n) {
 	if (n in reg) {
 		return reg[n];
 	}
@@ -59,8 +59,4 @@ function style(n) {
 	}
 	reg[n] = svg;
 	return reg[n];
-}
-export default {
-	initial,
-	style
 };

@@ -4,7 +4,7 @@ export default function Stopwatch(obj) {
 			this.obj = obj;
 			break;
 		case 'string':
-			this.obj = document.getElementById(obj);
+			this.obj = document.querySelector('#' + obj);
 			break;
 		default:
 			break;

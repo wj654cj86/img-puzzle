@@ -2,8 +2,8 @@ import { geturl, savedata, setdata, imgdata } from './dataio.js';
 import number from './number.js';
 import coordinate from './coordinate.js';
 import image from './imagecode.js';
-import language from './language/language.js';
-import soundeffect from './soundeffect/soundeffect.js';
+import language from './language.js';
+import soundeffect from './soundeffect.js';
 
 let seat = [],
 	none = 0,
@@ -71,11 +71,11 @@ function setting() {
 
 	for (let i = 0; i < len; i++) {
 		if (savedata.mod == 'number') {
-			main.append(number.style(i + 1));
+			main.append(number(i + 1));
 		} else if (savedata.mod == 'coordinate') {
-			main.append(coordinate.style(String.fromCharCode(Math.floor(i / savedata.len + 65)), String.fromCharCode(i % savedata.len + 65)));
+			main.append(coordinate(String.fromCharCode(Math.floor(i / savedata.len + 65)), String.fromCharCode(i % savedata.len + 65)));
 		} else if (savedata.mod == 'hostimage' || savedata.mod == 'netimage') {
-			main.append(image.style(savedata.len, puzzlesize, i % savedata.len, Math.floor(i / savedata.len)));
+			main.append(image(savedata.len, puzzlesize, i % savedata.len, Math.floor(i / savedata.len)));
 		}
 	}
 

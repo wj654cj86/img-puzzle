@@ -8,10 +8,10 @@ let mod = 'zh-Hant',
 	};
 async function initial(slt) {
 	if (slt !== undefined) {
-		for (let key in list) {
+		for (let [key, value] of list.entries()) {
 			let lo = document.createElement("option");
 			lo.value = key;
-			lo.innerHTML = list[key];
+			lo.innerHTML = value;
 			slt.append(lo);
 		}
 	}

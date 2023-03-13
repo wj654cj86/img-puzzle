@@ -1,10 +1,9 @@
-import language from './language/language.js';
+import language from './language.js';
 
 export let geturl = window.parent.url2obj();
 
 export let savedata = new (function (obj, check, decode, encode) {
-	for (let key in obj) {
-		let value = obj[key];
+	for (let [key, value] of obj.entries()) {
 		let ck = localStorage.getItem(key);
 		let cf = check[key];
 		let df = key in decode ? decode[key] : d => d;

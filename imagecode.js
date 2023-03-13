@@ -3,7 +3,7 @@ let str = '<svg>'
 	+ '<rect stroke="#000" stroke-width="4" fill="none" />'
 	+ '</svg>',
 	reg = {};
-function style(len, puzzlesize, x, y) {
+export default function (len, puzzlesize, x, y) {
 	if (len in reg) {
 		if (x in reg[len]) {
 			if (y in reg[len][x]) {
@@ -26,7 +26,4 @@ function style(len, puzzlesize, x, y) {
 	rect.setAttribute('height', puzzlesize);
 	reg[len][x][y] = svg;
 	return reg[len][x][y];
-}
-export default {
-	style
 };
