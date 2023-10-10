@@ -8,7 +8,7 @@ let mod = 'zh-Hant',
 	};
 async function initial(slt) {
 	if (slt !== undefined) {
-		for (let [key, value] of list.entries()) {
+		for (let [key, value] of Object.entries(list)) {
 			let lo = document.createElement("option");
 			lo.value = key;
 			lo.innerHTML = value;

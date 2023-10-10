@@ -3,7 +3,7 @@ import language from './language.js';
 export let geturl = window.parent.url2obj();
 
 export let savedata = new (function (obj, check, decode, encode) {
-	for (let [key, value] of obj.entries()) {
+	for (let [key, value] of Object.entries(obj)) {
 		let ck = localStorage.getItem(key);
 		let cf = check[key];
 		let df = key in decode ? decode[key] : d => d;
@@ -51,7 +51,7 @@ export let savedata = new (function (obj, check, decode, encode) {
 });
 
 export let setdata = new (function (obj, sfs) {
-	for (let key in obj) {
+	for (let [key] of Object.entries(obj)) {
 		let value = obj[key];
 		let sf = sfs[key];
 		Object.defineProperty(this, key, {

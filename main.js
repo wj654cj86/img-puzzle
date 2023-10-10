@@ -104,9 +104,9 @@ determine.onclick = async () => {
 	try {
 		switch (nowmod.value) {
 			case 'hostimage':
-				let url = URL.createObjectURL(hostfile.files[0])
+				let url = blob2url(hostfile.files[0])
 				await imgdata.checkandsetdata(url);
-				savedata.hostimg = await pngtobase64(url);
+				savedata.hostimg = await png2base64(url);
 				break;
 			case 'netimage':
 				await imgdata.checkandsetdata(netfile.value);
